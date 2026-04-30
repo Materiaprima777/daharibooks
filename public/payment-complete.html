@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Payment Complete – Dahari Books</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#FEF9EE,#FDE68A);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+    .card{background:#fff;border-radius:20px;padding:40px 36px;max-width:440px;width:100%;text-align:center;box-shadow:0 16px 48px rgba(0,0,0,0.12);}
+    .icon{font-size:4rem;margin-bottom:16px;}
+    h1{font-size:1.4rem;font-weight:900;color:#1C1007;margin-bottom:8px;}
+    p{font-size:0.88rem;color:#78350F;line-height:1.6;margin-bottom:6px;}
+    .ref{background:#FEF3C7;border-radius:8px;padding:12px 16px;font-size:0.82rem;color:#92400E;font-weight:700;margin:16px 0;}
+    .btn{display:inline-block;background:#D97706;color:#fff;padding:13px 28px;border-radius:8px;font-weight:900;font-size:0.9rem;text-decoration:none;margin-top:10px;transition:background 0.2s;}
+    .btn:hover{background:#B45309;}
+    .wa-btn{display:inline-flex;align-items:center;gap:8px;background:#25D366;color:#fff;padding:13px 24px;border-radius:8px;font-weight:800;font-size:0.88rem;text-decoration:none;margin-top:8px;transition:background 0.2s;}
+    .wa-btn:hover{background:#128C7E;}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div id="content">
+    <div class="icon">⏳</div>
+    <h1>Verifying Payment…</h1>
+    <p>Please wait while we confirm your payment.</p>
+  </div>
+</div>
+
+<script>
+  const params  = new URLSearchParams(window.location.search);
+  const ref     = params.get('ref') || '';
+  const content = document.getElementById('content');
+
+  async function verify() {
+    // Give Pesapal a moment to process
+    await new Promise(r => setTimeout(r, 2000));
+
+    try {
+      const res  = await fetch('/api/orders/track/' + ref);
+      const data = await res.json();
+
+      if (data.payment_status === 'paid') {
+        showSuccess(data);
+      } else {
+        showPending(data);
+      }
+    } catch {
+      showPending({ order_ref: ref });
+    }
+  }
+
+  function showSuccess(order) {
+    content.innerHTML = `
+      <div class="icon">✅</div>
+      <h1>Payment Confirmed!</h1>
+      <p>Thank you for your order from Dahari Books.</p>
+      <div class="ref">Order Ref: <strong>${order.order_ref}</strong></div>
+      <p style="font-size:0.8rem;color:#6B7280;margin-bottom:16px;">We will contact you on <strong>${order.customer_phone||''}</strong> to arrange delivery.</p>
+      <a href="/" class="btn">← Continue Shopping</a><br/>
+      <a href="https://wa.me/254718340377?text=Hi!+My+order+${order.order_ref}+payment+is+confirmed.+Please+confirm+delivery."
+         target="_blank" class="wa-btn" style="display:inline-flex;margin-top:10px;">
+        💬 WhatsApp Us About Your Order
+      </a>`;
+  }
+
+  function showPending(order) {
+    content.innerHTML = `
+      <div class="icon">📦</div>
+      <h1>Order Received!</h1>
+      <p>Your order <strong>${order.order_ref || ref}</strong> has been placed.</p>
+      <div class="ref">We are processing your payment. If it doesn't go through, we will contact you to arrange an alternative.</div>
+      <p style="font-size:0.8rem;color:#6B7280;margin-bottom:16px;">Questions? WhatsApp or call us:</p>
+      <a href="https://wa.me/254718340377?text=Hi!+I+just+placed+order+${ref}"
+         target="_blank" class="wa-btn" style="display:inline-flex;margin-bottom:10px;">
+        💬 +254 718 340377
+      </a><br/>
+      <a href="/" class="btn">← Back to Shop</a>`;
+  }
+
+  if (ref) verify();
+  else {
+    content.innerHTML = `
+      <div class="icon">📚</div>
+      <h1>Thank you!</h1>
+      <p>Your Dahari Books order has been received. We'll be in touch shortly.</p>
+      <a href="/" class="btn" style="margin-top:20px;">← Back to Shop</a>`;
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,3228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Dahari Books – No. 1 Kids Bookstore in East Africa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root{
+      --red:#D97706;
+      --red-dark:#B45309;
+      --orange:#F59E0B;
+      --blue:#1A56DB;
+      --green:#0E9F6E;
+      --yellow:#FCD34D;
+      --purple:#7C3AED;
+      --teal:#0891B2;
+      --white:#FFFFFF;
+      --bg:#FFFBF2;
+      --border:#FDE68A;
+      --txt:#1C1007;
+      --txt-mid:#78350F;
+      --txt-light:#92400E;
+    }
+    *{margin:0;padding:0;box-sizing:border-box;}
+    html{scroll-behavior:smooth;}
+    body{font-family:'Nunito Sans',sans-serif;background:var(--bg);color:var(--txt);overflow-x:hidden;}
+    a{text-decoration:none;color:inherit;}
+
+    /* ── TOP BAR ── */
+    .topbar{
+      background:linear-gradient(90deg,#D97706,#F59E0B,#D97706);
+      color:#fff;
+      text-align:center;
+      font-size:0.73rem;
+      font-weight:700;
+      letter-spacing:0.05em;
+      padding:7px 16px;
+    }
+    .topbar a{color:#FEF3C7;text-decoration:underline;}
+
+    /* ── HEADER ── */
+    header{
+      background:var(--white);
+      border-bottom:1px solid var(--border);
+      position:sticky;top:0;z-index:200;
+      box-shadow:0 1px 4px rgba(0,0,0,0.07);
+    }
+    .header-main{
+      max-width:1200px;margin:0 auto;
+      padding:12px 20px;
+      display:flex;align-items:center;gap:16px;
+    }
+    /* LOGO */
+    .logo{display:flex;align-items:center;gap:10px;flex-shrink:0;}
+    .logo-icon{
+      width:46px;height:46px;border-radius:50%;
+      background:linear-gradient(135deg,#F59E0B,#D97706,#B45309);
+      display:flex;align-items:center;justify-content:center;
+      font-size:1.3rem;flex-shrink:0;
+    }
+    .logo-text .brand{
+      font-family:'Nunito',sans-serif;
+      font-size:1.25rem;font-weight:900;
+      color:var(--red);display:block;line-height:1;
+    }
+    .logo-text .sub{
+      font-size:0.62rem;font-weight:700;
+      text-transform:uppercase;letter-spacing:0.07em;
+      color:var(--txt-light);display:block;margin-top:1px;
+    }
+
+    /* SEARCH */
+    .search-bar{
+      flex:1;display:flex;align-items:center;
+      border:1.5px solid var(--border);border-radius:6px;
+      overflow:hidden;max-width:520px;
+    }
+    .search-bar input{
+      flex:1;border:none;outline:none;
+      font-family:'Nunito Sans',sans-serif;font-size:0.88rem;
+      color:var(--txt);padding:10px 14px;background:#fff;
+    }
+    .search-bar input::placeholder{color:var(--txt-light);}
+    .search-bar .cat-sel{
+      border:none;border-left:1px solid var(--border);
+      padding:10px 12px;font-size:0.8rem;color:var(--txt-mid);
+      background:#FEF3C7;cursor:pointer;outline:none;
+      font-family:'Nunito Sans',sans-serif;
+    }
+    .search-btn{
+      background:var(--red);border:none;padding:10px 16px;
+      cursor:pointer;color:#fff;display:flex;align-items:center;
+      transition:background 0.2s;flex-shrink:0;
+    }
+    .search-btn:hover{background:var(--red-dark);}
+    .search-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.5;stroke-linecap:round;}
+
+    /* HEADER ACTIONS */
+    .header-actions{display:flex;align-items:center;gap:8px;flex-shrink:0;}
+    .hdr-btn{
+      display:flex;flex-direction:column;align-items:center;gap:2px;
+      background:none;border:none;cursor:pointer;
+      font-size:0.65rem;font-weight:700;color:var(--txt-mid);
+      padding:6px 10px;border-radius:6px;transition:background 0.15s;
+      position:relative;
+    }
+    .hdr-btn:hover{background:#FEF3C7;color:var(--red);}
+    .hdr-btn .icon{font-size:1.3rem;line-height:1;}
+    .cart-count{
+      position:absolute;top:2px;right:6px;
+      background:var(--red);color:#fff;
+      font-size:0.55rem;font-weight:900;
+      width:16px;height:16px;border-radius:50%;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .hamburger-btn{
+      display:none;background:none;border:none;cursor:pointer;
+      padding:8px;border-radius:6px;flex-direction:column;gap:4px;
+    }
+    .hamburger-btn span{display:block;width:20px;height:2px;background:var(--txt-mid);border-radius:2px;transition:all 0.3s;}
+    .hamburger-btn.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
+    .hamburger-btn.open span:nth-child(2){opacity:0;}
+    .hamburger-btn.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
+
+    /* ── NAV BAR ── */
+    .nav-bar{
+      background:var(--white);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-inner{
+      max-width:1200px;margin:0 auto;
+      padding:0 20px;
+      display:flex;align-items:center;gap:0;
+      overflow-x:auto;scrollbar-width:none;
+    }
+    .nav-inner::-webkit-scrollbar{display:none;}
+    .nav-item{position:relative;}
+    .nav-link{
+      display:flex;align-items:center;gap:5px;
+      padding:11px 15px;
+      font-size:0.82rem;font-weight:700;
+      color:var(--txt);white-space:nowrap;
+      text-decoration:none;transition:color 0.15s;
+      border-bottom:3px solid transparent;
+    }
+    .nav-link:hover,.nav-link.active{color:var(--red);border-bottom-color:var(--red);}
+    .nav-link .nav-icon{font-size:1rem;}
+    .nav-item:hover .dropdown{display:block;}
+    .dropdown{
+      display:none;position:absolute;top:100%;left:0;
+      background:#fff;border:1px solid var(--border);
+      border-radius:8px;padding:6px 0;
+      min-width:200px;box-shadow:0 6px 20px rgba(0,0,0,0.1);
+      z-index:300;
+    }
+    .dropdown a{
+      display:block;padding:9px 18px;
+      font-size:0.81rem;color:var(--txt);
+      transition:background 0.12s;
+    }
+    .dropdown a:hover{background:#FEF3C7;color:var(--red);}
+
+    /* ── MOBILE NAV ── */
+    .mobile-nav{
+      display:none;
+      position:fixed;top:0;left:-100%;width:80%;max-width:290px;height:100vh;
+      background:#fff;z-index:500;overflow-y:auto;
+      box-shadow:4px 0 20px rgba(0,0,0,0.15);
+      transition:left 0.3s ease;
+    }
+    .mobile-nav.open{left:0;}
+    .mobile-nav-head{
+      background:linear-gradient(135deg,#D97706,#F59E0B);padding:16px 18px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .mobile-nav-head span{color:#fff;font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;}
+    .close-mobile{background:none;border:none;color:#fff;font-size:1.3rem;cursor:pointer;}
+    .mobile-nav-links{padding:8px 0;}
+    .mobile-nav-links .m-section{
+      font-size:0.65rem;font-weight:900;text-transform:uppercase;
+      letter-spacing:0.1em;color:var(--red);
+      padding:12px 18px 4px;
+    }
+    .mobile-nav-links a{
+      display:block;padding:11px 18px;font-size:0.88rem;font-weight:600;
+      color:var(--txt);border-bottom:1px solid var(--border);
+      transition:background 0.12s;
+    }
+    .mobile-nav-links a:hover{background:#FEF3C7;color:var(--red);}
+    .mob-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:499;}
+
+    /* ── HERO BANNER ── */
+    .hero-banner{
+      background:linear-gradient(135deg,#FEF3C7 0%,#FDE68A 30%,#FCD34D 60%,#F59E0B 100%);
+      border-bottom:1px solid var(--border);
+      overflow:hidden;position:relative;
+    }
+    .hero-slides{display:flex;transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);will-change:transform;}
+    .hero-slide{
+      min-width:100%;padding:32px 24px;
+      display:flex;align-items:center;justify-content:space-between;
+      max-width:1200px;margin:0 auto;
+    }
+    .hero-slide-inner{
+      max-width:1200px;margin:0 auto;width:100%;
+      display:flex;align-items:center;justify-content:space-between;gap:20px;
+      padding:32px 24px;
+    }
+    .slide-wrapper{min-width:100%;position:relative;}
+    .slide-content{
+      max-width:1200px;margin:0 auto;
+      display:flex;align-items:center;justify-content:space-between;gap:24px;
+      padding:28px 24px;
+    }
+    .slide-text{max-width:480px;}
+    .slide-tag{
+      display:inline-block;
+      background:var(--red);color:#fff;
+      font-size:0.65rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;
+      padding:4px 12px;border-radius:20px;margin-bottom:10px;
+    }
+    .slide-text h1{
+      font-family:'Nunito',sans-serif;
+      font-size:clamp(1.6rem,3.5vw,2.6rem);font-weight:900;
+      color:var(--txt);line-height:1.15;margin-bottom:10px;
+    }
+    .slide-text h1 em{color:var(--red);font-style:normal;}
+    .slide-text p{font-size:0.9rem;color:var(--txt-mid);margin-bottom:18px;line-height:1.6;}
+    .slide-ctas{display:flex;gap:10px;flex-wrap:wrap;}
+
+    /* ── SLIDE-IN FROM RIGHT ANIMATION FOR CTAs ── */
+    @keyframes slideInFromRight{
+      0%{opacity:0;transform:translateX(60px);}
+      100%{opacity:1;transform:translateX(0);}
+    }
+    .slide-ctas.cta-animate{
+      animation:slideInFromRight 0.55s cubic-bezier(0.25,0.46,0.45,0.94) both;
+    }
+    .slide-ctas.cta-animate .btn-red{
+      animation:slideInFromRight 0.55s 0.05s cubic-bezier(0.25,0.46,0.45,0.94) both;
+    }
+    .slide-ctas.cta-animate .btn-outline{
+      animation:slideInFromRight 0.55s 0.15s cubic-bezier(0.25,0.46,0.45,0.94) both;
+    }
+    .btn-red{
+      background:var(--red);color:#fff;
+      font-weight:800;font-size:0.85rem;
+      padding:11px 24px;border-radius:6px;border:none;
+      cursor:pointer;display:inline-block;transition:background 0.2s;
+      font-family:'Nunito',sans-serif;
+    }
+    .btn-red:hover{background:var(--red-dark);}
+    .btn-outline{
+      border:2px solid var(--red);color:var(--red);
+      font-weight:800;font-size:0.85rem;
+      padding:9px 22px;border-radius:6px;background:#fff;
+      cursor:pointer;display:inline-block;transition:all 0.2s;
+      font-family:'Nunito',sans-serif;
+    }
+    .btn-outline:hover{background:var(--red);color:#fff;}
+    .slide-visual{
+      display:flex;align-items:center;justify-content:center;
+      gap:12px;flex-shrink:0;
+    }
+    .slide-book{
+      width:80px;height:108px;border-radius:6px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:2.8rem;
+      box-shadow:4px 6px 16px rgba(0,0,0,0.15);
+      transform:rotate(-3deg);flex-shrink:0;
+    }
+    .slide-book:nth-child(2){transform:rotate(2deg);width:88px;height:118px;}
+    .slide-book:nth-child(3){transform:rotate(-2deg);width:76px;height:100px;}
+    .slide-dots{
+      position:absolute;bottom:14px;left:50%;transform:translateX(-50%);
+      display:flex;gap:6px;
+    }
+    .dot{width:8px;height:8px;border-radius:50%;background:rgba(0,0,0,0.2);cursor:pointer;transition:background 0.2s;}
+    .dot.active{background:var(--red);}
+
+    /* ── QUICK SCROLL PRODUCTS ── */
+    .scroll-strip{
+      background:#fff;
+      border-bottom:1px solid var(--border);
+      padding:14px 0;
+    }
+    .scroll-strip-inner{
+      max-width:1200px;margin:0 auto;padding:0 20px;
+      display:flex;gap:14px;overflow-x:auto;scrollbar-width:none;
+    }
+    .scroll-strip-inner::-webkit-scrollbar{display:none;}
+    .strip-item{
+      flex-shrink:0;width:90px;text-align:center;cursor:pointer;
+    }
+    .strip-img{
+      width:80px;height:80px;border-radius:8px;
+      background:#F3F4F6;border:1.5px solid var(--border);
+      display:flex;align-items:center;justify-content:center;
+      font-size:2rem;margin:0 auto 6px;
+      transition:border-color 0.2s,transform 0.2s;
+      overflow:hidden;
+    }
+    .strip-img img{
+      width:100%;height:100%;object-fit:cover;display:block;
+    }
+    .strip-item:hover .strip-img{border-color:var(--red);transform:scale(1.05);}
+    .strip-item.strip-active .strip-img{border-color:var(--red);border-width:2.5px;transform:scale(1.05);}
+    .strip-item.strip-active .strip-label{color:var(--red);}
+    .strip-label{font-size:0.65rem;font-weight:700;color:var(--txt-mid);line-height:1.2;}
+
+    /* ── SECTION HEADER ── */
+    .section-hdr{
+      max-width:1200px;margin:0 auto;
+      padding:28px 20px 14px;
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .section-hdr h2{
+      font-family:'Nunito',sans-serif;
+      font-size:1.25rem;font-weight:900;
+      color:var(--txt);letter-spacing:-0.01em;
+    }
+    .view-all{
+      font-size:0.8rem;font-weight:700;color:var(--red);
+      display:flex;align-items:center;gap:3px;
+    }
+    .view-all:hover{text-decoration:underline;}
+
+
+    /* ── PRODUCT GRID ── */
+    .products-wrap{max-width:1200px;margin:0 auto;padding:0 20px 32px;}
+    .products-grid{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:12px;
+    }
+    @media(max-width:900px){.products-grid{grid-template-columns:repeat(3,1fr);}}
+    @media(max-width:600px){.products-grid{grid-template-columns:repeat(2,1fr);}}
+
+    /* FILTER ROW */
+    .filter-row{
+      display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;
+      padding:0 20px 14px;max-width:1200px;margin:0 auto;
+    }
+    .filter-row::-webkit-scrollbar{display:none;}
+    .ftab{
+      flex-shrink:0;padding:7px 14px;
+      border-radius:20px;border:1.5px solid var(--border);
+      background:#fff;font-size:0.76rem;font-weight:700;
+      color:var(--txt-mid);cursor:pointer;
+      transition:all 0.15s;white-space:nowrap;
+    }
+    .ftab:hover,.ftab.active{background:var(--red);color:#fff;border-color:var(--red);}
+
+    .product-card{
+      background:#fff;border:1.5px solid var(--border);
+      border-radius:10px;overflow:hidden;cursor:pointer;
+      transition:border-color 0.2s,box-shadow 0.2s,transform 0.2s;
+      position:relative;
+    }
+    .product-card:hover{border-color:#D1D5DB;box-shadow:0 6px 20px rgba(0,0,0,0.09);transform:translateY(-3px);}
+    .prod-img{
+      width:100%;aspect-ratio:1;
+      background:#F9FAFB;
+      display:flex;align-items:center;justify-content:center;
+      font-size:3rem;position:relative;overflow:hidden;
+    }
+    .prod-img img{width:100%;height:100%;object-fit:cover;}
+    .prod-badge{
+      position:absolute;top:8px;left:8px;
+      font-size:0.6rem;font-weight:800;
+      padding:3px 8px;border-radius:4px;
+      text-transform:uppercase;z-index:2;
+    }
+    .badge-new{background:#0E9F6E;color:#fff;}
+    .badge-hot{background:var(--orange);color:#fff;}
+    .badge-sale{background:var(--red);color:#fff;}
+    .wish-btn{
+      position:absolute;top:8px;right:8px;
+      background:rgba(255,255,255,0.9);
+      border:1px solid var(--border);border-radius:50%;
+      width:28px;height:28px;font-size:0.8rem;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      transition:all 0.15s;
+    }
+    .wish-btn:hover{background:var(--red);color:#fff;border-color:var(--red);}
+    .prod-body{padding:10px 12px 12px;}
+    .prod-cat{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--txt-light);margin-bottom:3px;font-weight:700;}
+    .prod-name{font-family:'Nunito',sans-serif;font-size:0.86rem;font-weight:800;color:var(--txt);line-height:1.3;margin-bottom:8px;}
+    .prod-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+    .price-grp{display:flex;align-items:baseline;gap:5px;}
+    .price{font-size:0.9rem;font-weight:800;color:var(--red);}
+    .price-old{font-size:0.71rem;text-decoration:line-through;color:var(--txt-light);}
+    .add-btn{
+      background:var(--red);color:#fff;border:none;
+      width:30px;height:30px;border-radius:6px;
+      font-size:1.1rem;cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+      transition:background 0.15s;flex-shrink:0;
+    }
+    .add-btn:hover{background:var(--red-dark);}
+
+    /* ── PROMO BANNER ── */
+    .promo-banner{
+      background:var(--red);
+      padding:32px 24px;
+      text-align:center;position:relative;overflow:hidden;
+    }
+    .promo-banner::before{
+      content:'📚 ✨ 📖 🎨 ✏️ 🎲 📚 ✨ 📖 🎨 ✏️ 🎲 ';
+      position:absolute;top:8px;left:0;
+      font-size:1rem;opacity:0.15;white-space:nowrap;
+      animation:ticker 20s linear infinite;
+    }
+    @keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    .promo-tag{
+      display:inline-block;
+      background:var(--yellow);color:var(--red);
+      font-size:0.65rem;font-weight:900;letter-spacing:0.1em;text-transform:uppercase;
+      padding:4px 14px;border-radius:20px;margin-bottom:10px;
+    }
+    .promo-banner h2{
+      font-family:'Nunito',sans-serif;
+      font-size:clamp(1.3rem,3vw,2rem);font-weight:900;
+      color:#fff;margin-bottom:8px;position:relative;
+    }
+    .promo-banner p{color:rgba(255,255,255,0.85);font-size:0.88rem;margin-bottom:20px;position:relative;}
+    .promo-banner .btn-white{
+      background:#fff;color:var(--red);
+      font-weight:900;font-size:0.88rem;
+      padding:11px 28px;border-radius:6px;
+      border:none;cursor:pointer;font-family:'Nunito',sans-serif;
+      display:inline-block;transition:opacity 0.2s;position:relative;
+    }
+    .promo-banner .btn-white:hover{opacity:0.9;}
+    .promo-ages{
+      display:flex;gap:8px;justify-content:center;flex-wrap:wrap;
+      margin-top:16px;position:relative;
+    }
+    .age-chip{
+      background:rgba(255,255,255,0.18);border:1px solid rgba(255,255,255,0.3);
+      color:#fff;padding:6px 16px;border-radius:20px;
+      font-size:0.76rem;font-weight:700;
+    }
+
+    /* ── HOW TO ORDER ── */
+    .how-sect{background:#fff;border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:36px 24px;}
+    .how-inner{max-width:1100px;margin:0 auto;}
+    .how-inner h2{font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:900;color:var(--txt);text-align:center;margin-bottom:22px;}
+    .how-steps{display:flex;gap:20px;justify-content:center;flex-wrap:wrap;}
+    .how-step{
+      flex:0 0 180px;text-align:center;
+    }
+    .step-num{
+      width:44px;height:44px;border-radius:50%;
+      background:var(--red);color:#fff;
+      font-family:'Nunito',sans-serif;font-size:1.1rem;font-weight:900;
+      display:flex;align-items:center;justify-content:center;
+      margin:0 auto 10px;
+    }
+    .step-icon{font-size:1.6rem;margin-bottom:6px;}
+    .step-title{font-size:0.82rem;font-weight:800;color:var(--txt);margin-bottom:3px;}
+    .step-desc{font-size:0.72rem;color:var(--txt-mid);line-height:1.5;}
+
+    /* ── PAYMENT ── */
+    .payment-bar{
+      background:#FEF9EE;border-bottom:1px solid var(--border);
+      padding:14px 24px;
+    }
+    .pay-inner{
+      max-width:1100px;margin:0 auto;
+      display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap;
+    }
+    .pay-method{
+      display:flex;align-items:center;gap:8px;
+      font-size:0.82rem;font-weight:700;color:var(--txt-mid);
+    }
+    .pay-method .pm-icon{font-size:1.4rem;}
+    .pay-method .pm-name{font-weight:800;color:var(--txt);}
+
+    /* ── FIND US ── */
+    .find-sect{background:#FFFBF2;padding:40px 24px;border-top:1px solid var(--border);}
+    .find-inner{max-width:900px;margin:0 auto;text-align:center;}
+    .find-inner h2{font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;margin-bottom:6px;color:var(--txt);}
+    .find-inner .addr{font-size:0.92rem;color:var(--txt-mid);margin-bottom:18px;line-height:1.7;}
+    .dir-btn{
+      display:inline-flex;align-items:center;gap:8px;
+      background:var(--red);color:#fff;
+      padding:12px 28px;border-radius:6px;
+      font-weight:800;font-size:0.88rem;
+      font-family:'Nunito',sans-serif;
+      transition:background 0.2s;margin-bottom:20px;
+    }
+    .dir-btn:hover{background:var(--red-dark);}
+    .find-contacts{
+      display:flex;gap:20px;justify-content:center;flex-wrap:wrap;margin-top:16px;
+    }
+    .find-contacts a{
+      display:flex;align-items:center;gap:6px;
+      font-size:0.84rem;font-weight:700;color:var(--txt-mid);
+      transition:color 0.15s;
+    }
+    .find-contacts a:hover{color:var(--red);}
+
+    /* ── FOOTER ── */
+    footer{
+      background:#1C0F05;color:rgba(255,255,255,0.75);
+      padding:40px 24px 24px;
+    }
+    .footer-grid{
+      max-width:1100px;margin:0 auto;
+      display:grid;grid-template-columns:2fr 1fr 1fr 1fr;
+      gap:32px;margin-bottom:32px;
+    }
+    @media(max-width:800px){.footer-grid{grid-template-columns:1fr 1fr;}}
+    @media(max-width:480px){.footer-grid{grid-template-columns:1fr;}}
+    .foot-brand .fn{
+      font-family:'Nunito',sans-serif;font-size:1.15rem;font-weight:900;
+      color:#fff;margin-bottom:8px;
+    }
+    .foot-brand p{font-size:0.79rem;line-height:1.7;margin-bottom:14px;}
+    .foot-socials{display:flex;gap:8px;}
+    .soc-btn{
+      width:34px;height:34px;border-radius:6px;
+      background:rgba(255,255,255,0.1);
+      display:flex;align-items:center;justify-content:center;
+      font-size:0.95rem;transition:background 0.15s;color:#fff;
+    }
+    .soc-btn:hover{background:var(--red);}
+    .foot-col h4{font-family:'Nunito',sans-serif;font-size:0.85rem;font-weight:900;color:#fff;margin-bottom:12px;text-transform:uppercase;letter-spacing:0.05em;}
+    .foot-col ul{list-style:none;}
+    .foot-col ul li{margin-bottom:8px;}
+    .foot-col ul li a{font-size:0.79rem;color:rgba(255,255,255,0.6);transition:color 0.15s;}
+    .foot-col ul li a:hover{color:#fff;}
+    .footer-bottom{
+      max-width:1100px;margin:0 auto;
+      border-top:1px solid rgba(255,255,255,0.1);
+      padding-top:18px;
+      display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;
+    }
+    .footer-bottom p{font-size:0.74rem;}
+    .foot-pay-icons{display:flex;gap:8px;}
+    .pay-pill{background:rgba(255,255,255,0.12);color:#fff;font-size:0.7rem;font-weight:700;padding:4px 10px;border-radius:4px;}
+
+    /* ── CART DRAWER ── */
+    .overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:399;}
+    .overlay.open{display:block;}
+    .cart-drawer{
+      position:fixed;right:-100%;top:0;width:360px;max-width:92vw;height:100vh;
+      background:#fff;z-index:400;
+      display:flex;flex-direction:column;
+      box-shadow:-4px 0 24px rgba(0,0,0,0.12);
+      transition:right 0.3s ease;
+    }
+    .cart-drawer.open{right:0;}
+    .drawer-head{
+      display:flex;align-items:center;justify-content:space-between;
+      padding:16px 20px;border-bottom:1px solid var(--border);
+    }
+    .drawer-head h3{font-family:'Nunito',sans-serif;font-size:1rem;font-weight:900;color:var(--txt);}
+    .close-x{
+      background:none;border:none;font-size:1.1rem;cursor:pointer;
+      color:var(--txt-mid);padding:4px;transition:color 0.15s;
+    }
+    .close-x:hover{color:var(--red);}
+    .drawer-items{flex:1;overflow-y:auto;padding:16px 20px;}
+    .empty-cart{text-align:center;padding:50px 10px;color:var(--txt-light);}
+    .e-icon{font-size:3.5rem;margin-bottom:10px;}
+    .cart-item{display:flex;gap:12px;padding-bottom:14px;margin-bottom:14px;border-bottom:1px solid var(--border);}
+    .ci-img{width:54px;height:54px;border-radius:8px;background:#FEF3C7;display:flex;align-items:center;justify-content:center;font-size:1.7rem;flex-shrink:0;}
+    .ci-info{flex:1;}
+    .ci-name{font-weight:800;font-size:0.82rem;color:var(--txt);margin-bottom:3px;}
+    .ci-price{font-size:0.8rem;color:var(--red);font-weight:800;}
+    .qty-row{display:flex;align-items:center;gap:8px;margin-top:5px;}
+    .qty-b{background:#FEF3C7;border:none;border-radius:4px;width:24px;height:24px;font-size:0.9rem;cursor:pointer;font-weight:800;}
+    .qty-n{font-size:0.82rem;font-weight:700;min-width:18px;text-align:center;}
+    .rm-btn{background:none;border:none;cursor:pointer;color:var(--txt-light);font-size:0.95rem;}
+    .rm-btn:hover{color:var(--red);}
+    .drawer-foot{padding:16px 20px;border-top:1px solid var(--border);}
+    .subtotal-row{display:flex;justify-content:space-between;font-weight:800;font-size:0.95rem;margin-bottom:12px;font-family:'Nunito',sans-serif;}
+    .checkout-btn{
+      width:100%;background:var(--red);color:#fff;
+      border:none;border-radius:6px;padding:13px;
+      font-size:0.9rem;font-weight:800;cursor:pointer;
+      font-family:'Nunito',sans-serif;margin-bottom:8px;
+      transition:background 0.15s;
+    }
+    .checkout-btn:hover{background:var(--red-dark);}
+    .pay-opts{display:flex;gap:6px;justify-content:center;font-size:0.7rem;color:var(--txt-light);}
+
+    /* ── TOAST ── */
+    .toast{
+      position:fixed;bottom:20px;left:50%;
+      transform:translateX(-50%) translateY(80px);
+      background:#1C0F05;color:#fff;
+      padding:10px 20px;border-radius:6px;
+      font-weight:700;font-size:0.82rem;z-index:999;
+      transition:transform 0.3s;white-space:nowrap;
+    }
+    .toast.show{transform:translateX(-50%) translateY(0);}
+
+    /* ── RESPONSIVE ── */
+    @media(max-width:768px){
+      .search-bar{max-width:none;}
+      .cat-sel{display:none;}
+      .hdr-btn span:not(.cart-count,.icon){display:none;}
+      .hamburger-btn{display:flex;}
+      .nav-bar{display:none;}
+      .mobile-nav{display:block;}
+      .slide-visual{display:none;}
+      .slide-content{flex-direction:column;padding:20px 16px;}
+      .products-grid{grid-template-columns:repeat(2,1fr);}
+      .cat-grid{grid-template-columns:repeat(2,1fr);}
+      .how-step{flex:0 0 140px;}
+      .footer-grid{grid-template-columns:1fr 1fr;}
+      .header-main{padding:10px 14px;gap:10px;}
+    }
+    @media(max-width:380px){
+      .logo-text .sub{display:none;}
+      .logo-icon{width:38px;height:38px;font-size:1.1rem;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  🌍 No. 1 Bookstore for Kids in East Africa · We Deliver Where You Are &nbsp;|&nbsp; <a href="tel:+254718340377">📞 +254 718 340377</a>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-main">
+    <a href="#" class="logo">
+      <div class="logo-icon" style="padding:0;overflow:hidden;"><img src="https://daharibooks.neocities.org/IMG-20260406-WA0381.jpg" alt="Dahari Books" style="width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;"/></div>
+      <div class="logo-text">
+        <span class="brand">Dahari Books</span>
+        <span class="sub">No. 1 Kids Bookstore · East Africa</span>
+      </div>
+    </a>
+
+    <div class="search-bar">
+      <select class="cat-sel">
+        <option>All Categories</option>
+        <option>Browse by Age</option>
+        <option>Educational</option>
+        <option>Christian Books</option>
+        <option>African Books</option>
+        <option>Stationery &amp; Toys</option>
+      </select>
+      <input type="text" placeholder="Search books, games, stationery…"/>
+      <button class="search-btn">
+        <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      </button>
+    </div>
+
+    <div class="header-actions">
+      <a href="tel:+254718340377" class="hdr-btn" style="color:var(--red);">
+        <span class="icon">📞</span>
+        <span>Call Us</span>
+      </a>
+      <button class="hdr-btn" onclick="openCart()">
+        <span class="icon">🛒</span>
+        <span>Cart</span>
+        <span class="cart-count" id="cartBadge">0</span>
+      </button>
+      <button class="hamburger-btn" id="hamburger" onclick="toggleMobileNav()">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- DESKTOP NAV -->
+  <nav class="nav-bar">
+    <div class="nav-inner">
+      <div class="nav-item"><a href="#" class="nav-link active"><span class="nav-icon">🏠</span> Home</a></div>
+      <div class="nav-item">
+        <a href="#shop" class="nav-link"><span class="nav-icon">🎂</span> Browse by Age ▾</a>
+        <div class="dropdown">
+          <a href="#shop" onclick="doFilter('board-books')">🍼 0–3 yrs (Board Books)</a>
+          <a href="#shop" onclick="doFilter('age-4-9')">🎠 4–9 yrs</a>
+          <a href="#shop" onclick="doFilter('age-8-12')">🎒 8–12 yrs</a>
+          <a href="#shop" onclick="doFilter('teen')">📓 Teen (13+ yrs)</a>
+          <a href="#shop" onclick="doFilter('phonic-books')">🔊 Phonic Books</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="#shop" class="nav-link"><span class="nav-icon">📘</span> Educational ▾</a>
+        <div class="dropdown">
+          <a href="#shop" onclick="doFilter('phonic-books')">🔊 Phonic &amp; Reading Readiness</a>
+          <a href="#shop" onclick="doFilter('dictionary')">📘 Dictionary &amp; Encyclopedia</a>
+          <a href="#shop" onclick="doFilter('search-books')">🔍 Search &amp; Reference</a>
+          <a href="#shop" onclick="doFilter('craft-books')">🎨 Craft &amp; Activity Books</a>
+          <a href="#shop" onclick="doFilter('kiswahili')">🌍 Kiswahili Books</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="#shop" class="nav-link"><span class="nav-icon">🙏</span> Christian Books ▾</a>
+        <div class="dropdown">
+          <a href="#shop" onclick="doFilter('devotional')">🙏 Devotional Books</a>
+          <a href="#shop" onclick="doFilter('christmas')">🎄 Christmas Books</a>
+          <a href="#shop" onclick="doFilter('story-books')">📖 Bible Story Books</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="#shop" class="nav-link"><span class="nav-icon">🌍</span> African Books ▾</a>
+        <div class="dropdown">
+          <a href="#shop" onclick="doFilter('kenyan-authors')">🇰🇪 Kenyan Authors #Ubuntu</a>
+          <a href="#shop" onclick="doFilter('story-books')">🌍 African Story Books</a>
+          <a href="#shop" onclick="doFilter('kiswahili')">🌍 Kiswahili Books</a>
+          <a href="#shop" onclick="doFilter('animal-books')">🦁 African Wildlife</a>
+        </div>
+      </div>
+      <div class="nav-item">
+        <a href="#shop" class="nav-link"><span class="nav-icon">✏️</span> Stationery &amp; Toys ▾</a>
+        <div class="dropdown">
+          <a href="#shop" onclick="doFilter('stationery')">✏️ Stationery</a>
+          <a href="#shop" onclick="doFilter('board-games')">♟️ Board Games</a>
+          <a href="#shop" onclick="doFilter('craft-books')">🎨 Craft &amp; Art Supplies</a>
+        </div>
+      </div>
+      <div class="nav-item"><a href="#find-us" class="nav-link"><span class="nav-icon">📍</span> Find Us</a></div>
+      <div class="nav-item"><a href="#payment" class="nav-link"><span class="nav-icon">💳</span> How to Pay</a></div>
+    </div>
+  </nav>
+</header>
+
+<!-- MOBILE OVERLAY -->
+<div class="mob-overlay" id="mobOverlay" onclick="closeMobileNav()"></div>
+
+<!-- MOBILE NAV -->
+<nav class="mobile-nav" id="mobileNav">
+  <div class="mobile-nav-head">
+    <span>📚 Dahari Books</span>
+    <button class="close-mobile" onclick="closeMobileNav()">✕</button>
+  </div>
+  <div class="mobile-nav-links">
+    <a href="#" onclick="closeMobileNav()">🏠 Home</a>
+    <div class="m-section">Browse by Age</div>
+    <a href="#shop" onclick="doFilter('board-books');closeMobileNav()">🍼 0–3 yrs (Board Books)</a>
+    <a href="#shop" onclick="doFilter('age-4-9');closeMobileNav()">🎠 4–9 yrs</a>
+    <a href="#shop" onclick="doFilter('age-8-12');closeMobileNav()">🎒 8–12 yrs</a>
+    <a href="#shop" onclick="doFilter('teen');closeMobileNav()">📓 Teen (13+ yrs)</a>
+    <div class="m-section">Educational Books</div>
+    <a href="#shop" onclick="doFilter('phonic-books');closeMobileNav()">🔊 Phonic &amp; Reading Readiness</a>
+    <a href="#shop" onclick="doFilter('dictionary');closeMobileNav()">📘 Dictionary &amp; Encyclopedia</a>
+    <a href="#shop" onclick="doFilter('craft-books');closeMobileNav()">🎨 Craft &amp; Activity Books</a>
+    <a href="#shop" onclick="doFilter('kiswahili');closeMobileNav()">🌍 Kiswahili Books</a>
+    <div class="m-section">Christian Books</div>
+    <a href="#shop" onclick="doFilter('devotional');closeMobileNav()">🙏 Devotional Books</a>
+    <a href="#shop" onclick="doFilter('christmas');closeMobileNav()">🎄 Christmas Books</a>
+    <div class="m-section">African Books</div>
+    <a href="#shop" onclick="doFilter('kenyan-authors');closeMobileNav()">🇰🇪 Kenyan Authors #Ubuntu</a>
+    <a href="#shop" onclick="doFilter('animal-books');closeMobileNav()">🦁 African Wildlife Books</a>
+    <div class="m-section">Stationery &amp; Toys</div>
+    <a href="#shop" onclick="doFilter('stationery');closeMobileNav()">✏️ Stationery</a>
+    <a href="#shop" onclick="doFilter('board-games');closeMobileNav()">♟️ Board Games</a>
+    <div class="m-section">Info</div>
+    <a href="#find-us" onclick="closeMobileNav()">📍 Find Us</a>
+    <a href="#payment" onclick="closeMobileNav()">💳 How to Pay</a>
+  </div>
+</nav>
+
+<!-- HERO BANNER -->
+<section class="hero-banner">
+  <div style="position:relative;">
+    <div class="hero-slides" id="heroSlides">
+
+      <!-- Slide 1 -->
+      <div class="slide-wrapper" style="background:linear-gradient(135deg,#FEF9EE,#FEF3C7,#FDE68A);">
+        <div class="slide-content">
+          <div class="slide-text">
+            <span class="slide-tag">🌍 No. 1 Kids Bookstore in East Africa</span>
+            <h1>Books That <em>Spark</em> a Love of Reading</h1>
+            <p>We deliver where you are — hand-curated books for every age, from board books for toddlers to teen fiction and devotionals.</p>
+            <div class="slide-ctas">
+              <a href="#shop" class="btn-red">Shop Now</a>
+              <a href="tel:+254718340377" class="btn-outline">📞 Call Us</a>
+            </div>
+          </div>
+          <div class="slide-visual">
+            <div class="slide-book" style="background:#FDE68A;">📖</div>
+            <div class="slide-book" style="background:#FCD34D;">🦁</div>
+            <div class="slide-book" style="background:#FEF3C7;">🔢</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 2 -->
+      <div class="slide-wrapper" style="background:linear-gradient(135deg,#FEF9EE,#FDE68A,#F59E0B);">
+        <div class="slide-content">
+          <div class="slide-text">
+            <span class="slide-tag">🇰🇪 Kenyan Authors</span>
+            <h1>Celebrate <em>African</em> Stories</h1>
+            <p>Kenyan authors, African wildlife, Kiswahili books — stories your children will see themselves in.</p>
+            <div class="slide-ctas">
+              <a href="#shop" class="btn-red" onclick="doFilter('kenyan-authors')">Browse African Books</a>
+            </div>
+          </div>
+          <div class="slide-visual">
+            <div class="slide-book" style="background:#FDE68A;">🌍</div>
+            <div class="slide-book" style="background:#FCD34D;">🇰🇪</div>
+            <div class="slide-book" style="background:#FEF3C7;">📝</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Slide 3 -->
+      <div class="slide-wrapper" style="background:linear-gradient(135deg,#FFFBF2,#FEF3C7,#FDE68A);">
+        <div class="slide-content">
+          <div class="slide-text">
+            <span class="slide-tag">✏️ Stationery &amp; Toys</span>
+            <h1>Fun Stationery &amp; <em>Board Games</em></h1>
+            <p>Colour pencils, modelling clay, scrabble, chess and more — keep kids creative and engaged.</p>
+            <div class="slide-ctas">
+              <a href="#shop" class="btn-red" onclick="doFilter('stationery')">Shop Stationery</a>
+              <a href="#shop" class="btn-outline" onclick="doFilter('board-games')">Board Games</a>
+            </div>
+          </div>
+          <div class="slide-visual">
+            <div class="slide-book" style="background:#FDE68A;">✏️</div>
+            <div class="slide-book" style="background:#FCD34D;">🎨</div>
+            <div class="slide-book" style="background:#FEF3C7;">♟️</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <div class="slide-dots" id="slideDots">
+      <div class="dot active" onclick="goSlide(0)"></div>
+      <div class="dot" onclick="goSlide(1)"></div>
+      <div class="dot" onclick="goSlide(2)"></div>
+    </div>
+  </div>
+</section>
+
+<!-- QUICK SCROLL STRIP -->
+<div class="scroll-strip">
+  <div class="scroll-strip-inner" id="stripInner">
+    <div class="strip-item" data-stripcat="board-books">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(16).jpeg" alt="Board Books" loading="lazy"/></div>
+      <div class="strip-label">Board Books</div>
+    </div>
+    <div class="strip-item" data-stripcat="phonic-books">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(17).jpeg" alt="Phonic Books" loading="lazy"/></div>
+      <div class="strip-label">Phonic Books</div>
+    </div>
+    <div class="strip-item" data-stripcat="age-4-9">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(18).jpeg" alt="Ages 4-9" loading="lazy"/></div>
+      <div class="strip-label">Ages 4–9</div>
+    </div>
+    <div class="strip-item" data-stripcat="age-8-12">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(19).jpeg" alt="Ages 8-12" loading="lazy"/></div>
+      <div class="strip-label">Ages 8–12</div>
+    </div>
+    <div class="strip-item" data-stripcat="devotional">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(21).jpeg" alt="Christian Books" loading="lazy"/></div>
+      <div class="strip-label">Christian</div>
+    </div>
+    <div class="strip-item" data-stripcat="kenyan-authors">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(22).jpeg" alt="African Books" loading="lazy"/></div>
+      <div class="strip-label">African Books</div>
+    </div>
+    <div class="strip-item" data-stripcat="stationery">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/819BxFaQvVL._UL500_.jpg" alt="Stationery" loading="lazy"/></div>
+      <div class="strip-label">Stationery</div>
+    </div>
+    <div class="strip-item" data-stripcat="board-games">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(24).jpeg" alt="Board Games" loading="lazy"/></div>
+      <div class="strip-label">Board Games</div>
+    </div>
+    <div class="strip-item" data-stripcat="teen">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(25).jpeg" alt="Teen Books" loading="lazy"/></div>
+      <div class="strip-label">Teen Books</div>
+    </div>
+    <div class="strip-item" data-stripcat="dictionary">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(26).jpeg" alt="Dictionary" loading="lazy"/></div>
+      <div class="strip-label">Dictionary</div>
+    </div>
+    <div class="strip-item" data-stripcat="kiswahili">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(28).jpeg" alt="Kiswahili" loading="lazy"/></div>
+      <div class="strip-label">Kiswahili</div>
+    </div>
+    <div class="strip-item" data-stripcat="craft-books">
+      <div class="strip-img"><img src="https://daharibooks.neocities.org/images%20(1)%20(29).jpeg" alt="Craft Books" loading="lazy"/></div>
+      <div class="strip-label">Craft Books</div>
+    </div>
+  </div>
+</div>
+
+
+<!-- SHOP SECTION -->
+<section id="shop">
+  <div class="section-hdr" style="padding-bottom:8px;">
+    <h2>ALL PRODUCTS</h2>
+  </div>
+  <div class="filter-row" id="filterRow">
+    <button class="ftab active" onclick="filter(this,'all')">📚 All Items</button>
+    <button class="ftab" onclick="filter(this,'board-books')">🍼 0–3 yrs</button>
+    <button class="ftab" onclick="filter(this,'age-4-9')">🎠 4–9 yrs</button>
+    <button class="ftab" onclick="filter(this,'age-8-12')">🎒 8–12 yrs</button>
+    <button class="ftab" onclick="filter(this,'teen')">📓 Teen</button>
+    <button class="ftab" onclick="filter(this,'phonic-books')">🔊 Educational</button>
+    <button class="ftab" onclick="filter(this,'devotional')">🙏 Christian</button>
+    <button class="ftab" onclick="filter(this,'kenyan-authors')">🇰🇪 African</button>
+    <button class="ftab" onclick="filter(this,'stationery')">✏️ Stationery</button>
+    <button class="ftab" onclick="filter(this,'board-games')">♟️ Board Games</button>
+    <button class="ftab" onclick="filter(this,'story-books')">📖 Story Books</button>
+    <button class="ftab" onclick="filter(this,'craft-books')">🎨 Craft</button>
+    <button class="ftab" onclick="filter(this,'kiswahili')">🌍 Kiswahili</button>
+    <button class="ftab" onclick="filter(this,'dictionary')">📘 Dictionary</button>
+    <button class="ftab" onclick="filter(this,'animal-books')">🦁 Animal Books</button>
+  </div>
+
+  <div class="products-wrap">
+    <div class="products-grid" id="grid">
+
+      <!-- BOARD GAMES -->
+      <div class="product-card" data-cat="board-games age-8-12">
+        <div class="prod-img"><div>♟️</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Board Games</div>
+          <div class="prod-name">Chess Board</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('Chess Board',1000,'♟️')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="board-games age-8-12">
+        <div class="prod-img"><div>🎲</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Board Games</div>
+          <div class="prod-name">Snake &amp; Ladders</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Snake and Ladders',850,'🎲')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="board-games age-8-12">
+        <div class="prod-img"><div>🔤</div><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Board Games</div>
+          <div class="prod-name">Scrabble</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,500</span></div>
+            <button class="add-btn" onclick="addToCart('Scrabble',1500,'🔤')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STATIONERY -->
+      <div class="product-card" data-cat="stationery">
+        <div class="prod-img"><div>🎨</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Stationery</div>
+          <div class="prod-name">Modelling Clay</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 230</span></div>
+            <button class="add-btn" onclick="addToCart('Modelling Clay',230,'🎨')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="stationery">
+        <div class="prod-img"><div>✏️</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Stationery</div>
+          <div class="prod-name">Colour Pencils</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 230</span></div>
+            <button class="add-btn" onclick="addToCart('Colour Pencils',230,'✏️')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="stationery">
+        <div class="prod-img"><div>📔</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Stationery</div>
+          <div class="prod-name">Notebook</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 150</span></div>
+            <button class="add-btn" onclick="addToCart('Notebook',150,'📔')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- BOARD BOOKS -->
+      <div class="product-card" data-cat="board-books">
+        <div class="prod-img"><div>🔢</div><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ages 0–3</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Board Books</div>
+          <div class="prod-name">Numbers Board Book</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Numbers Board Book',900,'🔢')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="board-books">
+        <div class="prod-img"><div>🛁</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Board Books</div>
+          <div class="prod-name">It's Time to Wash</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 500</span></div>
+            <button class="add-btn" onclick="addToCart('Its Time to Wash',500,'🛁')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="board-books">
+        <div class="prod-img"><div>🐻</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Board Books</div>
+          <div class="prod-name">Animals Board Books</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 550</span></div>
+            <button class="add-btn" onclick="addToCart('Animals Board Books',550,'🐻')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- STORY BOOKS -->
+      <div class="product-card" data-cat="story-books age-8-12">
+        <div class="prod-img"><div>🌍</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">KICD Story Books</div>
+          <div class="prod-name">Ziara ya Kijijini</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 450</span></div>
+            <button class="add-btn" onclick="addToCart('Ziara ya Kijijini',450,'🌍')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="story-books age-8-12">
+        <div class="prod-img"><div>👻</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">KICD Story Books</div>
+          <div class="prod-name">Usiku wa Hofu</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 450</span></div>
+            <button class="add-btn" onclick="addToCart('Usiku wa Hofu',450,'👻')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- FATHERS DAY -->
+      <div class="product-card" data-cat="fathers-day">
+        <div class="prod-img"><div>👨‍👧</div><button class="wish-btn">🤍</button><span class="prod-badge badge-sale">Sale</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Father's Day</div>
+          <div class="prod-name">Papa's Fingers</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 950</span><span class="price-old">1,000</span></div>
+            <button class="add-btn" onclick="addToCart('Papas Fingers',950,'👨‍👧')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="fathers-day">
+        <div class="prod-img"><div>🏠</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Father's Day</div>
+          <div class="prod-name">Nipo Nyumbani</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 600</span></div>
+            <button class="add-btn" onclick="addToCart('Nipo Nyumbani',600,'🏠')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEVOTIONAL -->
+      <div class="product-card" data-cat="devotional">
+        <div class="prod-img"><div>🙏</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Devotional Books</div>
+          <div class="prod-name">Jesus Calling for Kids</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,200</span></div>
+            <button class="add-btn" onclick="addToCart('Jesus Calling for Kids',1200,'🙏')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="devotional christmas">
+        <div class="prod-img"><div>🎄</div><button class="wish-btn">🤍</button><span class="prod-badge badge-new">New</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Christian · Christmas</div>
+          <div class="prod-name">The Very First Christmas</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('The Very First Christmas',800,'🎄')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KENYAN AUTHORS -->
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><div>🇰🇪</div><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ubuntu</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Mama Watoto</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 700</span></div>
+            <button class="add-btn" onclick="addToCart('Mama Watoto',700,'🇰🇪')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ANIMAL BOOKS -->
+      <div class="product-card" data-cat="animal-books kenyan-authors age-8-12">
+        <div class="prod-img"><div>🦁</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">African Wildlife</div>
+          <div class="prod-name">Animals of the Savannah</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Animals of the Savannah',850,'🦁')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TEEN -->
+      <div class="product-card" data-cat="teen age-8-12">
+        <div class="prod-img"><div>📓</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Teen Books</div>
+          <div class="prod-name">Diary of a Wimpy Kid</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,100</span></div>
+            <button class="add-btn" onclick="addToCart('Diary of a Wimpy Kid',1100,'📓')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGE 4-7 -->
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><div>🌈</div><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Rainbow Fish</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 650</span></div>
+            <button class="add-btn" onclick="addToCart('Rainbow Fish',650,'🌈')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGE 4-9 NEW ARRIVALS WITH PHOTOS -->
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250422115342.jpg" alt="I Love My Daddy" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">I Love My Daddy</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('I Love My Daddy',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250423105204.jpg" alt="Little Miss Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Little Miss Books</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 750</span></div>
+            <button class="add-btn" onclick="addToCart('Little Miss Books',750,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250423105235.jpg" alt="Picture Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Picture Book Collection</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Picture Book Collection',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250423_105435.jpg" alt="Illustrated Story Book" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Illustrated Story Book</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Illustrated Story Book',900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250423_105609.jpg" alt="The Thunderbirds Band" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">The Thunderbirds Band</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 950</span></div>
+            <button class="add-btn" onclick="addToCart('The Thunderbirds Band',950,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250424113420.jpg" alt="Reptiles Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Reptiles</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Reptiles',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9 animal-books">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250424_113645.jpg" alt="Polar Animals" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9 · Animals</div>
+          <div class="prod-name">Polar Animals</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Polar Animals',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250424_114121.jpg" alt="Story Books Set" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">New</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Story Books Set</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,200</span></div>
+            <button class="add-btn" onclick="addToCart('Story Books Set',1200,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250424114144.jpg" alt="Picture Books Collection" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Picture Books Collection</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,100</span></div>
+            <button class="add-btn" onclick="addToCart('Picture Books Collection',1100,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9 animal-books">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250424_115320.jpg" alt="Polar Animals Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9 · Animals</div>
+          <div class="prod-name">Polar Animals Book</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Polar Animals Book',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9 animal-books">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250424_115427.jpg" alt="The Really Amazing Animal Book" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9 · Animals</div>
+          <div class="prod-name">The Really Amazing Animal Book</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('The Really Amazing Animal Book',1000,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250425113843.jpg" alt="Your Body Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Your Body</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Your Body',900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250425113936.jpg" alt="Your Body Collection" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Your Body Collection</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 950</span></div>
+            <button class="add-btn" onclick="addToCart('Your Body Collection',950,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250425_114659.jpg" alt="My Body Books" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">My Body Books</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('My Body Books',900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250425_114709.jpg" alt="My Body Books Set" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">New</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">My Body Books Set</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,100</span></div>
+            <button class="add-btn" onclick="addToCart('My Body Books Set',1100,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250428_105942.jpg" alt="Children's Story Books" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Children's Story Books</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart("Children's Story Books",800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250428_110324.jpg" alt="Zog Books" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Zog Books</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Zog Books',900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250428_110416.jpg" alt="Zog" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Zog</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Zog',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250428_110441.jpg" alt="A Squash and a Squeeze" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">A Squash and a Squeeze</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('A Squash and a Squeeze',900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250428110606.jpg" alt="Funny Bunnies" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Funny Bunnies</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 750</span></div>
+            <button class="add-btn" onclick="addToCart('Funny Bunnies',750,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250428110618.jpg" alt="The Runaway Pea" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">The Runaway Pea</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('The Runaway Pea',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250428110632.jpg" alt="Wake Up Do Lydia Lou" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Wake Up Do, Lydia Lou!</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Wake Up Do Lydia Lou',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250428_110655.jpg" alt="Pinocchio" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Pinocchio</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Pinocchio',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250428_110719.jpg" alt="Say Hello Like This" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Say Hello Like This!</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 750</span></div>
+            <button class="add-btn" onclick="addToCart('Say Hello Like This',750,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250428_110742.jpg" alt="What the Ladybird Heard" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">What the Ladybird Heard</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('What the Ladybird Heard',900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250428_110806.jpg" alt="One More Dino on the Floor" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">One More Dino on the Floor</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('One More Dino on the Floor',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250502145339.jpg" alt="101 Bums" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">101 Bums</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('101 Bums',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20250502145357.jpg" alt="While We Can't Hug" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">While We Can't Hug</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('While We Cant Hug',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_145443.jpg" alt="Troll" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Troll</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Troll',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_145505.jpg" alt="Ruby Flew Too" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Ruby Flew Too</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Ruby Flew Too',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_145526.jpg" alt="Mae Among the Stars" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">New</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Mae Among the Stars</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Mae Among the Stars',900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_145605.jpg" alt="Daddy on the Moon" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Daddy on the Moon</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Daddy on the Moon',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_145626.jpg" alt="Hackney Mackerel" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Hackney Mackerel</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Hackney Mackerel',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150036.jpg" alt="The Preposterous Drip" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">The Preposterous Drip</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('The Preposterous Drip',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150048.jpg" alt="Make a Chance" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Make a Chance</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Make a Chance',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150102.jpg" alt="I'm Not Sleepy" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">I'm Not Sleepy!</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Im Not Sleepy',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150115.jpg" alt="Ziggy Moonlight" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Ziggy Moonlight</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Ziggy Moonlight',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150125.jpg" alt="Everybody Feels Scared" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Everybody Feels Scared</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Everybody Feels Scared',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150137.jpg" alt="Geronimo" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Geronimo</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Geronimo',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150148.jpg" alt="Rapunzel" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Rapunzel</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Rapunzel',800,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150200.jpg" alt="Mog the Forgetful Cat" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">Mog the Forgetful Cat</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Mog the Forgetful Cat',900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150211.jpg" alt="If You Give a Mouse a Cookie" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">If You Give a Mouse a Cookie</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('If You Give a Mouse a Cookie',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150223.jpg" alt="How to Catch a Star" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">How to Catch a Star</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('How to Catch a Star',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150235.jpg" alt="We're Going on a Bear Hunt" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">We're Going on a Bear Hunt</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart("We're Going on a Bear Hunt",900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20250502_150250.jpg" alt="The Old Toy Room" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">The Old Toy Room</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('The Old Toy Room',850,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG_20260105_143501.jpg" alt="My First Words" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">New</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">My First Words</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 750</span></div>
+            <button class="add-btn" onclick="addToCart('My First Words',750,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="age-4-9">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260105143211.jpg" alt="My First Words Set" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 4–9</div>
+          <div class="prod-name">My First Words Set</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('My First Words Set',900,'📚')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- AGE 8-12 -->
+      <div class="product-card" data-cat="age-8-12 age-4-9">
+        <div class="prod-img"><div>🔍</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Ages 8–12</div>
+          <div class="prod-name">Big Nate in a Class by Himself</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 950</span></div>
+            <button class="add-btn" onclick="addToCart('Big Nate',950,'🔍')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- PHONIC -->
+      <div class="product-card" data-cat="phonic-books">
+        <div class="prod-img"><div>🔊</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Phonic Books</div>
+          <div class="prod-name">First Little Readers Set</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,800</span></div>
+            <button class="add-btn" onclick="addToCart('First Little Readers Set',1800,'🔊')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KISWAHILI -->
+      <div class="product-card" data-cat="kiswahili">
+        <div class="prod-img"><div>🌍</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kiswahili Books</div>
+          <div class="prod-name">Hadithi za Watoto</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 400</span></div>
+            <button class="add-btn" onclick="addToCart('Hadithi za Watoto',400,'🌍')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- CRAFT -->
+      <div class="product-card" data-cat="craft-books age-8-12">
+        <div class="prod-img"><div>🎨</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Craft Books</div>
+          <div class="prod-name">Kids Art &amp; Craft Book</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 700</span></div>
+            <button class="add-btn" onclick="addToCart('Kids Art and Craft Book',700,'🎨')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- DICTIONARY -->
+      <div class="product-card" data-cat="dictionary age-8-12">
+        <div class="prod-img"><div>📘</div><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Dictionary</div>
+          <div class="prod-name">Oxford Junior Dictionary</div>
+          <div class="prod-footer">
+            <div class="price-grp"><span class="price">KES 1,300</span></div>
+            <button class="add-btn" onclick="addToCart('Oxford Junior Dictionary',1300,'📘')">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- KENYAN / AFRICAN AUTHORS – new arrivals -->
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260112130014.jpg" alt="Jarali Brave" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ubuntu</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Jarali Brave</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Jarali Brave',900,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260112125829.jpg" alt="Moto Moto na Rafiki Zake" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ubuntu</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Moto Moto na Rafiki Zake</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Moto Moto na Rafiki Zake',850,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260110121208.jpg" alt="Nipe Nyumbani" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Nipe Nyumbani</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 750</span></div>
+            <button class="add-btn" onclick="addToCart('Nipe Nyumbani',750,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260110121151.jpg" alt="Home" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Home</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 750</span></div>
+            <button class="add-btn" onclick="addToCart('Home',750,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260110121051.jpg" alt="Yes You Can" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Yes, You Can!</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Yes You Can',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260110121048.jpg" alt="Yes You Can Cover" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Yes, You Can! (alt cover)</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Yes You Can Alt',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260110121003.jpg" alt="The Art of the Hevana Keepers" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ubuntu</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">The Art of the Hevana Keepers</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('The Art of the Hevana Keepers',1000,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260110121001.jpg" alt="Hevana Keepers" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Hevana Keepers</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('Hevana Keepers',1000,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260110120928.jpg" alt="Hevana Keepers Display" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Hevana Keepers (set)</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('Hevana Keepers Set',1000,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260110120854.jpg" alt="Compass Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Compass Book</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('Compass Book',850,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092039.jpg" alt="African Story Books" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ubuntu</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Story Books</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('African Story Books',850,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092101.jpg" alt="Why Wigs" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Why Wigs</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Why Wigs',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092144.jpg" alt="Storm Mum" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Storm Mum</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Storm Mum',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092201.jpg" alt="The Adventures of Kenya" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ubuntu</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">The Adventures of Kenya</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('The Adventures of Kenya',900,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092217.jpg" alt="Nappy Hair" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Nappy Hair</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Nappy Hair',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092255.jpg" alt="Kenyan Picture Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Kenyan Picture Book</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Kenyan Picture Book',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092324.jpg" alt="Home Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Home (picture book)</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Home Picture Book',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092342.jpg" alt="African Children Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Children Book</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('African Children Book',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092354.jpg" alt="Flamingo Story" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Flamingo Story</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Flamingo Story',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092407.jpg" alt="African Books Set" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Books Set</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('African Books Set',1000,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092440.jpg" alt="African Story" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Story</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('African Story',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092453.jpg" alt="Kenyan Story Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Kenyan Story Book</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Kenyan Story Book',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092517.jpg" alt="My Big Story" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">My Big Story</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('My Big Story',850,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092535.jpg" alt="African Picture Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Picture Book</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 750</span></div>
+            <button class="add-btn" onclick="addToCart('African Picture Book',750,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260121092545.jpg" alt="African Activity Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Activity Book</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('African Activity Book',850,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260126090457.jpg" alt="Soma Books" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ubuntu</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Soma Books</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Soma Books',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260126104441.jpg" alt="Sound to Read" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Sound to Read</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Sound to Read',900,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143134.jpg" alt="African Books" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Books</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('African Books',850,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143139.jpg" alt="African Books Display" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Books Display</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('African Books Display',850,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143201.jpg" alt="Story Time" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Story Time</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Story Time',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143202.jpg" alt="Story Time Set" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Story Time Set</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('Story Time Set',1000,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143309.jpg" alt="African Kids Collection" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Kids Collection</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('African Kids Collection',1000,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143334.jpg" alt="Brave Rosa" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ubuntu</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Brave Rosa</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Brave Rosa',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143414.jpg" alt="African Story Display" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Story Display</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('African Story Display',850,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143506.jpg" alt="Mama Bus Books" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Mama Bus Books</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Mama Bus Books',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143552.jpg" alt="Nyumbani Home Books" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Nyumbani / Home</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Nyumbani Home',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143623.jpg" alt="Mtoto wa Afrika Books" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Mtoto wa Afrika</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Mtoto wa Afrika',900,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143702.jpg" alt="African Story Books Set" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Story Books Set</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('African Story Books Set',1000,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143739.jpg" alt="African Girl Story" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Girl Story</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('African Girl Story',850,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143824.jpg" alt="Baby Charachichi" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">Ubuntu</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Baby Charachichi</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Baby Charachichi',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127143842.jpg" alt="Jua Story" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">Jua Story</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 800</span></div>
+            <button class="add-btn" onclick="addToCart('Jua Story',800,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127144159.jpg" alt="African Books Collection" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Books Collection</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('African Books Collection',1000,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127144249.jpg" alt="African Classroom Books" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Classroom Books</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('African Classroom Books',900,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127144330.jpg" alt="African Stories Display" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Stories Display</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('African Stories Display',900,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="kenyan-authors">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260127144354.jpg" alt="African Books Shelf" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Kenyan Authors</div>
+          <div class="prod-name">African Books Shelf</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('African Books Shelf',900,'📚')">+</button></div>
+        </div>
+      </div>
+
+      <!-- DICTIONARY / EDUCATIONAL – new arrivals -->
+      <div class="product-card" data-cat="dictionary age-8-12">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260108095749.jpg" alt="First Thousand Words" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Dictionary &amp; Reference</div>
+          <div class="prod-name">First Thousand Words</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,200</span></div>
+            <button class="add-btn" onclick="addToCart('First Thousand Words',1200,'📘')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="dictionary age-8-12">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260108095701.jpg" alt="Illustrated Thesaurus" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Dictionary &amp; Reference</div>
+          <div class="prod-name">Illustrated Thesaurus</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,100</span></div>
+            <button class="add-btn" onclick="addToCart('Illustrated Thesaurus',1100,'📘')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="dictionary age-8-12">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260108095626.jpg" alt="Chambers Fun with English Proverbs" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Dictionary &amp; Reference</div>
+          <div class="prod-name">Chambers Fun with English Proverbs</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,000</span></div>
+            <button class="add-btn" onclick="addToCart('Chambers Proverbs',1000,'📘')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="dictionary age-8-12">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260108095603.jpg" alt="Oxford Picture Word Book" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Dictionary &amp; Reference</div>
+          <div class="prod-name">Oxford Picture Word Book</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,100</span></div>
+            <button class="add-btn" onclick="addToCart('Oxford Picture Word Book',1100,'📘')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="dictionary age-8-12">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260108095557.jpg" alt="Oxford Picture Word Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Dictionary &amp; Reference</div>
+          <div class="prod-name">Oxford Picture Word Book (set)</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,200</span></div>
+            <button class="add-btn" onclick="addToCart('Oxford Picture Word Book Set',1200,'📘')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="dictionary age-8-12">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260108095552.jpg" alt="Oxford Picture Word Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Dictionary &amp; Reference</div>
+          <div class="prod-name">Oxford Picture Word Book (alt)</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,100</span></div>
+            <button class="add-btn" onclick="addToCart('Oxford Picture Word Book Alt',1100,'📘')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="dictionary age-8-12">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260108095407.jpg" alt="First Children's Encyclopedia" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-hot">Popular</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Dictionary &amp; Reference</div>
+          <div class="prod-name">First Children's Encyclopedia</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,300</span></div>
+            <button class="add-btn" onclick="addToCart("First Children's Encyclopedia",1300,'📘')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="dictionary age-8-12">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260108095401.jpg" alt="First Children's Encyclopedia" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Dictionary &amp; Reference</div>
+          <div class="prod-name">First Children's Encyclopedia (alt)</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 1,300</span></div>
+            <button class="add-btn" onclick="addToCart('First Childrens Encyclopedia Alt',1300,'📘')">+</button></div>
+        </div>
+      </div>
+
+      <!-- PHONIC / READING – new arrivals -->
+      <div class="product-card" data-cat="phonic-books">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260106123218.jpg" alt="The Forever Tree" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Phonic &amp; Reading</div>
+          <div class="prod-name">The Forever Tree</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('The Forever Tree',900,'🔊')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="phonic-books">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20260106091344 (1).jpg" alt="Phonics Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Phonic &amp; Reading</div>
+          <div class="prod-name">Phonics Book</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 900</span></div>
+            <button class="add-btn" onclick="addToCart('Phonics Book',900,'🔊')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="phonic-books">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20251217165450.jpg" alt="My First Words Luo" loading="lazy"/><button class="wish-btn">🤍</button><span class="prod-badge badge-new">New</span></div>
+        <div class="prod-body">
+          <div class="prod-cat">Phonic &amp; Reading</div>
+          <div class="prod-name">My First Words Luo</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('My First Words Luo',850,'🔊')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="phonic-books">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20251217165440.jpg" alt="My First Words Luo Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Phonic &amp; Reading</div>
+          <div class="prod-name">My First Words Luo (open)</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('My First Words Luo Open',850,'🔊')">+</button></div>
+        </div>
+      </div>
+
+      <div class="product-card" data-cat="phonic-books">
+        <div class="prod-img"><img src="https://daharibooks.neocities.org/IMG20251217165433.jpg" alt="My First Words Book" loading="lazy"/><button class="wish-btn">🤍</button></div>
+        <div class="prod-body">
+          <div class="prod-cat">Phonic &amp; Reading</div>
+          <div class="prod-name">My First Words (reading)</div>
+          <div class="prod-footer"><div class="price-grp"><span class="price">KES 850</span></div>
+            <button class="add-btn" onclick="addToCart('My First Words Reading',850,'🔊')">+</button></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PAGINATION -->
+  <div id="pagination" style="display:none;align-items:center;justify-content:center;gap:8px;padding:20px 20px 36px;flex-wrap:wrap;">
+    <button id="prevBtn" onclick="changePage(-1)" style="
+      background:var(--red);color:#fff;border:none;
+      padding:10px 20px;border-radius:8px;font-size:0.88rem;
+      font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;
+      display:flex;align-items:center;gap:6px;transition:all 0.2s;">
+      ← Prev
+    </button>
+    <div id="pageNumbers" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;"></div>
+    <button id="nextBtn" onclick="changePage(1)" style="
+      background:var(--red);color:#fff;border:none;
+      padding:10px 20px;border-radius:8px;font-size:0.88rem;
+      font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;
+      display:flex;align-items:center;gap:6px;transition:all 0.2s;">
+      Next →
+    </button>
+    <div style="width:100%;text-align:center;">
+      <span id="pageInfo" style="font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:var(--txt-light);"></span>
+    </div>
+  </div>
+</section>
+
+<!-- PROMO BANNER -->
+<div class="promo-banner">
+  <div class="promo-tag">🎁 Book Lovers Corner</div>
+  <h2>Discover Great Books at Great Prices</h2>
+  <p>Curated collections for every child, every age, every stage of learning.</p>
+  <a href="#shop" class="btn-white">Shop Now »</a>
+  <div class="promo-ages">
+    <span class="age-chip">🍼 Board Books</span>
+    <span class="age-chip">🎠 Ages 4–9</span>
+    <span class="age-chip">🎒 Ages 8–12</span>
+    <span class="age-chip">📓 Teen Books</span>
+    <span class="age-chip">🙏 Devotional</span>
+    <span class="age-chip">🌍 Kiswahili</span>
+    <span class="age-chip">🇰🇪 Kenyan Authors</span>
+  </div>
+</div>
+
+<!-- HOW TO ORDER -->
+<div class="how-sect" id="payment">
+  <div class="how-inner">
+    <h2>How to Order &amp; Pay</h2>
+    <div class="how-steps">
+      <div class="how-step">
+        <div class="step-num">1</div>
+        <div class="step-icon">📱</div>
+        <div class="step-title">Browse &amp; Pick</div>
+        <div class="step-desc">Find your books online or call us and we'll help you choose.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">2</div>
+        <div class="step-icon">📲</div>
+        <div class="step-title">WhatsApp / Call</div>
+        <div class="step-desc">Send your order to +254 718 340377 via WhatsApp or call.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">3</div>
+        <div class="step-icon">💳</div>
+        <div class="step-title">Pay Easily</div>
+        <div class="step-desc">Pay via M-Pesa or Visa card — fast, safe and convenient.</div>
+      </div>
+      <div class="how-step">
+        <div class="step-num">4</div>
+        <div class="step-icon">🚚</div>
+        <div class="step-title">Delivered to You</div>
+        <div class="step-desc">We deliver where you are — across Kenya and East Africa.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAYMENT METHODS BAR -->
+<div class="payment-bar">
+  <div class="pay-inner">
+    <div class="pay-method">
+      <span class="pm-icon">📱</span>
+      <div><div class="pm-name" style="color:#2E7D32;">M-PESA</div><div style="font-size:0.7rem;color:var(--txt-light);">Instant · No fees</div></div>
+    </div>
+    <div class="pay-method">
+      <span class="pm-icon">💳</span>
+      <div><div class="pm-name" style="color:#1A1F71;font-style:italic;">VISA</div><div style="font-size:0.7rem;color:var(--txt-light);">Credit &amp; Debit</div></div>
+    </div>
+    <div class="pay-method">
+      <span class="pm-icon">💬</span>
+      <div><div class="pm-name">WhatsApp Order</div><div style="font-size:0.7rem;color:var(--txt-light);">+254 718 340377</div></div>
+    </div>
+    <div class="pay-method">
+      <span class="pm-icon">🚚</span>
+      <div><div class="pm-name">Nationwide Delivery</div><div style="font-size:0.7rem;color:var(--txt-light);">We deliver where you are</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- FIND US -->
+<div class="find-sect" id="find-us">
+  <div class="find-inner">
+    <h2>📍 Find Us</h2>
+    <p class="addr">
+      Nairobi, Kenya<br>
+      <em style="font-size:0.82rem;color:var(--txt-light);">We deliver across Kenya &amp; East Africa — call or WhatsApp us to order!</em>
+    </p>
+    <a href="https://maps.google.com/?q=Athi+River+Nairobi+Kenya" target="_blank" rel="noopener" class="dir-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+      Get Directions
+    </a>
+    <div class="find-contacts">
+      <a href="tel:+254718340377">📞 +254 718 340377</a>
+      <a href="/cdn-cgi/l/email-protection#236a57504e4a4d4c514763444e424a4f0d404c4e">✉️ <span class="__cf_email__" data-cfemail="eba29f9886828584998fab8c868a8287c5888486">[email&#160;protected]</span></a>
+      <a href="https://www.instagram.com/daharibooks" target="_blank" rel="noopener">📸 @daharibooks</a>
+      <a href="https://wa.me/254718340377" target="_blank" rel="noopener">💬 WhatsApp Us</a>
+    </div>
+    <div style="margin-top:16px;font-size:0.8rem;color:var(--txt-light);">⏰ Mon–Sat: 9am–6pm</div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="foot-brand">
+      <div class="fn">📚 Dahari Books</div>
+      <p>No. 1 Bookstore for Kids in East Africa — bringing imagination and curiosity to every home, one book at a time. We deliver where you are.</p>
+      <div class="foot-socials">
+        <a href="https://www.instagram.com/daharibooks" target="_blank" rel="noopener" class="soc-btn" title="Instagram">📸</a>
+        <a href="https://wa.me/254718340377" target="_blank" rel="noopener" class="soc-btn" title="WhatsApp">💬</a>
+        <a href="https://maps.google.com/?q=Athi+River+Nairobi+Kenya" target="_blank" rel="noopener" class="soc-btn" title="Location">📍</a>
+      </div>
+      <div style="margin-top:14px;">
+        <p style="font-size:0.7rem;font-weight:700;color:var(--txt-light);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.06em;">📸 Follow us on Instagram</p>
+        <a href="https://www.instagram.com/daharibooks" target="_blank" rel="noopener">
+          <img src="https://daharibooks.neocities.org/IMG-20260407-WA0009.jpg" alt="Instagram QR Code @daharibooks" style="width:110px;height:110px;border-radius:8px;border:2px solid var(--border);display:block;"/>
+        </a>
+        <p style="font-size:0.68rem;color:var(--txt-light);margin-top:4px;">@daharibooks</p>
+      </div>
+    </div>
+    <div class="foot-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#shop" onclick="doFilter('board-books')">Board Books (0–3 yrs)</a></li>
+        <li><a href="#shop" onclick="doFilter('age-4-9')">Ages 4–9</a></li>
+        <li><a href="#shop" onclick="doFilter('age-8-12')">Ages 8–12</a></li>
+        <li><a href="#shop" onclick="doFilter('teen')">Teen Books</a></li>
+        <li><a href="#shop" onclick="doFilter('devotional')">Christian Books</a></li>
+        <li><a href="#shop" onclick="doFilter('kenyan-authors')">African Books</a></li>
+        <li><a href="#shop" onclick="doFilter('stationery')">Stationery &amp; Toys</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="#payment">How to Order</a></li>
+        <li><a href="#payment">How to Pay</a></li>
+        <li><a href="#">Delivery Info</a></li>
+        <li><a href="#">Returns Policy</a></li>
+        <li><a href="#">FAQs</a></li>
+      </ul>
+    </div>
+    <div class="foot-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:+254718340377">📞 +254 718 340377</a></li>
+        <li><a href="/cdn-cgi/l/email-protection#145d6067797d7a7b6670547379757d783a777b79">✉️ <span class="__cf_email__" data-cfemail="014875726c686f6e736541666c60686d2f626e6c">[email&#160;protected]</span></a></li>
+        <li><a href="#find-us">📍 Nairobi, Kenya</a></li>
+        <li><a href="https://www.instagram.com/daharibooks" target="_blank" rel="noopener">📸 @daharibooks</a></li>
+        <li><a href="#">⏰ Mon–Sat: 9am–6pm</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 Dahari Books · No. 1 Kids Bookstore in East Africa · <a href="tel:+254718340377">+254 718 340377</a></p>
+    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+      <div class="foot-pay-icons">
+        <span class="pay-pill">📱 M-PESA</span>
+        <span class="pay-pill">💳 VISA</span>
+      </div>
+      <p style="font-size:0.74rem;">Website by <a href="https://materiaprimadesignsea.neocities.org/" target="_blank" rel="noopener" style="color:var(--orange);font-weight:800;text-decoration:underline;">materiaprimadesigns</a></p>
+    </div>
+  </div>
+</footer>
+
+<!-- CART DRAWER -->
+<div class="overlay" id="overlay" onclick="closeCart()"></div>
+<div class="cart-drawer" id="cartDrawer">
+  <div class="drawer-head">
+    <h3>Your Cart 🛒</h3>
+    <button class="close-x" onclick="closeCart()">✕</button>
+  </div>
+  <div class="drawer-items" id="drawerItems">
+    <div class="empty-cart">
+      <div class="e-icon">📚</div>
+      <p style="font-weight:800;margin-bottom:6px;color:#1F2937;">Your cart is empty</p>
+      <p style="font-size:0.76rem;">Add some books to get started!</p>
+    </div>
+  </div>
+  <div class="drawer-foot" id="drawerFoot" style="display:none;">
+    <div class="subtotal-row"><span>Subtotal</span><span id="cartTotal">KES 0</span></div>
+    <button class="checkout-btn" onclick="openCheckoutModal()">Proceed to Checkout →</button>
+    <div class="pay-opts"><span>📱 M-Pesa</span><span>·</span><span>💳 Visa</span></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CHECKOUT MODAL
+════════════════════════════════════════════════════════════ -->
+<div id="checkoutBackdrop" style="
+  display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);
+  z-index:600;align-items:center;justify-content:center;padding:16px;">
+<div id="checkoutModal" style="
+  background:#fff;border-radius:16px;width:100%;max-width:480px;
+  max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.25);
+  font-family:'Nunito Sans',sans-serif;">
+
+  <!-- Modal Header -->
+  <div style="background:linear-gradient(135deg,#D97706,#F59E0B);padding:18px 22px;border-radius:16px 16px 0 0;display:flex;align-items:center;justify-content:space-between;">
+    <div>
+      <div style="font-family:'Nunito',sans-serif;font-size:1.05rem;font-weight:900;color:#fff;">Checkout</div>
+      <div style="font-size:0.72rem;color:rgba(255,255,255,0.85);margin-top:1px;">📚 Dahari Books · No. 1 Kids Bookstore in East Africa</div>
+    </div>
+    <button onclick="closeCheckoutModal()" style="background:rgba(255,255,255,0.2);border:none;color:#fff;width:30px;height:30px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">✕</button>
+  </div>
+
+  <!-- Step Indicator -->
+  <div style="display:flex;border-bottom:1px solid #FDE68A;background:#FFFBF2;">
+    <div id="step-ind-1" style="flex:1;text-align:center;padding:10px 4px;font-size:0.72rem;font-weight:800;color:#D97706;border-bottom:3px solid #D97706;">1. Details</div>
+    <div id="step-ind-2" style="flex:1;text-align:center;padding:10px 4px;font-size:0.72rem;font-weight:700;color:#9CA3AF;border-bottom:3px solid transparent;">2. Payment</div>
+    <div id="step-ind-3" style="flex:1;text-align:center;padding:10px 4px;font-size:0.72rem;font-weight:700;color:#9CA3AF;border-bottom:3px solid transparent;">3. Confirm</div>
+  </div>
+
+  <!-- STEP 1: Customer Details -->
+  <div id="co-step1" style="padding:20px 22px;">
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:0.95rem;margin-bottom:16px;color:#1C1007;">Your Details</div>
+
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Full Name *</label>
+      <input id="co-name" type="text" placeholder="e.g. Jane Wanjiku" style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:11px 14px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"/>
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Phone Number * (for delivery &amp; M-Pesa)</label>
+      <input id="co-phone" type="tel" placeholder="e.g. 0718340377" style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:11px 14px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"/>
+    </div>
+    <div style="margin-bottom:12px;">
+      <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Email (optional — for receipt)</label>
+      <input id="co-email" type="email" placeholder="jane@email.com" style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:11px 14px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"/>
+    </div>
+    <div style="margin-bottom:16px;">
+      <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Delivery Address / Town *</label>
+      <textarea id="co-addr" placeholder="e.g. Nairobi, Westlands — or any town in Kenya" rows="2" style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:11px 14px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;resize:none;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"></textarea>
+    </div>
+
+    <!-- Order summary mini -->
+    <div style="background:#FFFBF2;border:1px solid #FDE68A;border-radius:8px;padding:12px 14px;margin-bottom:16px;" id="co-summary"></div>
+
+    <div id="co-step1-err" style="color:#DC2626;font-size:0.78rem;font-weight:700;margin-bottom:10px;display:none;"></div>
+    <button onclick="coGoStep2()" style="width:100%;background:#D97706;color:#fff;border:none;border-radius:8px;padding:13px;font-size:0.92rem;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#B45309'" onmouseout="this.style.background='#D97706'">Continue to Payment →</button>
+  </div>
+
+  <!-- STEP 2: Payment Method -->
+  <div id="co-step2" style="padding:20px 22px;display:none;">
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:0.95rem;margin-bottom:4px;color:#1C1007;">Choose Payment Method</div>
+    <div style="font-size:0.76rem;color:#78350F;margin-bottom:18px;">Secure, fast payment for your order</div>
+
+    <!-- M-Pesa Option -->
+    <div id="opt-mpesa" onclick="selectPayment('mpesa')" style="border:2px solid #FDE68A;border-radius:10px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all 0.2s;position:relative;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;background:#E8F5E9;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;">📱</div>
+        <div>
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:0.95rem;color:#1B5E20;">M-PESA</div>
+          <div style="font-size:0.76rem;color:#4CAF50;font-weight:700;">STK Push — pay directly from your phone</div>
+          <div style="font-size:0.72rem;color:#6B7280;margin-top:2px;">Enter your Safaricom number → get a push prompt → enter PIN</div>
+        </div>
+      </div>
+      <div id="mpesa-check" style="display:none;position:absolute;top:10px;right:12px;background:#4CAF50;color:#fff;width:22px;height:22px;border-radius:50%;font-size:0.75rem;display:none;align-items:center;justify-content:center;font-weight:900;">✓</div>
+    </div>
+
+    <!-- M-Pesa phone input (shown when selected) -->
+    <div id="mpesa-input" style="display:none;background:#F0FFF4;border:1.5px solid #4CAF50;border-radius:8px;padding:14px;margin-bottom:12px;">
+      <label style="font-size:0.74rem;font-weight:800;color:#1B5E20;display:block;margin-bottom:6px;">📱 M-Pesa Phone Number (Safaricom)</label>
+      <input id="mpesa-phone" type="tel" placeholder="e.g. 0718340377" style="width:100%;border:1.5px solid #A5D6A7;border-radius:7px;padding:10px 13px;font-size:0.9rem;font-family:'Nunito Sans',sans-serif;outline:none;"/>
+      <div style="font-size:0.7rem;color:#388E3C;margin-top:6px;">💡 You will receive an M-Pesa STK push on this number. Enter your PIN to pay.</div>
+    </div>
+
+    <!-- Visa / Card Option -->
+    <div id="opt-visa" onclick="selectPayment('visa')" style="border:2px solid #FDE68A;border-radius:10px;padding:16px;margin-bottom:12px;cursor:pointer;transition:all 0.2s;position:relative;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;background:#EEF2FF;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;">💳</div>
+        <div>
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:0.95rem;color:#1A237E;">VISA / Mastercard</div>
+          <div style="font-size:0.76rem;color:#3F51B5;font-weight:700;">Debit or Credit Card — via Pesapal</div>
+          <div style="font-size:0.72rem;color:#6B7280;margin-top:2px;">Secure card payment · 3D Secure protected · All cards accepted</div>
+        </div>
+      </div>
+      <div id="visa-check" style="display:none;position:absolute;top:10px;right:12px;background:#3F51B5;color:#fff;width:22px;height:22px;border-radius:50%;font-size:0.75rem;align-items:center;justify-content:center;font-weight:900;">✓</div>
+    </div>
+
+    <!-- WhatsApp / Manual Option -->
+    <div id="opt-whatsapp" onclick="selectPayment('whatsapp')" style="border:2px solid #FDE68A;border-radius:10px;padding:16px;margin-bottom:16px;cursor:pointer;transition:all 0.2s;position:relative;">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:48px;height:48px;background:#F0FFF4;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.6rem;flex-shrink:0;">💬</div>
+        <div>
+          <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:0.95rem;color:#1B5E20;">WhatsApp Order</div>
+          <div style="font-size:0.76rem;color:#25D366;font-weight:700;">Send your order via WhatsApp &amp; pay on delivery</div>
+          <div style="font-size:0.72rem;color:#6B7280;margin-top:2px;">We'll confirm your order and arrange delivery &amp; payment</div>
+        </div>
+      </div>
+      <div id="whatsapp-check" style="display:none;position:absolute;top:10px;right:12px;background:#25D366;color:#fff;width:22px;height:22px;border-radius:50%;font-size:0.75rem;align-items:center;justify-content:center;font-weight:900;">✓</div>
+    </div>
+
+    <div id="co-step2-err" style="color:#DC2626;font-size:0.78rem;font-weight:700;margin-bottom:10px;display:none;"></div>
+    <div style="display:flex;gap:10px;">
+      <button onclick="coGoStep1()" style="flex:0 0 auto;background:#FEF3C7;color:#78350F;border:none;border-radius:8px;padding:13px 18px;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">← Back</button>
+      <button onclick="coGoStep3()" style="flex:1;background:#D97706;color:#fff;border:none;border-radius:8px;padding:13px;font-size:0.92rem;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#B45309'" onmouseout="this.style.background='#D97706'">Review Order →</button>
+    </div>
+  </div>
+
+  <!-- STEP 3: Confirm & Place Order -->
+  <div id="co-step3" style="padding:20px 22px;display:none;">
+    <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:0.95rem;margin-bottom:16px;color:#1C1007;">Review &amp; Place Order</div>
+    <div id="co-review" style="background:#FFFBF2;border:1px solid #FDE68A;border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:0.82rem;"></div>
+    <div id="co-step3-msg" style="display:none;text-align:center;padding:20px;"></div>
+    <div id="co-step3-btns">
+      <div style="display:flex;gap:10px;">
+        <button onclick="coGoStep2()" style="flex:0 0 auto;background:#FEF3C7;color:#78350F;border:none;border-radius:8px;padding:13px 18px;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">← Back</button>
+        <button id="co-place-btn" onclick="placeOrder()" style="flex:1;background:#D97706;color:#fff;border:none;border-radius:8px;padding:13px;font-size:0.92rem;font-weight:900;cursor:pointer;font-family:'Nunito',sans-serif;transition:background 0.2s;" onmouseover="this.style.background='#B45309'" onmouseout="this.style.background='#D97706'">🛒 Place Order</button>
+      </div>
+      <div style="text-align:center;margin-top:10px;font-size:0.7rem;color:#9CA3AF;">🔒 Your order details are secure</div>
+    </div>
+  </div>
+
+</div><!-- /modal -->
+</div><!-- /backdrop -->
+
+<div class="toast" id="toast">✅ Added!</div>
+
+<script>
+  /* ── HERO SLIDER ── */
+  let slide=0,slideTimer;
+  const totalSlides=document.querySelectorAll('.slide-wrapper').length;
+  function goSlide(n){
+    slide=n;
+    document.getElementById('heroSlides').style.transform=`translateX(-${n*100}%)`;
+    document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('active',i===n));
+    const allCtas=document.querySelectorAll('.slide-ctas');
+    allCtas.forEach(el=>el.classList.remove('cta-animate'));
+    setTimeout(()=>{ if(allCtas[n]) allCtas[n].classList.add('cta-animate'); },20);
+  }
+  function nextSlide(){goSlide((slide+1)%totalSlides);}
+  slideTimer=setInterval(nextSlide,3500);
+  setTimeout(()=>{
+    const firstCta=document.querySelectorAll('.slide-ctas')[0];
+    if(firstCta) firstCta.classList.add('cta-animate');
+  },200);
+  document.querySelector('.hero-banner').addEventListener('mouseenter',()=>clearInterval(slideTimer));
+  document.querySelector('.hero-banner').addEventListener('mouseleave',()=>{slideTimer=setInterval(nextSlide,3500);});
+
+  /* ── PAGINATION ── */
+  const PAGE_SIZE = 20;
+  let currentPage = 1;
+  let currentCat = 'all';
+
+  function getVisibleCards(){
+    return Array.from(document.querySelectorAll('.product-card')).filter(c=>{
+      const cats = c.dataset.cat||'';
+      return currentCat==='all' || cats.includes(currentCat);
+    });
+  }
+
+  function renderPage(){
+    const cards = getVisibleCards();
+    const total = cards.length;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    if(currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage-1)*PAGE_SIZE;
+    const end = start + PAGE_SIZE;
+    // Hide all first
+    document.querySelectorAll('.product-card').forEach(c=>c.style.display='none');
+    // Show only current page slice
+    cards.forEach((c,i)=>{ c.style.display=(i>=start&&i<end)?'':'none'; });
+    // Update page info text
+    document.getElementById('pageInfo').textContent=
+      'Showing '+(start+1)+'–'+Math.min(end,total)+' of '+total+' items';
+    // Prev/Next button state
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    prevBtn.style.opacity = currentPage<=1?'0.35':'1';
+    prevBtn.style.pointerEvents = currentPage<=1?'none':'auto';
+    nextBtn.style.opacity = currentPage>=totalPages?'0.35':'1';
+    nextBtn.style.pointerEvents = currentPage>=totalPages?'none':'auto';
+    // Show/hide pagination
+    document.getElementById('pagination').style.display = totalPages<=1?'none':'flex';
+    // Numbered page buttons
+    const pnEl = document.getElementById('pageNumbers');
+    pnEl.innerHTML = '';
+    // Show max 5 page numbers centred around current page
+    let pStart = Math.max(1, currentPage - 2);
+    let pEnd   = Math.min(totalPages, pStart + 4);
+    if(pEnd - pStart < 4) pStart = Math.max(1, pEnd - 4);
+    for(let p = pStart; p <= pEnd; p++){
+      const btn = document.createElement('button');
+      btn.textContent = p;
+      btn.onclick = (()=>{ const pg=p; return ()=>{ currentPage=pg; renderPage(); document.getElementById('shop').scrollIntoView({behavior:'smooth'}); }; })();
+      btn.style.cssText = `
+        width:36px;height:36px;border-radius:7px;border:1.5px solid;
+        font-size:0.84rem;font-weight:800;cursor:pointer;
+        font-family:'Nunito',sans-serif;transition:all 0.15s;
+        ${p===currentPage
+          ? 'background:#D97706;color:#fff;border-color:#D97706;'
+          : 'background:#fff;color:#78350F;border-color:#FDE68A;'}
+      `;
+      pnEl.appendChild(btn);
+    }
+  }
+
+  function changePage(dir){
+    currentPage += dir;
+    renderPage();
+    document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  }
+
+  /* ── STRIP SCROLL ── */
+  document.getElementById('stripInner').addEventListener('click', function(e){
+    const item = e.target.closest('.strip-item');
+    if(!item) return;
+    const cat = item.dataset.stripcat;
+    if(!cat) return;
+    // Scroll strip so tapped item moves to left edge, revealing others
+    this.scrollTo({left: item.offsetLeft - 20, behavior:'smooth'});
+    // Highlight active strip item
+    document.querySelectorAll('.strip-item').forEach(i=>i.classList.remove('strip-active'));
+    item.classList.add('strip-active');
+    // Filter + scroll to products
+    doFilter(cat);
+    document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  });
+  /* ── STRIP CLICK: scroll item to left edge + filter ── */
+  document.getElementById('stripInner').addEventListener('click', function(e){
+    const item = e.target.closest('.strip-item');
+    if(!item) return;
+    const cat = item.dataset.stripcat;
+    if(!cat) return;
+    // Highlight active strip item
+    document.querySelectorAll('.strip-item').forEach(i=>i.classList.remove('strip-active'));
+    item.classList.add('strip-active');
+    // Scroll strip so clicked item sits at left edge
+    this.scrollTo({left: item.offsetLeft - 16, behavior:'smooth'});
+    // Filter products
+    doFilter(cat);
+    document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  });
+
+  /* ── FILTER ── */
+  function scrollActiveTab(btn){
+    const row = document.getElementById('filterRow');
+    if(!row || !btn) return;
+    // Scroll the row so the active tab is near the left edge, revealing tabs to its right
+    row.scrollTo({left: btn.offsetLeft - 20, behavior: 'smooth'});
+  }
+  function filter(btn,cat){
+    document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    scrollActiveTab(btn);
+    currentCat = cat;
+    currentPage = 1;
+    renderPage();
+    document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  }
+  function doFilter(cat){
+    const tabs=document.querySelectorAll('.ftab');
+    let activeBtn = null;
+    tabs.forEach(b=>{
+      b.classList.remove('active');
+      if(b.getAttribute('onclick')&&b.getAttribute('onclick').includes("'"+cat+"'")){
+        b.classList.add('active');
+        activeBtn = b;
+      }
+    });
+    if(cat==='all'){ tabs[0].classList.add('active'); activeBtn = tabs[0]; }
+    scrollActiveTab(activeBtn);
+    currentCat = cat;
+    currentPage = 1;
+    renderPage();
+    document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  }
+
+  // Init on load
+  renderPage();
+
+  /* ── CART ── */
+  let cart=[];
+  function addToCart(name,price,emoji){
+    const ex=cart.find(i=>i.name===name);
+    if(ex)ex.qty++;else cart.push({name,price,emoji,qty:1});
+    renderCart();showToast(name);
+  }
+  function renderCart(){
+    const badge=document.getElementById('cartBadge');
+    const total=cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const count=cart.reduce((s,i)=>s+i.qty,0);
+    badge.textContent=count;
+    document.getElementById('cartTotal').textContent='KES '+total.toLocaleString();
+    const items=document.getElementById('drawerItems');
+    const foot=document.getElementById('drawerFoot');
+    if(!cart.length){
+      items.innerHTML=`<div class="empty-cart"><div class="e-icon">📚</div><p style="font-weight:800;margin-bottom:6px;color:#1F2937;">Your cart is empty</p><p style="font-size:0.76rem;">Add some books to get started!</p></div>`;
+      foot.style.display='none';
+    }else{
+      foot.style.display='block';
+      items.innerHTML=cart.map((item,i)=>`
+        <div class="cart-item">
+          <div class="ci-img">${item.emoji}</div>
+          <div class="ci-info">
+            <div class="ci-name">${item.name}</div>
+            <div class="ci-price">KES ${item.price.toLocaleString()}</div>
+            <div class="qty-row">
+              <button class="qty-b" onclick="chg(${i},-1)">−</button>
+              <span class="qty-n">${item.qty}</span>
+              <button class="qty-b" onclick="chg(${i},1)">+</button>
+            </div>
+          </div>
+          <button class="rm-btn" onclick="rm(${i})">🗑️</button>
+        </div>`).join('');
+    }
+  }
+  function chg(i,d){cart[i].qty+=d;if(cart[i].qty<=0)cart.splice(i,1);renderCart();}
+  function rm(i){cart.splice(i,1);renderCart();}
+  function openCart(){document.getElementById('cartDrawer').classList.add('open');document.getElementById('overlay').classList.add('open');}
+  function closeCart(){document.getElementById('cartDrawer').classList.remove('open');document.getElementById('overlay').classList.remove('open');}
+
+  /* ── TOAST ── */
+  function showToast(name){
+    const t=document.getElementById('toast');
+    t.textContent='✅ Added: '+name;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2200);
+  }
+
+  /* ── MOBILE NAV ── */
+  function toggleMobileNav(){
+    const nav=document.getElementById('mobileNav');
+    const hbg=document.getElementById('hamburger');
+    const ov=document.getElementById('mobOverlay');
+    const isOpen=nav.classList.toggle('open');
+    hbg.classList.toggle('open',isOpen);
+    ov.style.display=isOpen?'block':'none';
+    document.body.style.overflow=isOpen?'hidden':'';
+  }
+  function closeMobileNav(){
+    document.getElementById('mobileNav').classList.remove('open');
+    document.getElementById('hamburger').classList.remove('open');
+    document.getElementById('mobOverlay').style.display='none';
+    document.body.style.overflow='';
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     CHECKOUT MODAL STATE
+  ══════════════════════════════════════════════════════════ */
+  let selectedPayment = null;
+
+  function openCheckoutModal(){
+    if(!cart.length){ showToast('Your cart is empty!'); return; }
+    selectedPayment = null;
+    // Reset all steps
+    ['opt-mpesa','opt-visa','opt-whatsapp'].forEach(id=>{
+      document.getElementById(id).style.borderColor='#FDE68A';
+    });
+    ['mpesa-check','visa-check','whatsapp-check'].forEach(id=>{
+      document.getElementById(id).style.display='none';
+    });
+    document.getElementById('mpesa-input').style.display='none';
+    document.getElementById('mpesa-phone').value='';
+    document.getElementById('co-step1-err').style.display='none';
+    document.getElementById('co-step2-err').style.display='none';
+    // Pre-fill summary
+    renderCheckoutSummary();
+    // Show step 1
+    coShowStep(1);
+    // Show modal
+    const backdrop = document.getElementById('checkoutBackdrop');
+    backdrop.style.display='flex';
+    document.body.style.overflow='hidden';
+  }
+
+  function closeCheckoutModal(){
+    document.getElementById('checkoutBackdrop').style.display='none';
+    document.body.style.overflow='';
+  }
+
+  // Close on backdrop click
+  document.getElementById('checkoutBackdrop').addEventListener('click', function(e){
+    if(e.target===this) closeCheckoutModal();
+  });
+
+  function coShowStep(n){
+    [1,2,3].forEach(s=>{
+      document.getElementById('co-step'+s).style.display = s===n?'block':'none';
+      const ind = document.getElementById('step-ind-'+s);
+      if(s===n){
+        ind.style.color='#D97706';
+        ind.style.borderBottomColor='#D97706';
+        ind.style.fontWeight='800';
+      } else {
+        ind.style.color='#9CA3AF';
+        ind.style.borderBottomColor='transparent';
+        ind.style.fontWeight='700';
+      }
+    });
+  }
+
+  function renderCheckoutSummary(){
+    const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const html = cart.map(i=>`
+      <div style="display:flex;justify-content:space-between;margin-bottom:5px;font-size:0.8rem;">
+        <span>${i.emoji||'📚'} ${i.name} <span style="color:#9CA3AF;">×${i.qty}</span></span>
+        <span style="font-weight:800;">KES ${(i.price*i.qty).toLocaleString()}</span>
+      </div>`).join('') +
+      `<div style="border-top:1px solid #FDE68A;margin-top:8px;padding-top:8px;display:flex;justify-content:space-between;font-weight:900;font-family:'Nunito',sans-serif;">
+        <span>Total</span><span style="color:#D97706;">KES ${total.toLocaleString()}</span>
+      </div>`;
+    document.getElementById('co-summary').innerHTML = html;
+  }
+
+  function coGoStep1(){ coShowStep(1); }
+
+  function coGoStep2(){
+    const name  = document.getElementById('co-name').value.trim();
+    const phone = document.getElementById('co-phone').value.trim();
+    const addr  = document.getElementById('co-addr').value.trim();
+    const errEl = document.getElementById('co-step1-err');
+    if(!name)  { errEl.textContent='Please enter your full name.';  errEl.style.display='block'; return; }
+    if(!phone) { errEl.textContent='Please enter your phone number.'; errEl.style.display='block'; return; }
+    if(!addr)  { errEl.textContent='Please enter your delivery address.'; errEl.style.display='block'; return; }
+    errEl.style.display='none';
+    coShowStep(2);
+  }
+
+  function selectPayment(method){
+    selectedPayment = method;
+    const colors = { mpesa:'#4CAF50', visa:'#3F51B5', whatsapp:'#25D366' };
+    ['mpesa','visa','whatsapp'].forEach(m=>{
+      const opt = document.getElementById('opt-'+m);
+      const chk = document.getElementById(m+'-check');
+      if(m===method){
+        opt.style.borderColor = colors[m];
+        opt.style.background  = m==='mpesa'?'#F0FFF4':m==='visa'?'#EEF2FF':'#F0FFF4';
+        chk.style.display='flex';
+      } else {
+        opt.style.borderColor='#FDE68A';
+        opt.style.background='#fff';
+        chk.style.display='none';
+      }
+    });
+    // Show M-Pesa phone input only when mpesa selected
+    const mpesaInput = document.getElementById('mpesa-input');
+    mpesaInput.style.display = method==='mpesa' ? 'block' : 'none';
+    if(method==='mpesa'){
+      // Pre-fill with order phone
+      const orderPhone = document.getElementById('co-phone').value.trim();
+      if(orderPhone) document.getElementById('mpesa-phone').value = orderPhone;
+    }
+  }
+
+  function coGoStep3(){
+    const errEl = document.getElementById('co-step2-err');
+    if(!selectedPayment){ errEl.textContent='Please select a payment method.'; errEl.style.display='block'; return; }
+    if(selectedPayment==='mpesa'){
+      const mp = document.getElementById('mpesa-phone').value.trim();
+      if(!mp){ errEl.textContent='Please enter your M-Pesa phone number.'; errEl.style.display='block'; return; }
+    }
+    errEl.style.display='none';
+
+    // Build review
+    const name  = document.getElementById('co-name').value.trim();
+    const phone = document.getElementById('co-phone').value.trim();
+    const addr  = document.getElementById('co-addr').value.trim();
+    const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
+    const payLabels = { mpesa:'📱 M-Pesa STK Push', visa:'💳 Visa / Mastercard (Pesapal)', whatsapp:'💬 WhatsApp + Pay on Delivery' };
+
+    document.getElementById('co-review').innerHTML = `
+      <div style="display:grid;gap:8px;font-size:0.82rem;">
+        <div><strong>👤 Name:</strong> ${name}</div>
+        <div><strong>📱 Phone:</strong> ${phone}</div>
+        <div><strong>📍 Delivery:</strong> ${addr}</div>
+        <div><strong>💳 Payment:</strong> ${payLabels[selectedPayment]}</div>
+        <div style="border-top:1px solid #FDE68A;padding-top:8px;margin-top:2px;">
+          ${cart.map(i=>`<div style="display:flex;justify-content:space-between;margin-bottom:3px;">${i.emoji||'📚'} ${i.name} ×${i.qty}<span style="font-weight:800;">KES ${(i.price*i.qty).toLocaleString()}</span></div>`).join('')}
+          <div style="display:flex;justify-content:space-between;font-weight:900;font-family:'Nunito',sans-serif;border-top:1px solid #FDE68A;padding-top:6px;margin-top:4px;color:#D97706;font-size:0.92rem;">
+            <span>TOTAL</span><span>KES ${total.toLocaleString()}</span>
+          </div>
+        </div>
+      </div>`;
+
+    // Update place order button label
+    const btn = document.getElementById('co-place-btn');
+    if(selectedPayment==='mpesa')       btn.textContent='📱 Send M-Pesa STK Push';
+    else if(selectedPayment==='visa')   btn.textContent='💳 Pay with Card';
+    else                                btn.textContent='💬 Send WhatsApp Order';
+    document.getElementById('co-step3-msg').style.display='none';
+    document.getElementById('co-step3-btns').style.display='block';
+    coShowStep(3);
+  }
+
+  /* ── PLACE ORDER ────────────────────────────────────────── */
+  async function placeOrder(){
+    const btn    = document.getElementById('co-place-btn');
+    const msgEl  = document.getElementById('co-step3-msg');
+    const btnsEl = document.getElementById('co-step3-btns');
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Processing…';
+
+    const name    = document.getElementById('co-name').value.trim();
+    const phone   = document.getElementById('co-phone').value.trim();
+    const email   = document.getElementById('co-email').value.trim();
+    const addr    = document.getElementById('co-addr').value.trim();
+    const mpPhone = document.getElementById('mpesa-phone').value.trim();
+    const total   = cart.reduce((s,i)=>s+i.price*i.qty,0);
+
+    const orderData = {
+      customer_name:    name,
+      customer_phone:   phone,
+      customer_email:   email||null,
+      delivery_address: addr,
+      payment_method:   selectedPayment,
+      items: cart.map(i=>({ name:i.name, price:i.price, qty:i.qty, emoji:i.emoji })),
+      total,
+      mpesa_phone: mpPhone||null
+    };
+
+    try {
+      const res  = await fetch('/api/orders', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(orderData)
+      });
+      const data = await res.json();
+
+      if(res.ok){
+        if(selectedPayment==='mpesa'){
+          // Trigger STK Push
+          const stkRes  = await fetch('/api/payments/mpesa/stk', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ orderId: data.orderId, phone: mpPhone||phone, amount: total })
+          });
+          const stkData = await stkRes.json();
+
+          if(stkRes.ok){
+            btnsEl.style.display='none';
+            msgEl.style.display='block';
+            msgEl.innerHTML=`
+              <div style="font-size:2rem;margin-bottom:10px;">📱</div>
+              <div style="font-family:'Nunito',sans-serif;font-weight:900;font-size:1rem;color:#1B5E20;margin-bottom:6px;">STK Push Sent!</div>
+              <div style="font-size:0.82rem;color:#4CAF50;margin-bottom:10px;">Check your phone <strong>${mpPhone||phone}</strong> and enter your M-Pesa PIN to complete payment.</div>
+              <div style="background:#F0FFF4;border-radius:8px;padding:10px;font-size:0.76rem;color:#388E3C;margin-bottom:14px;">
+                Order Ref: <strong>${data.orderRef}</strong><br>Amount: <strong>KES ${total.toLocaleString()}</strong>
+              </div>
+              <button onclick="closeCheckoutModal()" style="background:#D97706;color:#fff;border:none;border-radius:8px;padding:11px 24px;font-size:0.88rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;">✅ Done</button>`;
+            clearCartAfterOrder();
+          } else {
+            showStkFallback(data, total, name, phone, addr);
+          }
+        } else if(selectedPayment==='visa'){
+          // Redirect to Pesapal checkout
+          const ppRes  = await fetch('/api/payments/pesapal/init', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify({ orderId: data.orderId, orderRef: data.orderRef, amount: total, email, phone, name })
+          });
+          const ppData = await ppRes.json();
+          if(ppRes.ok && ppData.redirectUrl){
+            clearCartAfterOrder();
+            closeCheckoutModal();
+            showToast('Redirecting to card payment…');
+            setTimeout(()=>window.location.href = ppData.redirectUrl, 600);
+          } else {
+            showVisaFallback(data, total, name, phone, addr);
+          }
+        } else {
+          // WhatsApp order
+          whatsappOrder(data, total, name, phone, addr);
+        }
+      } else {
+        // Backend error — fallback to WhatsApp
+        whatsappFallback(total, name, phone, addr);
+      }
+    } catch(err){
+      // Server unreachable — fallback to WhatsApp
+      whatsappFallback(total, name, phone, addr);
+    }
+
+    btn.disabled = false;
+  }
+
+  function whatsappOrder(data, total, name, phone, addr){
+    const waMsg = encodeURIComponent(
+      `*New Order – ${data.orderRef}*\n👤 ${name}\n📱 ${phone}\n📍 ${addr}\n\n` +
+      cart.map(i=>`• ${i.emoji||'📚'} ${i.name} ×${i.qty} = KES ${(i.price*i.qty).toLocaleString()}`).join('\n') +
+      `\n\n*TOTAL: KES ${total.toLocaleString()}*\n\n_Payment: Pay on Delivery / M-Pesa paybill_`
+    );
+    clearCartAfterOrder();
+    closeCheckoutModal();
+    showToast('Order placed! Opening WhatsApp…');
+    setTimeout(()=>window.open(`https://wa.me/254718340377?text=${waMsg}`,'_blank'),600);
+  }
+
+  function whatsappFallback(total, name, phone, addr){
+    const waMsg = encodeURIComponent(
+      `*Order from ${name}*\n📱 ${phone}\n📍 ${addr}\n\n` +
+      cart.map(i=>`• ${i.emoji||'📚'} ${i.name} ×${i.qty} = KES ${(i.price*i.qty).toLocaleString()}`).join('\n') +
+      `\n\n*TOTAL: KES ${total.toLocaleString()}*`
+    );
+    clearCartAfterOrder();
+    closeCheckoutModal();
+    showToast('Redirecting to WhatsApp…');
+    setTimeout(()=>window.open(`https://wa.me/254718340377?text=${waMsg}`,'_blank'),600);
+  }
+
+  function showStkFallback(data, total, name, phone, addr){
+    const btnsEl = document.getElementById('co-step3-btns');
+    const msgEl  = document.getElementById('co-step3-msg');
+    btnsEl.style.display='none';
+    msgEl.style.display='block';
+    msgEl.innerHTML=`
+      <div style="font-size:1.8rem;margin-bottom:8px;">⚠️</div>
+      <div style="font-weight:900;color:#92400E;margin-bottom:6px;">STK Push unavailable</div>
+      <div style="font-size:0.8rem;color:#78350F;margin-bottom:12px;">Please pay manually:</div>
+      <div style="background:#FEF3C7;border-radius:8px;padding:12px;font-size:0.8rem;text-align:left;margin-bottom:14px;">
+        <strong>Lipa Na M-Pesa:</strong><br>
+        Paybill: <strong>247247</strong><br>
+        Account: <strong>${data.orderRef}</strong><br>
+        Amount: <strong>KES ${total.toLocaleString()}</strong>
+      </div>
+      <button onclick="whatsappOrder(${JSON.stringify(data)},${total},'${name}','${phone}','${addr}')" style="background:#25D366;color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-right:8px;">💬 Confirm via WhatsApp</button>
+      <button onclick="closeCheckoutModal()" style="background:#F3F4F6;color:#374151;border:none;border-radius:8px;padding:11px 16px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;">Close</button>`;
+    clearCartAfterOrder();
+  }
+
+  function showVisaFallback(data, total, name, phone, addr){
+    const btnsEl = document.getElementById('co-step3-btns');
+    const msgEl  = document.getElementById('co-step3-msg');
+    btnsEl.style.display='none';
+    msgEl.style.display='block';
+    msgEl.innerHTML=`
+      <div style="font-size:1.8rem;margin-bottom:8px;">⚠️</div>
+      <div style="font-weight:900;color:#1A237E;margin-bottom:6px;">Card payment unavailable</div>
+      <div style="font-size:0.8rem;color:#374151;margin-bottom:12px;">Your order <strong>${data.orderRef}</strong> is saved. Please complete payment via WhatsApp or M-Pesa.</div>
+      <button onclick="whatsappOrder(${JSON.stringify(data)},${total},'${name}','${phone}','${addr}')" style="background:#25D366;color:#fff;border:none;border-radius:8px;padding:11px 20px;font-size:0.85rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;margin-right:8px;">💬 Pay via WhatsApp</button>
+      <button onclick="closeCheckoutModal()" style="background:#F3F4F6;color:#374151;border:none;border-radius:8px;padding:11px 16px;font-size:0.82rem;font-weight:700;cursor:pointer;font-family:'Nunito',sans-serif;">Close</button>`;
+    clearCartAfterOrder();
+  }
+
+  function clearCartAfterOrder(){
+    cart=[];
+    renderCart();
+    closeCart();
+  }
+</script>
+</body>
+</html>

@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>Dahari Books – Admin Panel</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet"/>
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{
+      --red:#D97706;--red-dark:#B45309;--bg:#F9FAFB;--white:#fff;
+      --border:#E5E7EB;--txt:#111827;--txt2:#6B7280;--green:#059669;
+      --blue:#2563EB;--orange:#D97706;
+    }
+    body{font-family:'Nunito',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh;}
+    a{text-decoration:none;color:inherit;}
+    button{font-family:inherit;cursor:pointer;}
+
+    /* ── LOGIN SCREEN ── */
+    #loginScreen{
+      display:flex;align-items:center;justify-content:center;
+      min-height:100vh;background:linear-gradient(135deg,#FEF3C7,#FDE68A);
+    }
+    .login-card{
+      background:#fff;border-radius:16px;padding:40px 36px;
+      width:100%;max-width:380px;box-shadow:0 8px 32px rgba(0,0,0,0.12);
+      text-align:center;
+    }
+    .login-card h1{font-size:1.5rem;font-weight:900;color:var(--red);margin-bottom:4px;}
+    .login-card p{font-size:0.82rem;color:var(--txt2);margin-bottom:24px;}
+    .login-card input{
+      width:100%;border:1.5px solid var(--border);border-radius:8px;
+      padding:12px 14px;font-size:0.9rem;font-family:inherit;
+      margin-bottom:12px;outline:none;transition:border-color 0.2s;
+    }
+    .login-card input:focus{border-color:var(--red);}
+    .login-card .btn-login{
+      width:100%;background:var(--red);color:#fff;border:none;
+      border-radius:8px;padding:13px;font-size:0.95rem;font-weight:800;
+      transition:background 0.2s;margin-top:4px;
+    }
+    .login-card .btn-login:hover{background:var(--red-dark);}
+    .login-error{color:#DC2626;font-size:0.8rem;margin-top:8px;}
+
+    /* ── APP SHELL ── */
+    #appShell{display:none;}
+    .sidebar{
+      position:fixed;left:0;top:0;width:220px;height:100vh;
+      background:#1C0F05;color:#fff;overflow-y:auto;z-index:100;
+    }
+    .sidebar-brand{
+      padding:20px 18px 14px;
+      font-size:1.05rem;font-weight:900;color:#F59E0B;
+      border-bottom:1px solid rgba(255,255,255,0.1);
+    }
+    .sidebar-brand span{display:block;font-size:0.65rem;font-weight:600;color:rgba(255,255,255,0.5);margin-top:2px;}
+    .nav-menu{padding:10px 0;}
+    .nav-link{
+      display:flex;align-items:center;gap:10px;
+      padding:12px 18px;font-size:0.85rem;font-weight:700;
+      color:rgba(255,255,255,0.65);transition:all 0.15s;
+      border-left:3px solid transparent;cursor:pointer;
+    }
+    .nav-link:hover,.nav-link.active{
+      background:rgba(255,255,255,0.08);color:#fff;
+      border-left-color:#F59E0B;
+    }
+    .nav-link .ni{font-size:1rem;width:20px;text-align:center;}
+    .nav-divider{margin:6px 18px;border-top:1px solid rgba(255,255,255,0.1);}
+    .logout-btn{
+      position:absolute;bottom:0;left:0;width:100%;
+      padding:14px 18px;background:rgba(255,255,255,0.05);
+      color:rgba(255,255,255,0.5);font-size:0.82rem;font-weight:700;
+      border:none;border-top:1px solid rgba(255,255,255,0.1);
+      text-align:left;transition:all 0.15s;
+    }
+    .logout-btn:hover{background:rgba(220,38,38,0.2);color:#FCA5A5;}
+
+    .main{margin-left:220px;padding:28px 32px;min-height:100vh;}
+    .page-title{font-size:1.3rem;font-weight:900;color:var(--txt);margin-bottom:20px;}
+
+    /* ── STATS CARDS ── */
+    .stats-grid{
+      display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+      gap:14px;margin-bottom:28px;
+    }
+    .stat-card{
+      background:#fff;border-radius:10px;padding:18px 20px;
+      border:1px solid var(--border);
+    }
+    .stat-card .s-label{font-size:0.72rem;font-weight:700;color:var(--txt2);text-transform:uppercase;letter-spacing:0.05em;margin-bottom:6px;}
+    .stat-card .s-value{font-size:1.8rem;font-weight:900;color:var(--txt);line-height:1;}
+    .stat-card .s-icon{font-size:1.5rem;float:right;margin-top:-4px;}
+
+    /* ── TABLE ── */
+    .card{background:#fff;border-radius:10px;border:1px solid var(--border);overflow:hidden;margin-bottom:24px;}
+    .card-head{
+      padding:14px 20px;border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;
+    }
+    .card-head h3{font-size:0.95rem;font-weight:900;}
+    table{width:100%;border-collapse:collapse;font-size:0.82rem;}
+    th{
+      background:#F9FAFB;padding:10px 14px;
+      text-align:left;font-weight:800;color:var(--txt2);
+      font-size:0.72rem;text-transform:uppercase;letter-spacing:0.04em;
+      border-bottom:1px solid var(--border);
+    }
+    td{padding:11px 14px;border-bottom:1px solid #F3F4F6;vertical-align:middle;}
+    tr:last-child td{border-bottom:none;}
+    tr:hover td{background:#FAFAFA;}
+
+    /* STATUS BADGES */
+    .badge{
+      display:inline-block;padding:3px 10px;border-radius:20px;
+      font-size:0.68rem;font-weight:800;text-transform:uppercase;letter-spacing:0.04em;
+    }
+    .badge-new{background:#DBEAFE;color:#1D4ED8;}
+    .badge-confirmed{background:#D1FAE5;color:#065F46;}
+    .badge-packed{background:#FEF3C7;color:#92400E;}
+    .badge-dispatched{background:#EDE9FE;color:#5B21B6;}
+    .badge-delivered{background:#D1FAE5;color:#065F46;}
+    .badge-cancelled{background:#FEE2E2;color:#991B1B;}
+    .badge-paid{background:#D1FAE5;color:#065F46;}
+    .badge-pending{background:#FEF3C7;color:#92400E;}
+    .badge-failed{background:#FEE2E2;color:#991B1B;}
+
+    /* ── FORMS ── */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+    .form-group{display:flex;flex-direction:column;gap:5px;}
+    .form-group label{font-size:0.76rem;font-weight:800;color:var(--txt2);}
+    .form-group input,.form-group select,.form-group textarea{
+      border:1.5px solid var(--border);border-radius:7px;
+      padding:10px 12px;font-size:0.86rem;font-family:inherit;
+      outline:none;transition:border-color 0.2s;
+    }
+    .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--red);}
+    .form-group textarea{min-height:80px;resize:vertical;}
+    .full-width{grid-column:1/-1;}
+    .btn{
+      padding:10px 22px;border-radius:7px;font-size:0.84rem;
+      font-weight:800;border:none;transition:all 0.15s;
+    }
+    .btn-primary{background:var(--red);color:#fff;}
+    .btn-primary:hover{background:var(--red-dark);}
+    .btn-success{background:var(--green);color:#fff;}
+    .btn-success:hover{background:#047857;}
+    .btn-sm{padding:6px 14px;font-size:0.75rem;}
+    .btn-outline{background:#fff;border:1.5px solid var(--border);color:var(--txt);}
+    .btn-outline:hover{border-color:var(--red);color:var(--red);}
+
+    /* ── TABS ── */
+    .tabs{display:flex;gap:4px;border-bottom:2px solid var(--border);margin-bottom:20px;}
+    .tab{
+      padding:9px 18px;font-size:0.82rem;font-weight:800;
+      border:none;background:none;color:var(--txt2);cursor:pointer;
+      border-bottom:2px solid transparent;margin-bottom:-2px;
+    }
+    .tab.active{color:var(--red);border-bottom-color:var(--red);}
+
+    /* ── SEARCH BAR ── */
+    .search-row{display:flex;gap:10px;margin-bottom:16px;align-items:center;}
+    .search-row input,.search-row select{
+      border:1.5px solid var(--border);border-radius:7px;
+      padding:9px 14px;font-size:0.84rem;font-family:inherit;outline:none;
+    }
+    .search-row input{flex:1;}
+    .search-row input:focus,.search-row select:focus{border-color:var(--red);}
+
+    /* ── MODAL ── */
+    .modal-backdrop{
+      display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:500;
+      align-items:center;justify-content:center;
+    }
+    .modal-backdrop.open{display:flex;}
+    .modal{
+      background:#fff;border-radius:12px;padding:28px;
+      width:100%;max-width:560px;max-height:90vh;overflow-y:auto;
+      box-shadow:0 16px 48px rgba(0,0,0,0.2);
+    }
+    .modal h3{font-size:1rem;font-weight:900;margin-bottom:18px;}
+    .modal-footer{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;}
+
+    /* ── TOAST ── */
+    #adminToast{
+      position:fixed;bottom:24px;right:24px;
+      background:#1C0F05;color:#fff;padding:12px 20px;
+      border-radius:8px;font-size:0.84rem;font-weight:700;
+      z-index:999;transform:translateY(60px);opacity:0;
+      transition:all 0.3s;pointer-events:none;
+    }
+    #adminToast.show{transform:translateY(0);opacity:1;}
+
+    @media(max-width:768px){
+      .sidebar{width:60px;}
+      .sidebar-brand span,.nav-link span,.logout-btn span{display:none;}
+      .sidebar-brand{font-size:0;}
+      .main{margin-left:60px;padding:16px;}
+      .stats-grid{grid-template-columns:repeat(2,1fr);}
+      .form-grid{grid-template-columns:1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── LOGIN SCREEN ── -->
+<div id="loginScreen">
+  <div class="login-card">
+    <h1>📚 Dahari Books</h1>
+    <p>Admin Panel — Sign in to continue</p>
+    <input type="text"     id="loginUser" placeholder="Username" autocomplete="username"/>
+    <input type="password" id="loginPass" placeholder="Password" autocomplete="current-password"
+           onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="btn-login" onclick="doLogin()">Sign In →</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ── APP SHELL ── -->
+<div id="appShell">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-brand">
+      📚 Dahari Books
+      <span>Admin Panel</span>
+    </div>
+    <nav class="nav-menu">
+      <div class="nav-link active" onclick="showPage('dashboard')">
+        <span class="ni">📊</span><span>Dashboard</span>
+      </div>
+      <div class="nav-link" onclick="showPage('orders')">
+        <span class="ni">📦</span><span>Orders</span>
+      </div>
+      <div class="nav-link" onclick="showPage('products')">
+        <span class="ni">📚</span><span>Products</span>
+      </div>
+      <div class="nav-link" onclick="showPage('add-product')">
+        <span class="ni">➕</span><span>Add Product</span>
+      </div>
+      <div class="nav-link" onclick="showPage('offers')">
+        <span class="ni">🏷️</span><span>Offers</span>
+      </div>
+      <div class="nav-divider"></div>
+      <div class="nav-link" onclick="window.open('/','_blank')">
+        <span class="ni">🌐</span><span>View Site</span>
+      </div>
+    </nav>
+    <button class="logout-btn" onclick="doLogout()">🚪 <span>Sign Out</span></button>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main">
+
+    <!-- DASHBOARD PAGE -->
+    <div id="page-dashboard">
+      <div class="page-title">📊 Dashboard</div>
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card"><div class="s-label">Total Orders</div><div class="s-value" id="s-total">–</div><div class="s-icon">📦</div></div>
+        <div class="stat-card"><div class="s-label">New Orders</div><div class="s-value" id="s-new">–</div><div class="s-icon">🆕</div></div>
+        <div class="stat-card"><div class="s-label">Paid Orders</div><div class="s-value" id="s-paid">–</div><div class="s-icon">✅</div></div>
+        <div class="stat-card"><div class="s-label">Revenue (KES)</div><div class="s-value" id="s-rev">–</div><div class="s-icon">💰</div></div>
+        <div class="stat-card"><div class="s-label">Products</div><div class="s-value" id="s-prods">–</div><div class="s-icon">📚</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h3>Recent Orders</h3><button class="btn btn-outline btn-sm" onclick="showPage('orders')">View All →</button></div>
+        <div style="overflow-x:auto;">
+          <table id="recentOrdersTable">
+            <thead><tr><th>Order Ref</th><th>Customer</th><th>Phone</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="recentOrdersTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ORDERS PAGE -->
+    <div id="page-orders" style="display:none;">
+      <div class="page-title">📦 Orders</div>
+      <div class="search-row">
+        <select id="orderStatusFilter" onchange="loadOrders()">
+          <option value="">All Statuses</option>
+          <option value="new">New</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="packed">Packed</option>
+          <option value="dispatched">Dispatched</option>
+          <option value="delivered">Delivered</option>
+          <option value="cancelled">Cancelled</option>
+        </select>
+        <button class="btn btn-outline btn-sm" onclick="loadOrders()">🔄 Refresh</button>
+      </div>
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>Ref</th><th>Customer</th><th>Phone</th><th>Address</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Action</th></tr></thead>
+            <tbody id="ordersTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTS PAGE -->
+    <div id="page-products" style="display:none;">
+      <div class="page-title">📚 Products</div>
+      <div class="search-row">
+        <input type="text" id="prodSearch" placeholder="Search products…" oninput="loadProducts()"/>
+        <select id="prodCatFilter" onchange="loadProducts()">
+          <option value="">All Categories</option>
+          <option value="board-books">Board Books</option>
+          <option value="age-4-9">Ages 4–9</option>
+          <option value="age-8-12">Ages 8–12</option>
+          <option value="teen">Teen</option>
+          <option value="phonic-books">Phonic Books</option>
+          <option value="dictionary">Dictionary</option>
+          <option value="devotional">Devotional</option>
+          <option value="kenyan-authors">Kenyan Authors</option>
+          <option value="animal-books">Animal Books</option>
+          <option value="stationery">Stationery</option>
+          <option value="board-games">Board Games</option>
+          <option value="story-books">Story Books</option>
+          <option value="kiswahili">Kiswahili</option>
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="showPage('add-product')">➕ Add Product</button>
+      </div>
+      <div class="card">
+        <div style="overflow-x:auto;">
+          <table>
+            <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Categories</th><th>Badge</th><th>Stock</th><th>Actions</th></tr></thead>
+            <tbody id="productsTbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD / EDIT PRODUCT PAGE -->
+    <div id="page-add-product" style="display:none;">
+      <div class="page-title" id="addProductTitle">➕ Add New Product</div>
+      <div class="card" style="padding:24px;">
+        <div class="form-grid">
+          <div class="form-group full-width">
+            <label>Product Name *</label>
+            <input type="text" id="pName" placeholder="e.g. Rainbow Fish"/>
+          </div>
+          <div class="form-group">
+            <label>Price (KES) *</label>
+            <input type="number" id="pPrice" placeholder="850"/>
+          </div>
+          <div class="form-group">
+            <label>Old Price (KES) — for sale badge</label>
+            <input type="number" id="pOldPrice" placeholder="Leave blank if no sale"/>
+          </div>
+          <div class="form-group">
+            <label>Emoji Icon</label>
+            <input type="text" id="pEmoji" placeholder="📚" maxlength="4"/>
+          </div>
+          <div class="form-group">
+            <label>Badge</label>
+            <select id="pBadge">
+              <option value="">None</option>
+              <option value="new">New</option>
+              <option value="hot">Hot</option>
+              <option value="sale">Sale</option>
+              <option value="popular">Popular</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Stock Quantity</label>
+            <input type="number" id="pStock" placeholder="99"/>
+          </div>
+          <div class="form-group">
+            <label>Sort Order (lower = first)</label>
+            <input type="number" id="pSort" placeholder="0"/>
+          </div>
+          <div class="form-group full-width">
+            <label>Image URL (optional — paste a URL OR upload a photo below)</label>
+            <input type="url" id="pImage" placeholder="https://daharibooks.neocities.org/your-image.jpg"/>
+          </div>
+          <div class="form-group full-width">
+            <label>Upload Image from your computer (optional)</label>
+            <input type="file" id="pImageFile" accept="image/*" onchange="previewImage(this)" style="border:1.5px solid #E5E7EB;border-radius:7px;padding:8px;font-family:inherit;font-size:0.84rem;width:100%;"/>
+            <img id="imagePreview" src="" alt="Preview" style="display:none;margin-top:8px;max-width:120px;max-height:120px;object-fit:cover;border-radius:8px;border:1px solid #E5E7EB;"/>
+          </div>
+          <div class="form-group full-width">
+            <label>Categories * (space-separated slugs)</label>
+            <input type="text" id="pCats" placeholder="age-4-9 story-books"/>
+            <small style="color:var(--txt2);font-size:0.72rem;">
+              Slugs: board-books · age-4-9 · age-8-12 · teen · phonic-books · dictionary ·
+              devotional · christmas · story-books · kenyan-authors · animal-books ·
+              stationery · board-games · craft-books · kiswahili
+            </small>
+          </div>
+          <div class="form-group full-width">
+            <label>Description (optional)</label>
+            <textarea id="pDesc" placeholder="Short description of the book…"></textarea>
+          </div>
+        </div>
+        <div style="display:flex;gap:10px;margin-top:20px;">
+          <button class="btn btn-primary" onclick="saveProduct()" id="saveProductBtn">Save Product</button>
+          <button class="btn btn-outline" onclick="showPage('products')">Cancel</button>
+        </div>
+        <div id="productFormMsg" style="margin-top:12px;font-size:0.82rem;font-weight:700;"></div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /appShell -->
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-backdrop" id="orderModal">
+  <div class="modal">
+    <h3>📦 Order Details</h3>
+    <div id="orderModalContent">Loading…</div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeOrderModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="adminToast"></div>
+
+<script>
+/* ══════════════════════════════════════════════════════════════
+   Dahari Books Admin — JavaScript
+══════════════════════════════════════════════════════════════ */
+
+let editingProductId = null;
+
+// ── INIT ──────────────────────────────────────────────────────
+async function init() {
+  try {
+    const r = await fetch('/api/admin/me');
+    if (r.ok) {
+      showApp();
+      loadDashboard();
+    } else {
+      showLogin();
+    }
+  } catch { showLogin(); }
+}
+
+function showLogin() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('appShell').style.display = 'none';
+}
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appShell').style.display = 'block';
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────
+async function doLogin() {
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  const errEl    = document.getElementById('loginError');
+  errEl.textContent = '';
+
+  if (!username || !password) { errEl.textContent = 'Enter username and password.'; return; }
+
+  try {
+    const r = await fetch('/api/admin/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+    const d = await r.json();
+    if (r.ok) { showApp(); loadDashboard(); }
+    else { errEl.textContent = d.error || 'Login failed.'; }
+  } catch { errEl.textContent = 'Server not reachable.'; }
+}
+
+async function doLogout() {
+  await fetch('/api/admin/logout', { method:'POST' });
+  showLogin();
+}
+
+// ── PAGE ROUTING ──────────────────────────────────────────────
+function showPage(page) {
+  document.querySelectorAll('[id^="page-"]').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+  const el = document.getElementById('page-' + page);
+  if (el) el.style.display = 'block';
+
+  // Highlight nav
+  document.querySelectorAll('.nav-link').forEach(el => {
+    if (el.getAttribute('onclick')?.includes(`'${page}'`)) el.classList.add('active');
+  });
+
+  if (page === 'dashboard')    loadDashboard();
+  if (page === 'orders')       loadOrders();
+  if (page === 'products')     loadProducts();
+  if (page === 'add-product')  resetProductForm();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const r = await fetch('/api/orders/admin/dashboard');
+    const d = await r.json();
+    if (!r.ok) return;
+
+    const s = d.stats;
+    document.getElementById('s-total').textContent = s.total_orders;
+    document.getElementById('s-new').textContent   = s.new_orders;
+    document.getElementById('s-paid').textContent  = s.paid_orders;
+    document.getElementById('s-rev').textContent   = 'KES ' + parseFloat(s.revenue).toLocaleString();
+    document.getElementById('s-prods').textContent = s.total_products;
+
+
+    <!-- OFFERS PAGE -->
+    <div id="page-offers" style="display:none;">
+      <div class="page-title">🏷️ Offers & Badges</div>
+      <p style="color:#6B7280;font-size:0.84rem;margin-bottom:20px;">Set sale prices and badges on any product. Go to <strong>Products</strong> → click <strong>Edit</strong> → change the badge and old price.</p>
+      <div class="card" style="padding:24px;">
+        <h3 style="margin-bottom:12px;font-size:0.95rem;">Quick Badge Update</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <input type="number" id="offerProductId" placeholder="Product ID" style="width:120px;border:1.5px solid #E5E7EB;border-radius:7px;padding:9px 12px;font-size:0.84rem;font-family:inherit;outline:none;"/>
+          <select id="offerBadge" style="border:1.5px solid #E5E7EB;border-radius:7px;padding:9px 12px;font-size:0.84rem;font-family:inherit;outline:none;">
+            <option value="">No badge</option>
+            <option value="sale">Sale</option>
+            <option value="hot">Hot</option>
+            <option value="new">New</option>
+            <option value="popular">Popular</option>
+          </select>
+          <input type="number" id="offerOldPrice" placeholder="Old price (for sale)" style="width:160px;border:1.5px solid #E5E7EB;border-radius:7px;padding:9px 12px;font-size:0.84rem;font-family:inherit;outline:none;"/>
+          <input type="number" id="offerNewPrice" placeholder="New sale price" style="width:160px;border:1.5px solid #E5E7EB;border-radius:7px;padding:9px 12px;font-size:0.84rem;font-family:inherit;outline:none;"/>
+          <button class="btn btn-primary" onclick="applyOffer()">Apply Offer</button>
+        </div>
+        <div id="offerMsg" style="margin-top:10px;font-size:0.82rem;font-weight:700;"></div>
+      </div>
+    </div>
+
+  </div><!-- /main -->
+</div><!-- /appShell -->
+
+<!-- ORDER DETAIL MODAL -->
+<div class="modal-backdrop" id="orderModal">
+  <div class="modal">
+    <h3>📦 Order Details</h3>
+    <div id="orderModalContent">Loading…</div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeOrderModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<div id="adminToast"></div>
+
+<script>
+let editingProductId = null;
+
+// ── INIT ──────────────────────────────────────────────────────
+async function init() {
+  try {
+    const r = await fetch('/api/admin/me');
+    if (r.ok) { showApp(); loadDashboard(); }
+    else showLogin();
+  } catch { showLogin(); }
+}
+
+function showLogin() {
+  document.getElementById('loginScreen').style.display = 'flex';
+  document.getElementById('appShell').style.display = 'none';
+}
+function showApp() {
+  document.getElementById('loginScreen').style.display = 'none';
+  document.getElementById('appShell').style.display = 'block';
+}
+
+// ── LOGIN ─────────────────────────────────────────────────────
+async function doLogin() {
+  const username = document.getElementById('loginUser').value.trim();
+  const password = document.getElementById('loginPass').value;
+  const errEl    = document.getElementById('loginError');
+  errEl.textContent = '';
+  if (!username || !password) { errEl.textContent = 'Enter username and password.'; return; }
+  try {
+    const r = await fetch('/api/admin/login', {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ username, password })
+    });
+    const d = await r.json();
+    if (r.ok) { showApp(); loadDashboard(); }
+    else errEl.textContent = d.error || 'Login failed.';
+  } catch { errEl.textContent = 'Server not reachable.'; }
+}
+
+async function doLogout() {
+  await fetch('/api/admin/logout', { method:'POST' });
+  showLogin();
+}
+
+// ── PAGE ROUTING ──────────────────────────────────────────────
+function showPage(page) {
+  document.querySelectorAll('[id^="page-"]').forEach(el => el.style.display = 'none');
+  document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+  const el = document.getElementById('page-' + page);
+  if (el) el.style.display = 'block';
+  document.querySelectorAll('.nav-link').forEach(el => {
+    if (el.getAttribute('onclick')?.includes(`'${page}'`)) el.classList.add('active');
+  });
+  if (page === 'dashboard')    loadDashboard();
+  if (page === 'orders')       loadOrders();
+  if (page === 'products')     loadProducts();
+  if (page === 'add-product')  resetProductForm();
+}
+
+// ── DASHBOARD ─────────────────────────────────────────────────
+async function loadDashboard() {
+  try {
+    const r = await fetch('/api/orders/admin/dashboard');
+    const d = await r.json();
+    if (!r.ok) return;
+    const s = d.stats;
+    document.getElementById('s-total').textContent = s.total_orders;
+    document.getElementById('s-new').textContent   = s.new_orders;
+    document.getElementById('s-paid').textContent  = s.paid_orders;
+    document.getElementById('s-rev').textContent   = 'KES ' + parseFloat(s.revenue).toLocaleString();
+    document.getElementById('s-prods').textContent = s.total_products;
+    const tbody = document.getElementById('recentOrdersTbody');
+    tbody.innerHTML = (d.recent_orders || []).map(o => `
+      <tr>
+        <td><strong>${o.order_ref}</strong></td>
+        <td>${o.customer_name}</td>
+        <td>${o.customer_phone}</td>
+        <td>KES ${parseFloat(o.total).toLocaleString()}</td>
+        <td><span class="badge badge-${o.order_status}">${o.order_status}</span></td>
+        <td>${new Date(o.created_at).toLocaleDateString('en-KE')}</td>
+      </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;color:#9CA3AF;padding:20px;">No orders yet</td></tr>';
+  } catch(e) { console.error(e); }
+}
+
+// ── ORDERS ────────────────────────────────────────────────────
+async function loadOrders() {
+  try {
+    const status = document.getElementById('orderStatusFilter').value;
+    const url    = '/api/orders/admin' + (status ? `?status=${status}` : '');
+    const r      = await fetch(url);
+    const d      = await r.json();
+    const tbody  = document.getElementById('ordersTbody');
+    tbody.innerHTML = (d.orders || []).map(o => `
+      <tr>
+        <td><strong>${o.order_ref}</strong></td>
+        <td>${o.customer_name}</td>
+        <td><a href="tel:${o.customer_phone}">${o.customer_phone}</a></td>
+        <td style="max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${o.delivery_address}</td>
+        <td>KES ${parseFloat(o.total).toLocaleString()}</td>
+        <td><span class="badge badge-${o.payment_status}">${o.payment_status}</span></td>
+        <td>
+          <select onchange="updateOrderStatus(${o.id},this.value)" style="font-size:0.76rem;padding:4px 8px;border-radius:5px;border:1px solid #E5E7EB;">
+            ${['new','confirmed','packed','dispatched','delivered','cancelled'].map(s=>
+              `<option value="${s}" ${o.order_status===s?'selected':''}>${s}</option>`
+            ).join('')}
+          </select>
+        </td>
+        <td>${new Date(o.created_at).toLocaleDateString('en-KE')}</td>
+        <td>
+          <button class="btn btn-outline btn-sm" onclick="viewOrder(${o.id})">View</button>
+          <a href="https://wa.me/${o.customer_phone.replace(/[^0-9]/g,'')}?text=Hi+${encodeURIComponent(o.customer_name)}%2C+your+Dahari+Books+order+${o.order_ref}+update:"
+             target="_blank" class="btn btn-success btn-sm" style="text-decoration:none;display:inline-block;margin-left:4px;">💬</a>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="9" style="text-align:center;color:#9CA3AF;padding:20px;">No orders found</td></tr>';
+  } catch(e) { console.error(e); }
+}
+
+async function updateOrderStatus(id, status) {
+  try {
+    const r = await fetch(`/api/orders/admin/${id}`, {
+      method:'PATCH', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ order_status: status })
+    });
+    if (r.ok) toast(`✅ Updated to: ${status}`);
+    else toast('❌ Update failed');
+  } catch { toast('❌ Update failed'); }
+}
+
+async function viewOrder(id) {
+  try {
+    const r = await fetch(`/api/orders/admin/${id}`);
+    const o = await r.json();
+    document.getElementById('orderModalContent').innerHTML = `
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;font-size:0.84rem;">
+        <div><strong>Order Ref:</strong> ${o.order_ref}</div>
+        <div><strong>Date:</strong> ${new Date(o.created_at).toLocaleString('en-KE')}</div>
+        <div><strong>Customer:</strong> ${o.customer_name}</div>
+        <div><strong>Phone:</strong> <a href="tel:${o.customer_phone}">${o.customer_phone}</a></div>
+        <div style="grid-column:1/-1;"><strong>Delivery:</strong> ${o.delivery_address}</div>
+        <div><strong>Payment:</strong> <span class="badge badge-${o.payment_status}">${o.payment_status}</span></div>
+        <div><strong>Status:</strong> <span class="badge badge-${o.order_status}">${o.order_status}</span></div>
+      </div>
+      <table style="width:100%;font-size:0.82rem;margin-bottom:14px;">
+        <thead><tr><th>Item</th><th>Price</th><th>Qty</th><th>Subtotal</th></tr></thead>
+        <tbody>${(o.items||[]).map(i=>`
+          <tr>
+            <td>${i.emoji||'📚'} ${i.product_name}</td>
+            <td>KES ${parseFloat(i.price).toLocaleString()}</td>
+            <td>${i.qty}</td>
+            <td>KES ${(parseFloat(i.price)*parseInt(i.qty)).toLocaleString()}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+      <div style="text-align:right;font-weight:900;font-size:1rem;margin-bottom:14px;">Total: KES ${parseFloat(o.total).toLocaleString()}</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <select id="modalStatus" style="padding:7px 12px;border-radius:6px;border:1.5px solid #E5E7EB;font-size:0.82rem;">
+          ${['new','confirmed','packed','dispatched','delivered','cancelled'].map(s=>
+            `<option value="${s}" ${o.order_status===s?'selected':''}>${s}</option>`
+          ).join('')}
+        </select>
+        <select id="modalPayStatus" style="padding:7px 12px;border-radius:6px;border:1.5px solid #E5E7EB;font-size:0.82rem;">
+          ${['pending','paid','failed'].map(s=>
+            `<option value="${s}" ${o.payment_status===s?'selected':''}>${s}</option>`
+          ).join('')}
+        </select>
+        <button class="btn btn-primary btn-sm" onclick="saveOrderFromModal(${o.id})">Save Changes</button>
+      </div>`;
+    document.getElementById('orderModal').classList.add('open');
+  } catch { toast('❌ Failed to load order'); }
+}
+
+async function saveOrderFromModal(id) {
+  await fetch(`/api/orders/admin/${id}`, {
+    method:'PATCH', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      order_status:   document.getElementById('modalStatus').value,
+      payment_status: document.getElementById('modalPayStatus').value
+    })
+  });
+  closeOrderModal();
+  loadOrders();
+  toast('✅ Order updated');
+}
+
+function closeOrderModal() {
+  document.getElementById('orderModal').classList.remove('open');
+}
+
+// ── PRODUCTS ──────────────────────────────────────────────────
+async function loadProducts() {
+  try {
+    const search = document.getElementById('prodSearch').value;
+    const cat    = document.getElementById('prodCatFilter').value;
+    let url      = '/api/products?limit=200';
+    if (search) url += `&search=${encodeURIComponent(search)}`;
+    if (cat)    url += `&cat=${cat}`;
+    const r = await fetch(url);
+    const d = await r.json();
+    const tbody = document.getElementById('productsTbody');
+    tbody.innerHTML = (d.products || []).map(p => `
+      <tr>
+        <td>${p.id}</td>
+        <td>
+          ${p.image_url ? `<img src="${p.image_url}" style="width:36px;height:36px;object-fit:cover;border-radius:5px;vertical-align:middle;margin-right:6px;"/>` : `<span style="font-size:1.2rem;margin-right:6px;">${p.emoji||'📚'}</span>`}
+          ${p.name}
+        </td>
+        <td>KES ${parseFloat(p.price).toLocaleString()}</td>
+        <td style="font-size:0.72rem;color:#6B7280;">${p.categories}</td>
+        <td>${p.badge ? `<span class="badge badge-new">${p.badge}</span>` : '–'}</td>
+        <td>${p.stock}</td>
+        <td>
+          <button class="btn btn-outline btn-sm" onclick="editProduct(${p.id})">✏️ Edit</button>
+          <button class="btn btn-sm" style="background:#FEE2E2;color:#991B1B;border:none;margin-left:4px;" onclick="deleteProduct(${p.id},'${p.name.replace(/'/g,"\\'")}')">🗑️</button>
+        </td>
+      </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;color:#9CA3AF;padding:20px;">No products found</td></tr>';
+  } catch(e) { console.error(e); }
+}
+
+function resetProductForm() {
+  editingProductId = null;
+  document.getElementById('addProductTitle').textContent = '➕ Add New Product';
+  document.getElementById('saveProductBtn').textContent  = 'Save Product';
+  ['pName','pPrice','pOldPrice','pEmoji','pImage','pCats','pDesc'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+  document.getElementById('pStock').value = '99';
+  document.getElementById('pSort').value  = '0';
+  document.getElementById('pBadge').value = '';
+  document.getElementById('productFormMsg').textContent = '';
+  const preview = document.getElementById('imagePreview');
+  if (preview) preview.style.display = 'none';
+}
+
+async function editProduct(id) {
+  try {
+    const r = await fetch(`/api/products/${id}`);
+    const p = await r.json();
+    editingProductId = id;
+    document.getElementById('addProductTitle').textContent = '✏️ Edit Product';
+    document.getElementById('saveProductBtn').textContent  = 'Update Product';
+    document.getElementById('pName').value     = p.name || '';
+    document.getElementById('pPrice').value    = p.price || '';
+    document.getElementById('pOldPrice').value = p.old_price || '';
+    document.getElementById('pEmoji').value    = p.emoji || '📚';
+    document.getElementById('pImage').value    = p.image_url || '';
+    document.getElementById('pBadge').value    = p.badge || '';
+    document.getElementById('pCats').value     = p.categories || '';
+    document.getElementById('pStock').value    = p.stock || 99;
+    document.getElementById('pSort').value     = p.sort_order || 0;
+    document.getElementById('pDesc').value     = p.description || '';
+    if (p.image_url) {
+      const preview = document.getElementById('imagePreview');
+      if (preview) { preview.src = p.image_url; preview.style.display = 'block'; }
+    }
+    showPage('add-product');
+  } catch { toast('❌ Failed to load product'); }
+}
+
+async function saveProduct() {
+  const msgEl = document.getElementById('productFormMsg');
+  msgEl.style.color = '#DC2626';
+  msgEl.textContent = '';
+
+  const name       = document.getElementById('pName').value.trim();
+  const price      = parseFloat(document.getElementById('pPrice').value);
+  const categories = document.getElementById('pCats').value.trim();
+
+  if (!name)       { msgEl.textContent = 'Product name is required.'; return; }
+  if (!price)      { msgEl.textContent = 'Price is required.'; return; }
+  if (!categories) { msgEl.textContent = 'At least one category is required.'; return; }
+
+  try {
+    // Use FormData to support image upload
+    const formData = new FormData();
+    formData.append('name',        name);
+    formData.append('price',       price);
+    formData.append('old_price',   document.getElementById('pOldPrice').value || '');
+    formData.append('emoji',       document.getElementById('pEmoji').value.trim() || '📚');
+    formData.append('image_url',   document.getElementById('pImage').value.trim() || '');
+    formData.append('badge',       document.getElementById('pBadge').value);
+    formData.append('categories',  categories);
+    formData.append('stock',       document.getElementById('pStock').value || 99);
+    formData.append('sort_order',  document.getElementById('pSort').value || 0);
+    formData.append('description', document.getElementById('pDesc').value.trim());
+
+    const fileInput = document.getElementById('pImageFile');
+    if (fileInput && fileInput.files[0]) formData.append('image', fileInput.files[0]);
+
+    const method = editingProductId ? 'PUT' : 'POST';
+    const url    = editingProductId ? `/api/products/${editingProductId}` : '/api/products';
+    const r = await fetch(url, { method, body: formData });
+    const d = await r.json();
+
+    if (r.ok) {
+      msgEl.style.color = '#059669';
+      msgEl.textContent = editingProductId ? '✅ Product updated!' : '✅ Product added!';
+      toast(editingProductId ? '✅ Product updated' : '✅ Product added');
+      setTimeout(() => showPage('products'), 1000);
+    } else {
+      msgEl.textContent = d.error || 'Save failed.';
+    }
+  } catch { msgEl.textContent = 'Server error. Try again.'; }
+}
+
+async function deleteProduct(id, name) {
+  if (!confirm(`Remove "${name}" from storefront?`)) return;
+  try {
+    const r = await fetch(`/api/products/${id}`, { method:'DELETE' });
+    if (r.ok) { toast('✅ Product removed'); loadProducts(); }
+    else toast('❌ Delete failed');
+  } catch { toast('❌ Delete failed'); }
+}
+
+// ── OFFERS ────────────────────────────────────────────────────
+async function applyOffer() {
+  const id       = document.getElementById('offerProductId').value;
+  const badge    = document.getElementById('offerBadge').value;
+  const oldPrice = document.getElementById('offerOldPrice').value;
+  const newPrice = document.getElementById('offerNewPrice').value;
+  const msgEl    = document.getElementById('offerMsg');
+
+  if (!id) { msgEl.style.color='#DC2626'; msgEl.textContent = 'Enter a product ID.'; return; }
+
+  const body = { badge };
+  if (oldPrice) body.old_price = parseFloat(oldPrice);
+  if (newPrice) body.price     = parseFloat(newPrice);
+
+  try {
+    const r = await fetch(`/api/products/${id}`, {
+      method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
+    });
+    const d = await r.json();
+    if (r.ok) { msgEl.style.color='#059669'; msgEl.textContent = '✅ Offer applied!'; toast('✅ Offer applied!'); }
+    else { msgEl.style.color='#DC2626'; msgEl.textContent = d.error || 'Failed.'; }
+  } catch { msgEl.style.color='#DC2626'; msgEl.textContent = 'Server error.'; }
+}
+
+// ── IMAGE PREVIEW ─────────────────────────────────────────────
+function previewImage(input) {
+  const preview = document.getElementById('imagePreview');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+// ── TOAST ─────────────────────────────────────────────────────
+function toast(msg) {
+  const el = document.getElementById('adminToast');
+  el.textContent = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 3000);
+}
+
+document.getElementById('orderModal').addEventListener('click', function(e) {
+  if (e.target === this) closeOrderModal();
+});
+
+init();
+</script>
+</body>
+</html>
