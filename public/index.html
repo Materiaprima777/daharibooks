@@ -640,16 +640,16 @@
     </a>
 
     <div class="search-bar">
-      <select class="cat-sel">
-        <option>All Categories</option>
-        <option>Browse by Age</option>
-        <option>Educational</option>
-        <option>Christian Books</option>
-        <option>African Books</option>
-        <option>Stationery &amp; Toys</option>
+      <select class="cat-sel" id="searchCat" onchange="doSearch()">
+        <option value="all">All Categories</option>
+        <option value="age-4-9,age-8-12,board-books,teen">Browse by Age</option>
+        <option value="phonic-books,dictionary">Educational</option>
+        <option value="devotional,christmas,story-books">Christian Books</option>
+        <option value="kenyan-authors,african-books,kiswahili,animal-books">African Books</option>
+        <option value="stationery,board-games,craft-books">Stationery &amp; Toys</option>
       </select>
-      <input type="text" placeholder="Search books, games, stationery…"/>
-      <button class="search-btn">
+      <input type="text" id="searchInput" placeholder="Search books, games, stationery…" oninput="doSearch()" onkeydown="if(event.key==='Enter')doSearch()"/>
+      <button class="search-btn" onclick="doSearch()">
         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
       </button>
     </div>
@@ -2729,12 +2729,29 @@
   const PAGE_SIZE = 20;
   let currentPage = 1;
   let currentCat = 'all';
+  let currentSearch = '';
 
   function getVisibleCards(){
     return Array.from(document.querySelectorAll('.product-card')).filter(c=>{
       const cats = c.dataset.cat||'';
-      return currentCat==='all' || cats.includes(currentCat);
+      const name = (c.dataset.name||c.querySelector('.prod-name,h3,.card-title')?.textContent||'').toLowerCase();
+      const matchCat = currentCat==='all' || currentCat.split(',').some(ct=>cats.includes(ct));
+      const matchSearch = !currentSearch || name.includes(currentSearch);
+      return matchCat && matchSearch;
     });
+  }
+
+  function doSearch(){
+    const q = (document.getElementById('searchInput')?.value||'').trim().toLowerCase();
+    const catVal = document.getElementById('searchCat')?.value||'all';
+    currentSearch = q;
+    currentCat = catVal;
+    currentPage = 1;
+    // Sync filter tabs
+    document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+    if(catVal==='all') document.querySelectorAll('.ftab')[0]?.classList.add('active');
+    renderPage();
+    if(q || catVal!=='all') document.getElementById('shop').scrollIntoView({behavior:'smooth'});
   }
 
   function renderPage(){
