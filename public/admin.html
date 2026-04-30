@@ -402,6 +402,51 @@
       </div>
     </div>
 
+    <!-- OFFERS PAGE -->
+    <div id="page-offers" style="display:none;">
+      <div class="page-title">🏷️ Manage Offers</div>
+
+      <!-- Active offers table -->
+      <div class="card" style="padding:24px;margin-bottom:20px;">
+        <h3 style="margin:0 0 16px;font-size:1rem;font-weight:700;">Active Sale Items</h3>
+        <div id="activeOffersList"><p style="color:#888;">Loading...</p></div>
+      </div>
+
+      <!-- Apply offer form -->
+      <div class="card" style="padding:24px;">
+        <h3 style="margin:0 0 16px;font-size:1rem;font-weight:700;">Apply / Edit Offer</h3>
+        <div style="display:flex;flex-direction:column;gap:14px;max-width:420px;">
+          <div>
+            <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:6px;">Select Product</label>
+            <select id="offerProductId" style="width:100%;padding:10px 12px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:0.9rem;font-family:inherit;outline:none;">
+              <option value="">-- pick a product --</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:6px;">Badge</label>
+            <select id="offerBadge" style="width:100%;padding:10px 12px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:0.9rem;font-family:inherit;outline:none;">
+              <option value="sale">🔥 sale</option>
+              <option value="hot">⚡ hot</option>
+              <option value="new">✨ new</option>
+              <option value="">none (clear badge)</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:12px;">
+            <div style="flex:1;">
+              <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:6px;">Original Price (KSh)</label>
+              <input type="number" id="offerOldPrice" placeholder="e.g. 1000" style="width:100%;padding:10px 12px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:0.9rem;font-family:inherit;outline:none;box-sizing:border-box;"/>
+            </div>
+            <div style="flex:1;">
+              <label style="font-size:0.82rem;font-weight:600;display:block;margin-bottom:6px;">Sale Price (KSh)</label>
+              <input type="number" id="offerNewPrice" placeholder="e.g. 800" style="width:100%;padding:10px 12px;border:1.5px solid #E5E7EB;border-radius:8px;font-size:0.9rem;font-family:inherit;outline:none;box-sizing:border-box;"/>
+            </div>
+          </div>
+          <button class="btn btn-primary" onclick="applyOffer()" style="align-self:flex-start;padding:10px 28px;">Apply Offer</button>
+          <div id="offerMsg" style="font-size:0.85rem;font-weight:700;"></div>
+        </div>
+      </div>
+    </div>
+
   </div><!-- /main -->
 </div><!-- /appShell -->
 
@@ -486,6 +531,7 @@ function showPage(page) {
   if (page === 'dashboard')    loadDashboard();
   if (page === 'orders')       loadOrders();
   if (page === 'products')     loadProducts();
+  if (page === 'offers')       loadOffers();
   if (page === 'add-product')  resetProductForm();
 }
 
@@ -744,6 +790,55 @@ async function deleteProduct(id, name) {
 }
 
 // ── OFFERS ────────────────────────────────────────────────────
+async function loadOffers() {
+  try {
+    // Populate product dropdown
+    const r = await apiFetch('/api/products?limit=200');
+    const d = await r.json();
+    const products = d.products || [];
+
+    const sel = document.getElementById('offerProductId');
+    sel.innerHTML = '<option value="">-- pick a product --</option>';
+    products.forEach(p => {
+      const opt = document.createElement('option');
+      opt.value = p.id;
+      opt.textContent = p.name + (p.badge === 'sale' ? ' 🔥' : '');
+      sel.appendChild(opt);
+    });
+
+    // Show active sales
+    const onSale = products.filter(p => p.old_price && p.old_price > p.price);
+    const listEl = document.getElementById('activeOffersList');
+    if (!onSale.length) {
+      listEl.innerHTML = '<p style="color:#888;">No active offers right now.</p>';
+    } else {
+      listEl.innerHTML = `<table class="orders-table"><thead><tr>
+        <th>Product</th><th>Original</th><th>Sale Price</th><th>Badge</th><th>Action</th>
+      </tr></thead><tbody>` +
+      onSale.map(p => `<tr>
+        <td>${p.name}</td>
+        <td style="text-decoration:line-through;color:#888;">KSh ${p.old_price}</td>
+        <td style="color:#DC2626;font-weight:700;">KSh ${p.price}</td>
+        <td>${p.badge || '-'}</td>
+        <td><button class="btn btn-outline" style="font-size:0.75rem;padding:4px 10px;" onclick="clearOffer(${p.id})">Clear</button></td>
+      </tr>`).join('') +
+      '</tbody></table>';
+    }
+  } catch(e) { console.error(e); }
+}
+
+async function clearOffer(id) {
+  if (!confirm('Remove offer from this product?')) return;
+  try {
+    const r = await apiFetch(`/api/products/${id}`, {
+      method:'PUT', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ badge: '', old_price: null })
+    });
+    if (r.ok) { toast('✅ Offer cleared'); loadOffers(); }
+    else toast('❌ Failed');
+  } catch { toast('❌ Server error'); }
+}
+
 async function applyOffer() {
   const id       = document.getElementById('offerProductId').value;
   const badge    = document.getElementById('offerBadge').value;
@@ -751,19 +846,25 @@ async function applyOffer() {
   const newPrice = document.getElementById('offerNewPrice').value;
   const msgEl    = document.getElementById('offerMsg');
 
-  if (!id) { msgEl.style.color='#DC2626'; msgEl.textContent = 'Enter a product ID.'; return; }
+  if (!id) { msgEl.style.color='#DC2626'; msgEl.textContent = 'Please select a product.'; return; }
+  if (!oldPrice || !newPrice) { msgEl.style.color='#DC2626'; msgEl.textContent = 'Enter both original and sale price.'; return; }
+  if (parseFloat(newPrice) >= parseFloat(oldPrice)) { msgEl.style.color='#DC2626'; msgEl.textContent = 'Sale price must be lower than original price.'; return; }
 
-  const body = { badge };
-  if (oldPrice) body.old_price = parseFloat(oldPrice);
-  if (newPrice) body.price     = parseFloat(newPrice);
+  const body = { badge, old_price: parseFloat(oldPrice), price: parseFloat(newPrice) };
 
   try {
     const r = await apiFetch(`/api/products/${id}`, {
       method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
     });
     const d = await r.json();
-    if (r.ok) { msgEl.style.color='#059669'; msgEl.textContent = '✅ Offer applied!'; toast('✅ Offer applied!'); }
-    else { msgEl.style.color='#DC2626'; msgEl.textContent = d.error || 'Failed.'; }
+    if (r.ok) {
+      msgEl.style.color='#059669';
+      msgEl.textContent = '✅ Offer applied!';
+      toast('✅ Offer applied!');
+      loadOffers();
+      document.getElementById('offerOldPrice').value = '';
+      document.getElementById('offerNewPrice').value = '';
+    } else { msgEl.style.color='#DC2626'; msgEl.textContent = d.error || 'Failed.'; }
   } catch { msgEl.style.color='#DC2626'; msgEl.textContent = 'Server error.'; }
 }
 
