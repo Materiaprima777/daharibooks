@@ -917,25 +917,29 @@
     <div class="products-grid" id="grid"><div id="productsLoading" style="grid-column:1/-1;text-align:center;padding:60px;color:#888;font-family:Nunito,sans-serif;">Loading products...</div></div></div>
 
     <!-- PAGINATION -->
-  <div id="pagination" style="display:none;align-items:center;justify-content:center;gap:8px;padding:20px 20px 36px;flex-wrap:wrap;">
-    <button id="prevBtn" onclick="changePage(-1)" style="
-      background:var(--red);color:#fff;border:none;
-      padding:10px 20px;border-radius:8px;font-size:0.88rem;
-      font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;
-      display:flex;align-items:center;gap:6px;transition:all 0.2s;">
-      ← Prev
-    </button>
-    <div id="pageNumbers" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;"></div>
-    <button id="nextBtn" onclick="changePage(1)" style="
-      background:var(--red);color:#fff;border:none;
-      padding:10px 20px;border-radius:8px;font-size:0.88rem;
-      font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;
-      display:flex;align-items:center;gap:6px;transition:all 0.2s;">
-      Next →
-    </button>
-    <div style="width:100%;text-align:center;">
-      <span id="pageInfo" style="font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:var(--txt-light);"></span>
+  <div id="pagination" style="display:none;flex-direction:column;align-items:center;gap:14px;padding:24px 20px 40px;">
+    <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap;justify-content:center;">
+      <button id="prevBtn" onclick="changePage(-1)" style="
+        background:#fff;color:#B45309;
+        border:1.5px solid #FDE68A;
+        padding:10px 20px;border-radius:8px;font-size:0.86rem;
+        font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;
+        display:flex;align-items:center;gap:6px;transition:all 0.2s;
+        box-shadow:0 1px 4px rgba(0,0,0,0.06);">
+        ← Previous
+      </button>
+      <div id="pageNumbers" style="display:flex;gap:5px;flex-wrap:wrap;justify-content:center;align-items:center;"></div>
+      <button id="nextBtn" onclick="changePage(1)" style="
+        background:var(--red);color:#fff;
+        border:1.5px solid var(--red);
+        padding:10px 20px;border-radius:8px;font-size:0.86rem;
+        font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;
+        display:flex;align-items:center;gap:6px;transition:all 0.2s;
+        box-shadow:0 2px 8px rgba(217,119,6,0.25);">
+        Next →
+      </button>
     </div>
+    <span id="pageInfo" style="font-family:'Nunito',sans-serif;font-size:0.78rem;font-weight:700;color:var(--txt-light);"></span>
   </div>
 </section>
 
@@ -1329,7 +1333,12 @@
   loadProductsFromAPI();
 
   /* ── PAGINATION ── */
-  const PAGE_SIZE = 20;
+  // Responsive page size: 12 on desktop (≥900px), 8 on tablet, 6 on mobile
+  function getPageSize(){
+    if(window.innerWidth >= 900) return 12;
+    if(window.innerWidth >= 600) return 8;
+    return 6;
+  }
   let currentPage = 1;
   let currentCat = 'all';
   let currentSearch = '';
@@ -1350,7 +1359,6 @@
     currentSearch = q;
     currentCat = catVal;
     currentPage = 1;
-    // Sync filter tabs
     document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
     if(catVal==='all') document.querySelectorAll('.ftab')[0]?.classList.add('active');
     renderPage();
@@ -1358,56 +1366,114 @@
   }
 
   function renderPage(){
+    const PAGE_SIZE = getPageSize();
     const cards = getVisibleCards();
     const total = cards.length;
     const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
     if(currentPage > totalPages) currentPage = totalPages;
     const start = (currentPage-1)*PAGE_SIZE;
-    const end = start + PAGE_SIZE;
-    // Hide all first
+    const end   = start + PAGE_SIZE;
+
+    // Hide all, show only this page's slice
     document.querySelectorAll('.product-card').forEach(c=>c.style.display='none');
-    // Show only current page slice
     cards.forEach((c,i)=>{ c.style.display=(i>=start&&i<end)?'':'none'; });
-    // Update page info text
-    document.getElementById('pageInfo').textContent=
-      'Showing '+(start+1)+'–'+Math.min(end,total)+' of '+total+' items';
-    // Prev/Next button state
+
+    // Page info
+    document.getElementById('pageInfo').textContent =
+      total > 0
+        ? 'Showing '+(start+1)+'–'+Math.min(end,total)+' of '+total+' item'+(total!==1?'s':'')
+        : 'No items found';
+
+    // Prev / Next
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
-    prevBtn.style.opacity = currentPage<=1?'0.35':'1';
-    prevBtn.style.pointerEvents = currentPage<=1?'none':'auto';
-    nextBtn.style.opacity = currentPage>=totalPages?'0.35':'1';
-    nextBtn.style.pointerEvents = currentPage>=totalPages?'none':'auto';
-    // Show/hide pagination
-    document.getElementById('pagination').style.display = totalPages<=1?'none':'flex';
-    // Numbered page buttons
+    const atFirst = currentPage <= 1;
+    const atLast  = currentPage >= totalPages;
+    prevBtn.disabled = atFirst;
+    nextBtn.disabled = atLast;
+    prevBtn.style.opacity = atFirst ? '0.4' : '1';
+    nextBtn.style.opacity = atLast  ? '0.4' : '1';
+    prevBtn.style.cursor = atFirst ? 'not-allowed' : 'pointer';
+    nextBtn.style.cursor = atLast  ? 'not-allowed' : 'pointer';
+
+    // Show/hide whole pagination bar
+    document.getElementById('pagination').style.display = totalPages <= 1 ? 'none' : 'flex';
+
+    // Numbered page buttons — max 5 shown, centred on current
     const pnEl = document.getElementById('pageNumbers');
     pnEl.innerHTML = '';
-    // Show max 5 page numbers centred around current page
     let pStart = Math.max(1, currentPage - 2);
     let pEnd   = Math.min(totalPages, pStart + 4);
     if(pEnd - pStart < 4) pStart = Math.max(1, pEnd - 4);
+
+    // Leading ellipsis
+    if(pStart > 1){
+      const e1 = document.createElement('button');
+      e1.textContent = '1';
+      stylePageBtn(e1, false);
+      e1.onclick = ()=>{ currentPage=1; renderPage(); scrollToShop(); };
+      pnEl.appendChild(e1);
+      if(pStart > 2){
+        const dots = document.createElement('span');
+        dots.textContent='…';
+        dots.style.cssText='padding:0 4px;font-weight:700;color:#B45309;align-self:center;';
+        pnEl.appendChild(dots);
+      }
+    }
+
     for(let p = pStart; p <= pEnd; p++){
       const btn = document.createElement('button');
       btn.textContent = p;
-      btn.onclick = (()=>{ const pg=p; return ()=>{ currentPage=pg; renderPage(); document.getElementById('shop').scrollIntoView({behavior:'smooth'}); }; })();
-      btn.style.cssText = `
-        width:36px;height:36px;border-radius:7px;border:1.5px solid;
-        font-size:0.84rem;font-weight:800;cursor:pointer;
-        font-family:'Nunito',sans-serif;transition:all 0.15s;
-        ${p===currentPage
-          ? 'background:#D97706;color:#fff;border-color:#D97706;'
-          : 'background:#fff;color:#78350F;border-color:#FDE68A;'}
-      `;
+      stylePageBtn(btn, p === currentPage);
+      btn.onclick = (()=>{ const pg=p; return ()=>{ currentPage=pg; renderPage(); scrollToShop(); }; })();
       pnEl.appendChild(btn);
+    }
+
+    // Trailing ellipsis
+    if(pEnd < totalPages){
+      if(pEnd < totalPages - 1){
+        const dots = document.createElement('span');
+        dots.textContent='…';
+        dots.style.cssText='padding:0 4px;font-weight:700;color:#B45309;align-self:center;';
+        pnEl.appendChild(dots);
+      }
+      const eLast = document.createElement('button');
+      eLast.textContent = totalPages;
+      stylePageBtn(eLast, false);
+      eLast.onclick = ()=>{ currentPage=totalPages; renderPage(); scrollToShop(); };
+      pnEl.appendChild(eLast);
     }
   }
 
-  function changePage(dir){
-    currentPage += dir;
-    renderPage();
-    document.getElementById('shop').scrollIntoView({behavior:'smooth'});
+  function stylePageBtn(btn, active){
+    btn.style.cssText =
+      'width:38px;height:38px;border-radius:8px;border:1.5px solid;' +
+      'font-size:0.86rem;font-weight:800;cursor:pointer;' +
+      'font-family:\'Nunito\',sans-serif;transition:all 0.15s;' +
+      (active
+        ? 'background:#D97706;color:#fff;border-color:#D97706;box-shadow:0 2px 8px rgba(217,119,6,0.4);transform:scale(1.05);'
+        : 'background:#fff;color:#92400E;border-color:#FDE68A;');
+    if(!active){
+      btn.onmouseenter = ()=>{ btn.style.background='#FEF3C7'; btn.style.borderColor='#D97706'; };
+      btn.onmouseleave = ()=>{ btn.style.background='#fff';    btn.style.borderColor='#FDE68A'; };
+    }
   }
+
+  function scrollToShop(){
+    document.getElementById('shop').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function changePage(dir){
+    const PAGE_SIZE = getPageSize();
+    const cards = getVisibleCards();
+    const totalPages = Math.max(1, Math.ceil(cards.length / PAGE_SIZE));
+    currentPage = Math.max(1, Math.min(totalPages, currentPage + dir));
+    renderPage();
+    scrollToShop();
+  }
+
+  // Re-render on resize so page size adjusts
+  window.addEventListener('resize', ()=>{ renderPage(); });
 
   /* ── STRIP SCROLL ── */
   document.getElementById('stripInner').addEventListener('click', function(e){
