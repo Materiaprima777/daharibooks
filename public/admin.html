@@ -546,14 +546,26 @@ async function loadDashboard() {
 <div id="adminToast"></div>
 
 <script>
+// ── JWT AUTH ──────────────────────────────────────────────────
+function getToken() { return localStorage.getItem('dahari_admin_token'); }
+function setToken(t) { localStorage.setItem('dahari_admin_token', t); }
+function clearToken() { localStorage.removeItem('dahari_admin_token'); }
+function apiFetch(url, opts = {}) {
+  const token = getToken();
+  opts.headers = Object.assign({}, opts.headers || {});
+  if (token) opts.headers['Authorization'] = 'Bearer ' + token;
+  return fetch(url, opts);
+}
+
 let editingProductId = null;
 
 // ── INIT ──────────────────────────────────────────────────────
 async function init() {
   try {
-    const r = await fetch('/api/admin/me');
+    if (!getToken()) { showLogin(); return; }
+    const r = await apiFetch('/api/admin/me');
     if (r.ok) { showApp(); loadDashboard(); }
-    else showLogin();
+    else { clearToken(); showLogin(); }
   } catch { showLogin(); }
 }
 
@@ -579,13 +591,13 @@ async function doLogin() {
       body: JSON.stringify({ username, password })
     });
     const d = await r.json();
-    if (r.ok) { showApp(); loadDashboard(); }
+    if (r.ok && d.token) { setToken(d.token); showApp(); loadDashboard(); }
     else errEl.textContent = d.error || 'Login failed.';
   } catch { errEl.textContent = 'Server not reachable.'; }
 }
 
 async function doLogout() {
-  await fetch('/api/admin/logout', { method:'POST' });
+  await apiFetch('/api/admin/logout', { method:'POST' });
   showLogin();
 }
 
@@ -607,7 +619,7 @@ function showPage(page) {
 // ── DASHBOARD ─────────────────────────────────────────────────
 async function loadDashboard() {
   try {
-    const r = await fetch('/api/orders/admin/dashboard');
+    const r = await apiFetch('/api/orders/admin/dashboard');
     const d = await r.json();
     if (!r.ok) return;
     const s = d.stats;
@@ -634,7 +646,7 @@ async function loadOrders() {
   try {
     const status = document.getElementById('orderStatusFilter').value;
     const url    = '/api/orders/admin' + (status ? `?status=${status}` : '');
-    const r      = await fetch(url);
+    const r      = await apiFetch(url);
     const d      = await r.json();
     const tbody  = document.getElementById('ordersTbody');
     tbody.innerHTML = (d.orders || []).map(o => `
@@ -664,7 +676,7 @@ async function loadOrders() {
 
 async function updateOrderStatus(id, status) {
   try {
-    const r = await fetch(`/api/orders/admin/${id}`, {
+    const r = await apiFetch(`/api/orders/admin/${id}`, {
       method:'PATCH', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ order_status: status })
     });
@@ -675,7 +687,7 @@ async function updateOrderStatus(id, status) {
 
 async function viewOrder(id) {
   try {
-    const r = await fetch(`/api/orders/admin/${id}`);
+    const r = await apiFetch(`/api/orders/admin/${id}`);
     const o = await r.json();
     document.getElementById('orderModalContent').innerHTML = `
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;font-size:0.84rem;">
@@ -717,7 +729,7 @@ async function viewOrder(id) {
 }
 
 async function saveOrderFromModal(id) {
-  await fetch(`/api/orders/admin/${id}`, {
+  await apiFetch(`/api/orders/admin/${id}`, {
     method:'PATCH', headers:{'Content-Type':'application/json'},
     body: JSON.stringify({
       order_status:   document.getElementById('modalStatus').value,
@@ -741,7 +753,7 @@ async function loadProducts() {
     let url      = '/api/products?limit=200';
     if (search) url += `&search=${encodeURIComponent(search)}`;
     if (cat)    url += `&cat=${cat}`;
-    const r = await fetch(url);
+    const r = await apiFetch(url);
     const d = await r.json();
     const tbody = document.getElementById('productsTbody');
     tbody.innerHTML = (d.products || []).map(p => `
@@ -780,7 +792,7 @@ function resetProductForm() {
 
 async function editProduct(id) {
   try {
-    const r = await fetch(`/api/products/${id}`);
+    const r = await apiFetch(`/api/products/${id}`);
     const p = await r.json();
     editingProductId = id;
     document.getElementById('addProductTitle').textContent = '✏️ Edit Product';
@@ -835,7 +847,7 @@ async function saveProduct() {
 
     const method = editingProductId ? 'PUT' : 'POST';
     const url    = editingProductId ? `/api/products/${editingProductId}` : '/api/products';
-    const r = await fetch(url, { method, body: formData });
+    const r = await apiFetch(url, { method, body: formData });
     const d = await r.json();
 
     if (r.ok) {
@@ -852,7 +864,7 @@ async function saveProduct() {
 async function deleteProduct(id, name) {
   if (!confirm(`Remove "${name}" from storefront?`)) return;
   try {
-    const r = await fetch(`/api/products/${id}`, { method:'DELETE' });
+    const r = await apiFetch(`/api/products/${id}`, { method:'DELETE' });
     if (r.ok) { toast('✅ Product removed'); loadProducts(); }
     else toast('❌ Delete failed');
   } catch { toast('❌ Delete failed'); }
@@ -873,7 +885,7 @@ async function applyOffer() {
   if (newPrice) body.price     = parseFloat(newPrice);
 
   try {
-    const r = await fetch(`/api/products/${id}`, {
+    const r = await apiFetch(`/api/products/${id}`, {
       method:'PUT', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
     });
     const d = await r.json();
