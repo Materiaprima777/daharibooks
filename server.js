@@ -6,7 +6,8 @@ const path      = require('path');
 const helmet    = require('helmet');
 const cors      = require('cors');
 const rateLimit = require('express-rate-limit');
-const session   = require('express-session');
+const session        = require('express-session');
+const MySQLStore     = require('express-mysql-session')(session);
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -31,8 +32,18 @@ app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
 
 // ── SESSION ───────────────────────────────────────────────────
+const sessionStore = new MySQLStore({
+  host:               process.env.DB_HOST,
+  port:               parseInt(process.env.DB_PORT) || 3306,
+  user:               process.env.DB_USER,
+  password:           process.env.DB_PASSWORD,
+  database:           process.env.DB_NAME,
+  createDatabaseTable: true
+});
+
 app.use(session({
   secret:            process.env.SESSION_SECRET || 'dahari-change-me',
+  store:             sessionStore,
   resave:            false,
   saveUninitialized: false,
   cookie: {
