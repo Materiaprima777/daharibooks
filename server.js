@@ -25,6 +25,7 @@ app.use(helmet({
   }
 }));
 
+app.set('trust proxy', 1);
 app.use(cors({ origin: process.env.SITE_URL || true, credentials: true }));
 app.use(express.json({ limit: '5mb' }));
 app.use(express.urlencoded({ extended: true, limit: '5mb' }));
@@ -37,8 +38,10 @@ app.use(session({
   cookie: {
     secure:   process.env.NODE_ENV === 'production',
     httpOnly: true,
+    sameSite: 'lax',
     maxAge:   8 * 60 * 60 * 1000
-  }
+  },
+  proxy: true
 }));
 
 // ── RATE LIMITS ───────────────────────────────────────────────
