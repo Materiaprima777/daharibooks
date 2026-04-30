@@ -302,7 +302,7 @@
     <!-- PRODUCTS PAGE -->
     <div id="page-products" style="display:none;">
       <div class="page-title">📚 Products</div>
-      <div class="search-row">
+      <div class="search-row" style="flex-wrap:wrap;gap:8px;">
         <input type="text" id="prodSearch" placeholder="Search products…" oninput="loadProducts()"/>
         <select id="prodCatFilter" onchange="loadProducts()">
           <option value="">All Categories</option>
@@ -321,11 +321,15 @@
           <option value="kiswahili">Kiswahili</option>
         </select>
         <button class="btn btn-primary btn-sm" onclick="showPage('add-product')">➕ Add Product</button>
+        <button class="btn btn-sm" id="deleteSelectedBtn" style="background:#FEE2E2;color:#991B1B;border:none;display:none;" onclick="deleteSelected()">🗑️ Delete Selected (<span id="selectedCount">0</span>)</button>
       </div>
       <div class="card">
         <div style="overflow-x:auto;">
           <table>
-            <thead><tr><th>ID</th><th>Name</th><th>Price</th><th>Categories</th><th>Badge</th><th>Stock</th><th>Actions</th></tr></thead>
+            <thead><tr>
+              <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)"/></th>
+              <th>Name</th><th>Price</th><th>Categories</th><th>Badge</th><th>Stock</th><th>Actions</th>
+            </tr></thead>
             <tbody id="productsTbody"></tbody>
           </table>
         </div>
@@ -346,21 +350,20 @@
             <input type="number" id="pPrice" placeholder="850"/>
           </div>
           <div class="form-group">
-            <label>Old Price (KES) — for sale badge</label>
+            <label>Old Price (KES) — for sale</label>
             <input type="number" id="pOldPrice" placeholder="Leave blank if no sale"/>
           </div>
           <div class="form-group">
             <label>Emoji Icon</label>
-            <input type="text" id="pEmoji" placeholder="📚" maxlength="4"/>
+            <input type="text" id="pEmoji" placeholder="📚" maxlength="10"/>
           </div>
           <div class="form-group">
             <label>Badge</label>
             <select id="pBadge">
               <option value="">None</option>
-              <option value="new">New</option>
-              <option value="hot">Hot</option>
-              <option value="sale">Sale</option>
-              <option value="popular">Popular</option>
+              <option value="new">✨ New</option>
+              <option value="hot">⚡ Hot</option>
+              <option value="sale">🔥 Sale</option>
             </select>
           </div>
           <div class="form-group">
@@ -371,27 +374,32 @@
             <label>Sort Order (lower = first)</label>
             <input type="number" id="pSort" placeholder="0"/>
           </div>
+
+          <!-- CATEGORIES CHIPS -->
           <div class="form-group full-width">
-            <label>Image URL (optional — paste a URL OR upload a photo below)</label>
-            <input type="url" id="pImage" placeholder="https://daharibooks.neocities.org/your-image.jpg"/>
+            <label>Categories * <span style="font-weight:400;color:#9CA3AF;font-size:0.78rem;">— tap to select/deselect</span></label>
+            <div id="catChips" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px;">
+              <!-- chips injected by JS -->
+            </div>
+            <input type="hidden" id="pCats"/>
           </div>
+
+          <!-- MULTI IMAGE UPLOAD -->
           <div class="form-group full-width">
-            <label>Upload Image from your computer (optional)</label>
-            <input type="file" id="pImageFile" accept="image/*" onchange="previewImage(this)" style="border:1.5px solid #E5E7EB;border-radius:7px;padding:8px;font-family:inherit;font-size:0.84rem;width:100%;"/>
-            <img id="imagePreview" src="" alt="Preview" style="display:none;margin-top:8px;max-width:120px;max-height:120px;object-fit:cover;border-radius:8px;border:1px solid #E5E7EB;"/>
+            <label>Images <span style="font-weight:400;color:#9CA3AF;font-size:0.78rem;">— upload multiple or paste a URL</span></label>
+            <div style="display:flex;gap:8px;margin-bottom:8px;">
+              <input type="url" id="pImage" placeholder="Paste image URL (optional)" style="flex:1;"/>
+            </div>
+            <label style="display:inline-block;background:#F3F4F6;border:1.5px dashed #D1D5DB;border-radius:8px;padding:12px 20px;cursor:pointer;font-size:0.84rem;color:#6B7280;margin-bottom:8px;">
+              📁 Choose images from your device (multiple allowed)
+              <input type="file" id="pImageFiles" accept="image/*" multiple onchange="previewImages(this)" style="display:none;"/>
+            </label>
+            <div id="imagePreviews" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;"></div>
           </div>
-          <div class="form-group full-width">
-            <label>Categories * (space-separated slugs)</label>
-            <input type="text" id="pCats" placeholder="age-4-9 story-books"/>
-            <small style="color:var(--txt2);font-size:0.72rem;">
-              Slugs: board-books · age-4-9 · age-8-12 · teen · phonic-books · dictionary ·
-              devotional · christmas · story-books · kenyan-authors · animal-books ·
-              stationery · board-games · craft-books · kiswahili
-            </small>
-          </div>
+
           <div class="form-group full-width">
             <label>Description (optional)</label>
-            <textarea id="pDesc" placeholder="Short description of the book…"></textarea>
+            <textarea id="pDesc" placeholder="Short description…"></textarea>
           </div>
         </div>
         <div style="display:flex;gap:10px;margin-top:20px;">
@@ -664,6 +672,50 @@ function closeOrderModal() {
   document.getElementById('orderModal').classList.remove('open');
 }
 
+// ── CATEGORIES LIST ───────────────────────────────────────────
+const ALL_CATS = [
+  {slug:'board-books',    label:'🍼 Board Books'},
+  {slug:'age-4-9',        label:'🎠 Ages 4–9'},
+  {slug:'age-8-12',       label:'🎒 Ages 8–12'},
+  {slug:'teen',           label:'📓 Teen 13+'},
+  {slug:'phonic-books',   label:'🔊 Phonic Books'},
+  {slug:'dictionary',     label:'📘 Dictionary'},
+  {slug:'devotional',     label:'🙏 Devotional'},
+  {slug:'christmas',      label:'🎄 Christmas'},
+  {slug:'story-books',    label:'📖 Story Books'},
+  {slug:'kenyan-authors', label:'🇰🇪 Kenyan Authors'},
+  {slug:'animal-books',   label:'🦁 Animal Books'},
+  {slug:'stationery',     label:'✏️ Stationery'},
+  {slug:'board-games',    label:'♟️ Board Games'},
+  {slug:'craft-books',    label:'🎨 Craft Books'},
+  {slug:'kiswahili',      label:'🌍 Kiswahili'},
+  {slug:'fathers-day',    label:'👨 Father\'s Day'},
+];
+
+function renderCatChips(selectedCats = []) {
+  const container = document.getElementById('catChips');
+  container.innerHTML = ALL_CATS.map(c => {
+    const active = selectedCats.includes(c.slug);
+    return `<button type="button" onclick="toggleCat('${c.slug}',this)"
+      style="padding:6px 12px;border-radius:20px;border:2px solid ${active?'#DC2626':'#E5E7EB'};
+             background:${active?'#DC2626':'#fff'};color:${active?'#fff':'#374151'};
+             font-size:0.78rem;font-weight:700;cursor:pointer;font-family:inherit;transition:all 0.15s;"
+      data-slug="${c.slug}">${c.label}</button>`;
+  }).join('');
+}
+
+function toggleCat(slug, btn) {
+  const isActive = btn.style.background === 'rgb(220, 38, 38)';
+  btn.style.background = isActive ? '#fff' : '#DC2626';
+  btn.style.color      = isActive ? '#374151' : '#fff';
+  btn.style.borderColor= isActive ? '#E5E7EB' : '#DC2626';
+  // Update hidden input
+  const selected = Array.from(document.querySelectorAll('#catChips button'))
+    .filter(b => b.style.background === 'rgb(220, 38, 38)')
+    .map(b => b.dataset.slug);
+  document.getElementById('pCats').value = selected.join(' ');
+}
+
 // ── PRODUCTS ──────────────────────────────────────────────────
 async function loadProducts() {
   try {
@@ -674,16 +726,19 @@ async function loadProducts() {
     if (cat)    url += `&cat=${cat}`;
     const r = await apiFetch(url);
     const d = await r.json();
+    const products = d.products || [];
     const tbody = document.getElementById('productsTbody');
-    tbody.innerHTML = (d.products || []).map(p => `
+    document.getElementById('selectAll').checked = false;
+    document.getElementById('deleteSelectedBtn').style.display = 'none';
+    tbody.innerHTML = products.map(p => `
       <tr>
-        <td>${p.id}</td>
+        <td><input type="checkbox" class="prod-check" value="${p.id}" onchange="updateDeleteBtn()"/></td>
         <td>
           ${p.image_url ? `<img src="${p.image_url}" style="width:36px;height:36px;object-fit:cover;border-radius:5px;vertical-align:middle;margin-right:6px;"/>` : `<span style="font-size:1.2rem;margin-right:6px;">${p.emoji||'📚'}</span>`}
           ${p.name}
         </td>
         <td>KES ${parseFloat(p.price).toLocaleString()}</td>
-        <td style="font-size:0.72rem;color:#6B7280;">${p.categories}</td>
+        <td style="font-size:0.72rem;color:#6B7280;">${p.categories||'–'}</td>
         <td>${p.badge ? `<span class="badge badge-new">${p.badge}</span>` : '–'}</td>
         <td>${p.stock}</td>
         <td>
@@ -692,6 +747,49 @@ async function loadProducts() {
         </td>
       </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;color:#9CA3AF;padding:20px;">No products found</td></tr>';
   } catch(e) { console.error(e); }
+}
+
+function toggleSelectAll(cb) {
+  document.querySelectorAll('.prod-check').forEach(c => c.checked = cb.checked);
+  updateDeleteBtn();
+}
+
+function updateDeleteBtn() {
+  const count = document.querySelectorAll('.prod-check:checked').length;
+  const btn = document.getElementById('deleteSelectedBtn');
+  document.getElementById('selectedCount').textContent = count;
+  btn.style.display = count > 0 ? '' : 'none';
+  document.getElementById('selectAll').checked =
+    count === document.querySelectorAll('.prod-check').length && count > 0;
+}
+
+async function deleteSelected() {
+  const ids = Array.from(document.querySelectorAll('.prod-check:checked')).map(c => c.value);
+  if (!ids.length) return;
+  if (!confirm(`Delete ${ids.length} product(s)? This cannot be undone.`)) return;
+  let done = 0;
+  for (const id of ids) {
+    const r = await apiFetch(`/api/products/${id}`, { method:'DELETE' });
+    if (r.ok) done++;
+  }
+  toast(`✅ Deleted ${done} product(s)`);
+  loadProducts();
+}
+
+function previewImages(input) {
+  const container = document.getElementById('imagePreviews');
+  container.innerHTML = '';
+  Array.from(input.files).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const wrap = document.createElement('div');
+      wrap.style.cssText = 'position:relative;display:inline-block;';
+      wrap.innerHTML = `<img src="${e.target.result}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #E5E7EB;"/>
+        <span style="position:absolute;top:-4px;right:-4px;background:#fff;border:1px solid #E5E7EB;border-radius:50%;width:18px;height:18px;font-size:0.6rem;cursor:pointer;display:flex;align-items:center;justify-content:center;" onclick="this.parentNode.remove()">✕</span>`;
+      container.appendChild(wrap);
+    };
+    reader.readAsDataURL(file);
+  });
 }
 
 function resetProductForm() {
@@ -705,8 +803,9 @@ function resetProductForm() {
   document.getElementById('pSort').value  = '0';
   document.getElementById('pBadge').value = '';
   document.getElementById('productFormMsg').textContent = '';
-  const preview = document.getElementById('imagePreview');
-  if (preview) preview.style.display = 'none';
+  document.getElementById('imagePreviews').innerHTML = '';
+  document.getElementById('pImageFiles').value = '';
+  renderCatChips([]);
 }
 
 async function editProduct(id) {
@@ -726,10 +825,10 @@ async function editProduct(id) {
     document.getElementById('pStock').value    = p.stock || 99;
     document.getElementById('pSort').value     = p.sort_order || 0;
     document.getElementById('pDesc').value     = p.description || '';
-    if (p.image_url) {
-      const preview = document.getElementById('imagePreview');
-      if (preview) { preview.src = p.image_url; preview.style.display = 'block'; }
-    }
+    document.getElementById('imagePreviews').innerHTML = p.image_url
+      ? `<div style="position:relative;display:inline-block;"><img src="${p.image_url}" style="width:80px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #E5E7EB;"/></div>` : '';
+    const selected = (p.categories||'').split(' ').filter(Boolean);
+    renderCatChips(selected);
     showPage('add-product');
   } catch { toast('❌ Failed to load product'); }
 }
@@ -745,10 +844,9 @@ async function saveProduct() {
 
   if (!name)       { msgEl.textContent = 'Product name is required.'; return; }
   if (!price)      { msgEl.textContent = 'Price is required.'; return; }
-  if (!categories) { msgEl.textContent = 'At least one category is required.'; return; }
+  if (!categories) { msgEl.textContent = 'Please select at least one category.'; return; }
 
   try {
-    // Use FormData to support image upload
     const formData = new FormData();
     formData.append('name',        name);
     formData.append('price',       price);
@@ -761,8 +859,12 @@ async function saveProduct() {
     formData.append('sort_order',  document.getElementById('pSort').value || 0);
     formData.append('description', document.getElementById('pDesc').value.trim());
 
-    const fileInput = document.getElementById('pImageFile');
-    if (fileInput && fileInput.files[0]) formData.append('image', fileInput.files[0]);
+    // Append all selected image files
+    const filesInput = document.getElementById('pImageFiles');
+    if (filesInput && filesInput.files.length) {
+      // First file = main image
+      formData.append('image', filesInput.files[0]);
+    }
 
     const method = editingProductId ? 'PUT' : 'POST';
     const url    = editingProductId ? `/api/products/${editingProductId}` : '/api/products';
@@ -773,11 +875,11 @@ async function saveProduct() {
       msgEl.style.color = '#059669';
       msgEl.textContent = editingProductId ? '✅ Product updated!' : '✅ Product added!';
       toast(editingProductId ? '✅ Product updated' : '✅ Product added');
-      setTimeout(() => showPage('products'), 1000);
+      setTimeout(() => showPage('products'), 900);
     } else {
       msgEl.textContent = d.error || 'Save failed.';
     }
-  } catch { msgEl.textContent = 'Server error. Try again.'; }
+  } catch(e) { console.error(e); msgEl.textContent = 'Server error. Try again.'; }
 }
 
 async function deleteProduct(id, name) {
@@ -866,16 +968,6 @@ async function applyOffer() {
       document.getElementById('offerNewPrice').value = '';
     } else { msgEl.style.color='#DC2626'; msgEl.textContent = d.error || 'Failed.'; }
   } catch { msgEl.style.color='#DC2626'; msgEl.textContent = 'Server error.'; }
-}
-
-// ── IMAGE PREVIEW ─────────────────────────────────────────────
-function previewImage(input) {
-  const preview = document.getElementById('imagePreview');
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = e => { preview.src = e.target.result; preview.style.display = 'block'; };
-    reader.readAsDataURL(input.files[0]);
-  }
 }
 
 // ── TOAST ─────────────────────────────────────────────────────
