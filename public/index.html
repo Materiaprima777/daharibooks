@@ -389,8 +389,47 @@
     .wish-btn:hover{background:var(--red);color:#fff;border-color:var(--red);}
     .prod-body{padding:10px 12px 12px;}
     .prod-cat{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--txt-light);margin-bottom:3px;font-weight:700;}
-    .prod-name{font-family:'Nunito',sans-serif;font-size:0.86rem;font-weight:800;color:var(--txt);line-height:1.3;margin-bottom:8px;}
+    .prod-name{font-family:'Nunito',sans-serif;font-size:0.86rem;font-weight:800;color:var(--txt);line-height:1.3;margin-bottom:4px;}
+    .prod-desc-snip{font-size:0.72rem;color:var(--txt-mid);line-height:1.45;margin-bottom:8px;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+      cursor:pointer;}
+    .prod-desc-snip:hover{color:var(--red);}
+    .read-more{font-size:0.68rem;color:var(--red);cursor:pointer;font-weight:700;margin-bottom:8px;display:inline-block;}
     .prod-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;}
+
+    /* ── BOOK DETAIL MODAL ── */
+    .book-modal-overlay{
+      display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9000;
+      align-items:center;justify-content:center;padding:16px;
+    }
+    .book-modal-overlay.open{display:flex;}
+    .book-modal{
+      background:#fff;border-radius:16px;max-width:520px;width:100%;
+      max-height:90vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.25);
+      position:relative;
+    }
+    .book-modal-img{width:100%;aspect-ratio:3/4;max-height:280px;object-fit:cover;border-radius:16px 16px 0 0;background:#F9FAFB;display:flex;align-items:center;justify-content:center;font-size:5rem;}
+    .book-modal-img img{width:100%;height:100%;object-fit:cover;border-radius:16px 16px 0 0;}
+    .book-modal-body{padding:20px 22px 24px;}
+    .book-modal-cat{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.07em;color:var(--txt-light);font-weight:700;margin-bottom:4px;}
+    .book-modal-title{font-family:'Nunito',sans-serif;font-size:1.2rem;font-weight:900;color:var(--txt);line-height:1.3;margin-bottom:8px;}
+    .book-modal-desc{font-size:0.82rem;color:var(--txt-mid);line-height:1.6;margin-bottom:16px;white-space:pre-wrap;}
+    .book-modal-price{font-size:1.1rem;font-weight:900;color:var(--red);margin-bottom:16px;}
+    .book-modal-old{font-size:0.8rem;color:#9CA3AF;text-decoration:line-through;margin-left:8px;font-weight:600;}
+    .book-modal-close{
+      position:absolute;top:12px;right:14px;
+      background:rgba(255,255,255,0.9);border:1px solid var(--border);
+      border-radius:50%;width:32px;height:32px;font-size:1rem;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;
+      z-index:10;
+    }
+    .book-modal-add{
+      background:var(--red);color:#fff;border:none;
+      width:100%;padding:12px;border-radius:8px;
+      font-size:0.95rem;font-weight:800;cursor:pointer;
+      transition:background 0.15s;
+    }
+    .book-modal-add:hover{background:var(--red-dark);}
     .price-grp{display:flex;align-items:baseline;gap:5px;}
     .price{font-size:0.9rem;font-weight:800;color:var(--red);}
     .old-price{font-size:0.78rem;font-weight:600;color:#9CA3AF;text-decoration:line-through;}
@@ -1361,16 +1400,28 @@
              <span class="old-price">KES ${Number(p.old_price).toLocaleString()}</span>`
           : `<span class="price">KES ${Number(p.price).toLocaleString()}</span>`;
 
+        const descHtml = p.description
+          ? `<div class="prod-desc-snip" title="Click to read more">${p.description}</div>`
+          : '';
+
         card.innerHTML = `
           <div class="prod-img">${imgHtml}<button class="wish-btn">🤍</button>${badgeHtml}</div>
           <div class="prod-body">
             <div class="prod-cat">${(p.categories||'').split(' ')[0].replace(/-/g,' ')}</div>
             <div class="prod-name">${p.name}</div>
+            ${descHtml}
             <div class="prod-footer">
               <div class="price-grp">${priceHtml}</div>
-              <button class="add-btn" onclick="addToCart('${p.name.replace(/'/g,"\\'")}',${p.price},'${p.emoji||'📚'}')">+</button>
+              <button class="add-btn" onclick="event.stopPropagation();addToCart('${p.name.replace(/'/g,"\\'")}',${p.price},'${p.emoji||'📚'}')">+</button>
             </div>
           </div>`;
+
+        // clicking card (but not add-to-cart or wish btn) opens modal
+        card.addEventListener('click', (e) => {
+          if (e.target.classList.contains('add-btn') || e.target.classList.contains('wish-btn')) return;
+          openBookModal(p);
+        });
+
         grid.appendChild(card);
       });
 
@@ -1969,6 +2020,46 @@
     renderCart();
     closeCart();
   }
+
+  /* ── BOOK DETAIL MODAL ── */
+  function openBookModal(p) {
+    const m = document.getElementById('bookModal');
+    const imgArea = document.getElementById('bModalImg');
+    imgArea.innerHTML = p.image_url
+      ? `<img src="${p.image_url}" alt="${p.name}"/>`
+      : `<div style="font-size:5rem;line-height:1;">${p.emoji||'📚'}</div>`;
+    document.getElementById('bModalCat').textContent = (p.categories||'').split(' ')[0].replace(/-/g,' ');
+    document.getElementById('bModalTitle').textContent = p.name;
+    document.getElementById('bModalDesc').textContent = p.description || 'No description available.';
+    const hasSale = p.old_price && p.old_price > p.price;
+    document.getElementById('bModalPrice').innerHTML = `KES ${Number(p.price).toLocaleString()}`
+      + (hasSale ? `<span class="book-modal-old">KES ${Number(p.old_price).toLocaleString()}</span>` : '');
+    document.getElementById('bModalAddBtn').onclick = () => {
+      addToCart(p.name, p.price, p.emoji||'📚');
+      closeBookModal();
+    };
+    m.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeBookModal() {
+    document.getElementById('bookModal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
 </script>
+
+<!-- Book Detail Modal -->
+<div class="book-modal-overlay" id="bookModal" onclick="if(event.target===this)closeBookModal()">
+  <div class="book-modal">
+    <button class="book-modal-close" onclick="closeBookModal()">✕</button>
+    <div class="book-modal-img" id="bModalImg"></div>
+    <div class="book-modal-body">
+      <div class="book-modal-cat" id="bModalCat"></div>
+      <div class="book-modal-title" id="bModalTitle"></div>
+      <div class="book-modal-desc" id="bModalDesc"></div>
+      <div class="book-modal-price" id="bModalPrice"></div>
+      <button class="book-modal-add" id="bModalAddBtn">Add to Cart</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
