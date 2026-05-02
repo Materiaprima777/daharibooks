@@ -123,7 +123,7 @@ async function adminDashboard(req, res) {
         COALESCE(SUM(CASE WHEN payment_status='paid' THEN total ELSE 0 END),0) AS revenue
       FROM orders`);
     const [[p]] = await db.query("SELECT COUNT(*) AS count FROM products WHERE is_active=1");
-    const [recent] = await db.query('SELECT order_ref, customer_name, customer_phone, total, order_status, created_at FROM orders ORDER BY created_at DESC LIMIT 10');
+    const [recent] = await db.query('SELECT id, order_ref, customer_name, customer_phone, total, payment_method, order_status, created_at FROM orders ORDER BY created_at DESC LIMIT 10');
     res.json({
       stats: { total_orders: t.total_orders, new_orders: t.new_orders||0, paid_orders: t.paid_orders||0, revenue: parseFloat(t.revenue||0).toFixed(2), total_products: p.count },
       recent_orders: recent
