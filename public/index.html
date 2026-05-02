@@ -44,9 +44,9 @@
     .site-header-wrap{
       position:fixed;top:0;left:0;right:0;z-index:200;
     }
-    /* push page content below the fixed header */
-    body{ padding-top:var(--header-h, 90px); }
-    @media(max-width:768px){ body{ padding-top:var(--header-h, 80px); } }
+    /* push page content below the fixed header — hardcoded safe fallback, JS updates exact value */
+    body{ padding-top:100px; }
+    @media(max-width:768px){ body{ padding-top:88px; } }
     header{
       background:var(--white);
       border-bottom:1px solid var(--border);
@@ -1388,8 +1388,9 @@
   /* ── FIX HEADER HEIGHT ── */
   function setHeaderPad(){
     const h = document.querySelector('.site-header-wrap');
-    if(h) document.documentElement.style.setProperty('--header-h', h.offsetHeight+'px');
+    if(h) document.body.style.paddingTop = h.offsetHeight + 'px';
   }
+  document.addEventListener('DOMContentLoaded', setHeaderPad);
   window.addEventListener('load', setHeaderPad);
   window.addEventListener('resize', setHeaderPad);
 

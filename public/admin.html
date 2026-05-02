@@ -615,119 +615,143 @@
     <div id="page-add-product" style="display:none;">
       <div class="page-hd">
         <div>
-          <div class="page-title" id="addProductTitle">➕ Add New Product</div>
-          <div class="page-sub">Fill in product details below</div>
+          <div class="page-title" id="addProductTitle">➕ Add Products</div>
+          <div class="page-sub" id="addProductSub">Upload up to 100 images — click each to fill in details</div>
         </div>
-        <button class="btn btn-outline btn-sm" onclick="showPage('products')">← Back to Products</button>
+        <button class="btn btn-outline btn-sm" onclick="showPage('products')">← Back</button>
       </div>
 
-      <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;">
-
-        <!-- LEFT COLUMN -->
-        <div>
-          <div class="card" style="padding:22px;">
-            <div style="font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);margin-bottom:14px;">Basic Info</div>
-            <div class="form-grid">
-              <div class="form-group full-width">
-                <label>Product Name *</label>
-                <input type="text" id="pName" placeholder="e.g. The Rainbow Fish" oninput="updatePricePreview()"/>
+      <!-- ── SINGLE EDIT MODE (existing product or editingProductId set) ── -->
+      <div id="singleEditMode" style="display:none;">
+        <div style="display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start;">
+          <div>
+            <div class="card" style="padding:22px;">
+              <div style="font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);margin-bottom:14px;">Basic Info</div>
+              <div class="form-grid">
+                <div class="form-group full-width"><label>Product Name *</label><input type="text" id="pName" placeholder="e.g. The Rainbow Fish" oninput="updatePricePreview()"/></div>
+                <div class="form-group"><label>Price (KES) *</label><input type="number" id="pPrice" placeholder="850" oninput="updatePricePreview()"/></div>
+                <div class="form-group"><label>Old Price (KES)</label><input type="number" id="pOldPrice" placeholder="Leave blank if no sale" oninput="updatePricePreview()"/></div>
+                <div class="form-group"><label>Emoji Icon</label><input type="text" id="pEmoji" placeholder="📚" maxlength="10"/></div>
+                <div class="form-group"><label>Badge</label><select id="pBadge"><option value="">None</option><option value="new">✨ New</option><option value="hot">⚡ Hot</option><option value="sale">🔥 Sale</option></select></div>
+                <div class="form-group"><label>Stock</label><input type="number" id="pStock" placeholder="99"/></div>
+                <div class="form-group"><label>Sort Order</label><input type="number" id="pSort" placeholder="0"/></div>
+                <div class="form-group full-width"><label>Description</label><textarea id="pDesc" placeholder="Short description…" oninput="updateDescCount()"></textarea><div style="font-size:0.72rem;color:#9CA3AF;text-align:right;margin-top:2px;"><span id="descCount">0</span>/300</div></div>
               </div>
-              <div class="form-group">
-                <label>Price (KES) *</label>
-                <input type="number" id="pPrice" placeholder="850" oninput="updatePricePreview()"/>
-              </div>
-              <div class="form-group">
-                <label>Old Price (KES) <span style="font-weight:400;color:#9CA3AF;">— for sale badge</span></label>
-                <input type="number" id="pOldPrice" placeholder="Leave blank if no sale" oninput="updatePricePreview()"/>
-              </div>
-              <div class="form-group">
-                <label>Emoji Icon</label>
-                <input type="text" id="pEmoji" placeholder="📚" maxlength="10"/>
-              </div>
-              <div class="form-group">
-                <label>Badge</label>
-                <select id="pBadge">
-                  <option value="">None</option>
-                  <option value="new">✨ New</option>
-                  <option value="hot">⚡ Hot</option>
-                  <option value="sale">🔥 Sale</option>
-                </select>
-              </div>
-              <div class="form-group">
-                <label>Stock Quantity</label>
-                <input type="number" id="pStock" placeholder="99"/>
-              </div>
-              <div class="form-group">
-                <label>Sort Order <span style="font-weight:400;color:#9CA3AF;">— lower = first</span></label>
-                <input type="number" id="pSort" placeholder="0"/>
-              </div>
-              <div class="form-group full-width">
-                <label>Description <span style="font-weight:400;color:#9CA3AF;">— optional</span></label>
-                <textarea id="pDesc" placeholder="Short description of the book…" oninput="updateDescCount()"></textarea>
-                <div style="font-size:0.72rem;color:#9CA3AF;text-align:right;margin-top:2px;"><span id="descCount">0</span>/300 chars</div>
-              </div>
+            </div>
+            <div class="card" style="padding:22px;">
+              <div style="font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);margin-bottom:12px;">Categories *</div>
+              <div id="catChips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+              <input type="hidden" id="pCats"/>
+              <div id="catError" style="font-size:0.78rem;color:var(--red);margin-top:8px;display:none;">Please select at least one category.</div>
             </div>
           </div>
-
-          <!-- CATEGORIES -->
-          <div class="card" style="padding:22px;">
-            <div style="font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);margin-bottom:12px;">
-              Categories * <span style="font-weight:400;color:#9CA3AF;text-transform:none;letter-spacing:0;font-size:0.76rem;">— tap chips to select</span>
+          <div>
+            <div id="pricePreview" class="card" style="padding:16px;margin-bottom:0;display:none;">
+              <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);margin-bottom:8px;">Preview</div>
+              <div style="font-size:1rem;font-weight:900;" id="prevName">–</div>
+              <div style="margin-top:6px;display:flex;align-items:center;gap:8px;"><span style="font-size:1.2rem;font-weight:900;color:#111;" id="prevPrice">–</span><span style="font-size:0.84rem;color:#9CA3AF;text-decoration:line-through;" id="prevOld"></span></div>
+              <div id="prevBadge" style="margin-top:6px;"></div>
             </div>
-            <div id="catChips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
-            <input type="hidden" id="pCats"/>
-            <div id="catError" style="font-size:0.78rem;color:var(--red);margin-top:8px;display:none;">Please select at least one category.</div>
+            <div class="card" style="padding:22px;margin-top:20px;">
+              <div style="font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);margin-bottom:12px;">Product Image</div>
+              <div class="form-group" style="margin-bottom:12px;"><label>Image URL</label><input type="url" id="pImage" placeholder="https://…" oninput="previewImageUrl(this.value)"/></div>
+              <div class="upload-zone" id="uploadZone" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="handleDrop(event)" onclick="document.getElementById('pImageFiles').click()">
+                <div style="font-size:1.8rem;">📁</div>
+                <p><strong>Click to upload</strong> or drag & drop</p>
+                <p style="font-size:0.75rem;color:#9CA3AF;margin-top:2px;">PNG, JPG, WEBP</p>
+                <input type="file" id="pImageFiles" accept="image/*" onchange="previewImages(this)" style="display:none;"/>
+              </div>
+              <div id="imagePreviews"></div>
+            </div>
+            <div class="card" style="padding:18px;margin-top:20px;">
+              <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" onclick="saveProduct()" id="saveProductBtn">💾 Save Product</button>
+              <button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px;" onclick="showPage('products')">Cancel</button>
+              <div id="productFormMsg" style="margin-top:10px;font-size:0.82rem;font-weight:700;text-align:center;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BATCH ADD MODE ── -->
+      <div id="batchAddMode">
+        <!-- Step 1: Drop zone -->
+        <div class="card" style="padding:24px;margin-bottom:20px;" id="batchDropCard">
+          <div style="font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);margin-bottom:12px;">Step 1 — Upload Book Images (max 100)</div>
+          <div class="upload-zone" id="batchDropZone"
+               ondragover="event.preventDefault();this.classList.add('drag')"
+               ondragleave="this.classList.remove('drag')"
+               ondrop="batchHandleDrop(event)"
+               onclick="document.getElementById('batchFileInput').click()"
+               style="padding:36px 20px;">
+            <div style="font-size:2.8rem;">📚</div>
+            <p style="font-size:1rem;margin-top:8px;"><strong>Click to select images</strong> or drag & drop</p>
+            <p style="font-size:0.78rem;color:#9CA3AF;margin-top:4px;">PNG, JPG, WEBP — up to 100 images at once</p>
+            <input type="file" id="batchFileInput" accept="image/*" multiple onchange="batchLoadImages(this)" style="display:none;"/>
           </div>
         </div>
 
-        <!-- RIGHT COLUMN -->
-        <div>
-          <!-- Price Preview -->
-          <div id="pricePreview" class="card" style="padding:16px;margin-bottom:0;">
-            <div style="font-size:0.7rem;font-weight:800;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);margin-bottom:8px;">Preview</div>
-            <div style="font-size:1rem;font-weight:900;" id="prevName">–</div>
-            <div style="margin-top:6px;display:flex;align-items:center;gap:8px;">
-              <span style="font-size:1.2rem;font-weight:900;color:#111;" id="prevPrice">–</span>
-              <span style="font-size:0.84rem;color:#9CA3AF;text-decoration:line-through;" id="prevOld"></span>
+        <!-- Step 2: Edit each image -->
+        <div id="batchEditorWrap" style="display:none;">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:16px;">
+            <div>
+              <div style="font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);">Step 2 — Fill Details for Each Book</div>
+              <div style="font-size:0.78rem;color:var(--txt2);margin-top:4px;">Click an image · fill details · repeat · then Save All</div>
             </div>
-            <div id="prevBadge" style="margin-top:6px;"></div>
+            <div style="display:flex;gap:8px;align-items:center;">
+              <span id="batchProgress" style="font-size:0.78rem;color:var(--txt2);font-weight:700;"></span>
+              <button class="btn btn-primary" onclick="batchSaveAll()" id="batchSaveBtn" style="padding:10px 20px;">💾 Save All Books</button>
+            </div>
           </div>
 
-          <!-- Image Upload -->
-          <div class="card" style="padding:22px;margin-top:20px;">
-            <div style="font-size:0.78rem;font-weight:900;text-transform:uppercase;letter-spacing:0.05em;color:var(--txt2);margin-bottom:12px;">
-              Product Image
+          <!-- Thumbnails strip -->
+          <div id="batchThumbs" style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;"></div>
+
+          <!-- Editor panel -->
+          <div id="batchEditorPanel" class="card" style="padding:24px;display:none;">
+            <div style="display:grid;grid-template-columns:160px 1fr;gap:24px;align-items:start;">
+              <!-- Image preview -->
+              <div>
+                <img id="batchPreviewImg" src="" style="width:160px;height:200px;object-fit:cover;border-radius:10px;border:2px solid var(--border);"/>
+                <div id="batchImgName" style="font-size:0.68rem;color:#9CA3AF;margin-top:6px;word-break:break-all;"></div>
+              </div>
+              <!-- Fields -->
+              <div>
+                <div class="form-grid">
+                  <div class="form-group full-width"><label>Book Title *</label><input type="text" id="bName" placeholder="e.g. The Rainbow Fish" oninput="batchMarkDirty()"/></div>
+                  <div class="form-group"><label>Price (KES) *</label><input type="number" id="bPrice" placeholder="850" oninput="batchMarkDirty()"/></div>
+                  <div class="form-group"><label>Old Price (KES)</label><input type="number" id="bOldPrice" placeholder="Leave blank" oninput="batchMarkDirty()"/></div>
+                  <div class="form-group"><label>Emoji</label><input type="text" id="bEmoji" placeholder="📚" maxlength="10" oninput="batchMarkDirty()"/></div>
+                  <div class="form-group"><label>Badge</label><select id="bBadge" onchange="batchMarkDirty()"><option value="">None</option><option value="new">✨ New</option><option value="hot">⚡ Hot</option><option value="sale">🔥 Sale</option></select></div>
+                  <div class="form-group"><label>Stock</label><input type="number" id="bStock" placeholder="99" oninput="batchMarkDirty()"/></div>
+                  <div class="form-group full-width"><label>Description</label><textarea id="bDesc" placeholder="Short description of this book…" style="min-height:80px;" oninput="batchMarkDirty()"></textarea></div>
+                </div>
+                <!-- Categories -->
+                <div style="margin-top:14px;">
+                  <div style="font-size:0.74rem;font-weight:800;color:var(--txt2);margin-bottom:8px;">Categories *</div>
+                  <div id="bCatChips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+                  <input type="hidden" id="bCats"/>
+                  <div id="bCatError" style="font-size:0.78rem;color:var(--red);margin-top:6px;display:none;">Select at least one category.</div>
+                </div>
+                <!-- Nav buttons -->
+                <div style="display:flex;gap:10px;margin-top:18px;flex-wrap:wrap;">
+                  <button class="btn btn-outline btn-sm" onclick="batchNavPrev()" id="bPrevBtn">← Prev</button>
+                  <button class="btn btn-outline btn-sm" onclick="batchNavNext()" id="bNextBtn">Next →</button>
+                  <button class="btn btn-primary btn-sm" onclick="batchSaveCurrent()" id="bSaveCurrentBtn">✔ Save This</button>
+                  <span id="bCurrentLabel" style="font-size:0.78rem;color:var(--txt2);align-self:center;font-weight:700;"></span>
+                </div>
+              </div>
             </div>
-            <div class="form-group" style="margin-bottom:12px;">
-              <label>Image URL <span style="font-weight:400;color:#9CA3AF;">— or upload below</span></label>
-              <input type="url" id="pImage" placeholder="https://…" oninput="previewImageUrl(this.value)"/>
-            </div>
-            <div class="upload-zone" id="uploadZone"
-                 ondragover="event.preventDefault();this.classList.add('drag')"
-                 ondragleave="this.classList.remove('drag')"
-                 ondrop="handleDrop(event)"
-                 onclick="document.getElementById('pImageFiles').click()">
-              <div style="font-size:1.8rem;">📁</div>
-              <p><strong>Click to upload</strong> or drag & drop</p>
-              <p style="font-size:0.75rem;color:#9CA3AF;margin-top:2px;">PNG, JPG, WEBP — multiple allowed</p>
-              <input type="file" id="pImageFiles" accept="image/*" multiple onchange="previewImages(this)" style="display:none;"/>
-            </div>
-            <div id="imagePreviews"></div>
           </div>
 
-          <!-- Save actions -->
+          <!-- Save All -->
           <div class="card" style="padding:18px;margin-top:20px;">
-            <button class="btn btn-primary" style="width:100%;justify-content:center;padding:13px;" onclick="saveProduct()" id="saveProductBtn">
-              💾 Save Product
-            </button>
-            <button class="btn btn-outline" style="width:100%;justify-content:center;margin-top:8px;" onclick="showPage('products')">
-              Cancel
-            </button>
-            <div id="productFormMsg" style="margin-top:10px;font-size:0.82rem;font-weight:700;text-align:center;"></div>
+            <div id="batchSaveMsg" style="font-size:0.84rem;font-weight:700;margin-bottom:12px;display:none;"></div>
+            <button class="btn btn-primary" style="width:100%;justify-content:center;padding:14px;font-size:1rem;" onclick="batchSaveAll()" id="batchSaveBtn2">💾 Save All Books</button>
+            <div style="font-size:0.74rem;color:var(--txt2);text-align:center;margin-top:8px;" id="batchSaveHint">All books with a title and price will be saved.</div>
           </div>
         </div>
+      </div>
 
-      </div><!-- /grid -->
     </div><!-- /add-product page -->
 
     <!-- ── CATEGORIES ── -->
@@ -1459,22 +1483,19 @@ async function deleteProduct(id, name) {
 // ── PRODUCT FORM ──────────────────────────────────────────────
 function resetProductForm() {
   editingProductId = null;
-  document.getElementById('addProductTitle').textContent = '➕ Add New Product';
-  document.getElementById('saveProductBtn').innerHTML = '💾 Save Product';
-  ['pName','pPrice','pOldPrice','pEmoji','pImage','pCats','pDesc'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.value = '';
-  });
-  document.getElementById('pStock').value = '99';
-  document.getElementById('pSort').value  = '0';
-  document.getElementById('pBadge').value = '';
-  document.getElementById('productFormMsg').textContent = '';
-  document.getElementById('imagePreviews').innerHTML = '';
-  document.getElementById('pImageFiles').value = '';
-  document.getElementById('pricePreview').style.display = 'none';
-  document.getElementById('descCount').textContent = '0';
-  document.getElementById('catError').style.display = 'none';
-  renderCatChips([]);
+  // Show batch mode, hide single edit
+  document.getElementById('batchAddMode').style.display = 'block';
+  document.getElementById('singleEditMode').style.display = 'none';
+  document.getElementById('addProductTitle').textContent = '➕ Add Products';
+  document.getElementById('addProductSub').textContent = 'Upload up to 100 images — click each to fill in details';
+  // Reset batch state
+  batchItems = [];
+  batchCurrentIdx = -1;
+  document.getElementById('batchEditorWrap').style.display = 'none';
+  document.getElementById('batchThumbs').innerHTML = '';
+  document.getElementById('batchEditorPanel').style.display = 'none';
+  document.getElementById('batchSaveMsg').style.display = 'none';
+  document.getElementById('batchFileInput').value = '';
 }
 
 async function editProduct(id) {
@@ -1485,9 +1506,13 @@ async function editProduct(id) {
     // Navigate first
     document.querySelectorAll('[id^="page-"]').forEach(el => el.style.display = 'none');
     document.getElementById('page-add-product').style.display = 'block';
+    // Show single edit, hide batch
+    document.getElementById('singleEditMode').style.display = 'block';
+    document.getElementById('batchAddMode').style.display = 'none';
     window.scrollTo(0, 0);
 
     document.getElementById('addProductTitle').textContent = '✏️ Edit Product';
+    document.getElementById('addProductSub').textContent = p.name || '';
     document.getElementById('saveProductBtn').innerHTML = '💾 Update Product';
     document.getElementById('pName').value     = p.name || '';
     document.getElementById('pPrice').value    = p.price || '';
@@ -1501,37 +1526,25 @@ async function editProduct(id) {
     document.getElementById('pDesc').value     = p.description || '';
     document.getElementById('descCount').textContent = (p.description||'').length;
     document.getElementById('catError').style.display = 'none';
-
     document.getElementById('imagePreviews').innerHTML = p.image_url
-      ? `<div class="img-thumb">
-           <img src="${p.image_url}" onerror="this.parentNode.remove()"/>
-           <span class="main-label">MAIN</span>
-         </div>` : '';
-
+      ? `<div class="img-thumb"><img src="${p.image_url}" onerror="this.parentNode.remove()"/><span class="main-label">MAIN</span></div>` : '';
     const selected = (p.categories||'').split(' ').filter(Boolean);
     renderCatChips(selected);
     updatePricePreview();
   } catch { toast('❌ Failed to load product', 'error'); }
 }
 
-// ── IMAGE HANDLING ────────────────────────────────────────────
+// ── SINGLE PRODUCT IMAGE HANDLING (edit mode) ────────────────
 function previewImages(input) {
   const container = document.getElementById('imagePreviews');
   container.innerHTML = '';
-  Array.from(input.files).forEach((file, i) => {
-    const reader = new FileReader();
-    reader.onload = e => {
-      const wrap = document.createElement('div');
-      wrap.className = 'img-thumb';
-      wrap.innerHTML = `<img src="${e.target.result}"/>
-        <span class="rm" onclick="this.parentNode.remove()">✕</span>
-        ${i === 0 ? '<span class="main-label">MAIN</span>' : ''}`;
-      container.appendChild(wrap);
-    };
-    reader.readAsDataURL(file);
-  });
-  // Clear URL field if files chosen
-  if (input.files.length) document.getElementById('pImage').value = '';
+  if (!input.files.length) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    container.innerHTML = `<div class="img-thumb"><img src="${e.target.result}"/><span class="main-label">MAIN</span></div>`;
+  };
+  reader.readAsDataURL(input.files[0]);
+  document.getElementById('pImage').value = '';
 }
 
 function previewImageUrl(url) {
@@ -1547,12 +1560,11 @@ function handleDrop(e) {
   if (!files.length) return;
   const input = document.getElementById('pImageFiles');
   const dt = new DataTransfer();
-  Array.from(files).forEach(f => { if (f.type.startsWith('image/')) dt.items.add(f); });
+  if (files[0] && files[0].type.startsWith('image/')) dt.items.add(files[0]);
   input.files = dt.files;
   previewImages(input);
 }
 
-// ── PRICE PREVIEW ─────────────────────────────────────────────
 function updatePricePreview() {
   const name  = document.getElementById('pName').value.trim();
   const price = parseFloat(document.getElementById('pPrice').value);
@@ -1560,14 +1572,12 @@ function updatePricePreview() {
   const el    = document.getElementById('pricePreview');
   if (!price) { el.style.display = 'none'; return; }
   el.style.display = 'block';
-  document.getElementById('prevName').textContent  = name || 'Untitled Product';
+  document.getElementById('prevName').textContent  = name || 'Untitled';
   document.getElementById('prevPrice').textContent = fmtKES(price);
   const oldEl = document.getElementById('prevOld');
-  if (old && old > price) { oldEl.textContent = fmtKES(old); }
-  else { oldEl.textContent = ''; }
-  const badgeEl = document.getElementById('prevBadge');
+  oldEl.textContent = (old && old > price) ? fmtKES(old) : '';
   const badge = document.getElementById('pBadge').value;
-  badgeEl.innerHTML = badge ? `<span class="badge badge-${badge}">${badge}</span>` : '';
+  document.getElementById('prevBadge').innerHTML = badge ? `<span class="badge badge-${badge}">${badge}</span>` : '';
 }
 
 function updateDescCount() {
@@ -1577,29 +1587,19 @@ function updateDescCount() {
   el.style.color = len > 280 ? '#DC2626' : '#9CA3AF';
 }
 
-// ── SAVE PRODUCT ──────────────────────────────────────────────
+// ── SAVE SINGLE PRODUCT (edit existing) ──────────────────────
 async function saveProduct() {
   const msgEl = document.getElementById('productFormMsg');
-  msgEl.style.color = '#DC2626';
-  msgEl.textContent = '';
+  msgEl.style.color = '#DC2626'; msgEl.textContent = '';
   document.getElementById('catError').style.display = 'none';
-
   const name       = document.getElementById('pName').value.trim();
   const price      = parseFloat(document.getElementById('pPrice').value);
   const categories = document.getElementById('pCats').value.trim();
-
   if (!name)  { msgEl.textContent = '⚠️ Product name is required.'; return; }
   if (!price) { msgEl.textContent = '⚠️ Price is required.'; return; }
-  if (!categories) {
-    document.getElementById('catError').style.display = 'block';
-    document.getElementById('catChips').scrollIntoView({ behavior:'smooth', block:'center' });
-    return;
-  }
-
+  if (!categories) { document.getElementById('catError').style.display='block'; return; }
   const btn = document.getElementById('saveProductBtn');
-  btn.disabled = true;
-  btn.innerHTML = '<div class="spinner"></div> Saving…';
-
+  btn.disabled = true; btn.innerHTML = '<div class="spinner"></div> Saving…';
   try {
     const formData = new FormData();
     formData.append('name',        name);
@@ -1612,32 +1612,222 @@ async function saveProduct() {
     formData.append('stock',       document.getElementById('pStock').value || 99);
     formData.append('sort_order',  document.getElementById('pSort').value || 0);
     formData.append('description', document.getElementById('pDesc').value.trim());
-
     const filesInput = document.getElementById('pImageFiles');
-    if (filesInput && filesInput.files.length) {
-      formData.append('image', filesInput.files[0]);
-    }
-
+    if (filesInput && filesInput.files.length) formData.append('image', filesInput.files[0]);
     const method = editingProductId ? 'PUT' : 'POST';
     const url    = editingProductId ? `/api/products/${editingProductId}` : '/api/products';
     const r = await apiFetch(url, { method, body: formData });
     const d = await r.json();
-
     if (r.ok) {
       msgEl.style.color = '#059669';
-      msgEl.textContent = editingProductId ? '✅ Product updated!' : '✅ Product added!';
+      msgEl.textContent = editingProductId ? '✅ Updated!' : '✅ Saved!';
       toast(editingProductId ? '✅ Product updated' : '✅ Product added', 'success');
       setTimeout(() => showPage('products'), 800);
     } else {
       msgEl.textContent = d.error || '❌ Save failed.';
-      btn.disabled = false;
-      btn.innerHTML = editingProductId ? '💾 Update Product' : '💾 Save Product';
+      btn.disabled = false; btn.innerHTML = '💾 Save Product';
     }
   } catch(e) {
-    console.error(e);
-    msgEl.textContent = '❌ Server error. Try again.';
-    btn.disabled = false;
-    btn.innerHTML = editingProductId ? '💾 Update Product' : '💾 Save Product';
+    msgEl.textContent = '❌ Server error.';
+    btn.disabled = false; btn.innerHTML = '💾 Save Product';
+  }
+}
+
+// ── BATCH ADD ────────────────────────────────────────────────
+let batchItems = [];      // [{file, dataUrl, name, price, oldPrice, emoji, badge, stock, desc, cats}]
+let batchCurrentIdx = -1;
+
+function batchHandleDrop(e) {
+  e.preventDefault();
+  document.getElementById('batchDropZone').classList.remove('drag');
+  const dt = new DataTransfer();
+  Array.from(e.dataTransfer.files).forEach(f => { if(f.type.startsWith('image/')) dt.items.add(f); });
+  const fakeInput = { files: dt.files };
+  batchLoadImages(fakeInput);
+}
+
+function batchLoadImages(input) {
+  const files = Array.from(input.files).filter(f => f.type.startsWith('image/')).slice(0, 100);
+  if (!files.length) return;
+
+  // Preserve existing items, append new ones up to 100 total
+  const newItems = files.map(file => ({
+    file,
+    dataUrl: null,
+    name: file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g,' '),
+    price: '', oldPrice: '', emoji: '📚', badge: '', stock: '99', desc: '', cats: '',
+    saved: false
+  }));
+
+  batchItems = [...batchItems, ...newItems].slice(0, 100);
+
+  // Load dataUrls
+  let loaded = 0;
+  batchItems.forEach((item, i) => {
+    if (item.dataUrl) { loaded++; if(loaded === batchItems.length) batchRenderThumbs(); return; }
+    const reader = new FileReader();
+    reader.onload = e => {
+      batchItems[i].dataUrl = e.target.result;
+      loaded++;
+      if (loaded === batchItems.length) batchRenderThumbs();
+    };
+    reader.readAsDataURL(item.file);
+  });
+}
+
+function batchRenderThumbs() {
+  document.getElementById('batchEditorWrap').style.display = 'block';
+  document.getElementById('batchDropCard').style.marginBottom = '12px';
+  const container = document.getElementById('batchThumbs');
+  container.innerHTML = '';
+  batchItems.forEach((item, i) => {
+    const div = document.createElement('div');
+    div.style.cssText = 'position:relative;cursor:pointer;flex-shrink:0;';
+    div.innerHTML = `
+      <img src="${item.dataUrl}" data-idx="${i}" onclick="batchSelectItem(${i})"
+        style="width:80px;height:100px;object-fit:cover;border-radius:8px;border:3px solid ${item.saved?'#059669':i===batchCurrentIdx?'var(--amber)':'var(--border)'};transition:border 0.15s;display:block;"/>
+      <div style="font-size:0.58rem;text-align:center;margin-top:3px;max-width:80px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;color:var(--txt2);">${item.name||'Untitled'}</div>
+      ${item.saved ? '<div style="position:absolute;top:4px;right:4px;background:#059669;color:#fff;border-radius:50%;width:18px;height:18px;font-size:0.6rem;display:flex;align-items:center;justify-content:center;">✓</div>' : ''}
+    `;
+    container.appendChild(div);
+  });
+  batchUpdateProgress();
+  if (batchCurrentIdx === -1) batchSelectItem(0);
+}
+
+function batchSelectItem(idx) {
+  if (batchCurrentIdx >= 0) batchSaveCurrent(true); // auto-save current silently
+  batchCurrentIdx = idx;
+  const item = batchItems[idx];
+  document.getElementById('batchEditorPanel').style.display = 'block';
+  document.getElementById('batchPreviewImg').src = item.dataUrl;
+  document.getElementById('batchImgName').textContent = item.file ? item.file.name : '';
+  document.getElementById('bName').value     = item.name || '';
+  document.getElementById('bPrice').value    = item.price || '';
+  document.getElementById('bOldPrice').value = item.oldPrice || '';
+  document.getElementById('bEmoji').value    = item.emoji || '📚';
+  document.getElementById('bBadge').value    = item.badge || '';
+  document.getElementById('bStock').value    = item.stock || '99';
+  document.getElementById('bDesc').value     = item.desc || '';
+  document.getElementById('bCatError').style.display = 'none';
+  // render cat chips
+  batchRenderCatChips(item.cats || '');
+  document.getElementById('bCurrentLabel').textContent = `${idx+1} / ${batchItems.length}`;
+  document.getElementById('bPrevBtn').disabled = idx === 0;
+  document.getElementById('bNextBtn').disabled = idx === batchItems.length - 1;
+  // highlight thumb
+  batchRenderThumbs();
+  batchCurrentIdx = idx; // re-set after renderThumbs resets it
+}
+
+function batchRenderCatChips(selectedCats) {
+  const container = document.getElementById('bCatChips');
+  container.innerHTML = '';
+  const selected = selectedCats ? selectedCats.split(' ').filter(Boolean) : [];
+  ALL_CATS.forEach(cat => {
+    const chip = document.createElement('button');
+    chip.type = 'button';
+    chip.className = 'chip' + (selected.includes(cat.slug) ? ' active' : '');
+    chip.textContent = cat.label;
+    chip.dataset.slug = cat.slug;
+    chip.onclick = () => {
+      chip.classList.toggle('active');
+      const slugs = Array.from(container.querySelectorAll('.chip.active')).map(c=>c.dataset.slug);
+      document.getElementById('bCats').value = slugs.join(' ');
+      batchMarkDirty();
+    };
+    container.appendChild(chip);
+  });
+  document.getElementById('bCats').value = selected.join(' ');
+}
+
+function batchMarkDirty() {
+  if (batchCurrentIdx < 0) return;
+  // live-save to item
+  batchItems[batchCurrentIdx].name     = document.getElementById('bName').value;
+  batchItems[batchCurrentIdx].price    = document.getElementById('bPrice').value;
+  batchItems[batchCurrentIdx].oldPrice = document.getElementById('bOldPrice').value;
+  batchItems[batchCurrentIdx].emoji    = document.getElementById('bEmoji').value || '📚';
+  batchItems[batchCurrentIdx].badge    = document.getElementById('bBadge').value;
+  batchItems[batchCurrentIdx].stock    = document.getElementById('bStock').value || '99';
+  batchItems[batchCurrentIdx].desc     = document.getElementById('bDesc').value;
+  batchItems[batchCurrentIdx].cats     = document.getElementById('bCats').value;
+}
+
+function batchSaveCurrent(silent = false) {
+  if (batchCurrentIdx < 0) return;
+  batchMarkDirty();
+  const item = batchItems[batchCurrentIdx];
+  if (item.name && item.price) {
+    item.saved = true;
+    if (!silent) {
+      toast(`✔ "${item.name}" details saved`, 'success');
+      batchRenderThumbs();
+      batchCurrentIdx = batchCurrentIdx; // keep
+    }
+  } else if (!silent) {
+    toast('⚠️ Add a title and price first', 'error');
+  }
+  batchUpdateProgress();
+}
+
+function batchNavPrev() {
+  if (batchCurrentIdx > 0) batchSelectItem(batchCurrentIdx - 1);
+}
+function batchNavNext() {
+  if (batchCurrentIdx < batchItems.length - 1) batchSelectItem(batchCurrentIdx + 1);
+}
+
+function batchUpdateProgress() {
+  const done = batchItems.filter(i => i.name && i.price).length;
+  document.getElementById('batchProgress').textContent = `${done}/${batchItems.length} filled`;
+}
+
+async function batchSaveAll() {
+  batchSaveCurrent(true); // save current panel
+  const toSave = batchItems.filter(i => i.name && i.price);
+  if (!toSave.length) { toast('⚠️ No books with title+price to save', 'error'); return; }
+
+  const btn1 = document.getElementById('batchSaveBtn');
+  const btn2 = document.getElementById('batchSaveBtn2');
+  const msgEl = document.getElementById('batchSaveMsg');
+  [btn1,btn2].forEach(b => { if(b){b.disabled=true; b.innerHTML='<div class="spinner"></div> Saving…';} });
+  msgEl.style.display = 'block';
+  msgEl.style.color = 'var(--txt2)';
+  msgEl.textContent = `Saving 0 / ${toSave.length}…`;
+
+  let saved = 0, failed = 0;
+  for (let i = 0; i < toSave.length; i++) {
+    const item = toSave[i];
+    try {
+      const fd = new FormData();
+      fd.append('name',        item.name);
+      fd.append('price',       item.price);
+      fd.append('old_price',   item.oldPrice || '');
+      fd.append('emoji',       item.emoji || '📚');
+      fd.append('badge',       item.badge || '');
+      fd.append('categories',  item.cats || '');
+      fd.append('stock',       item.stock || 99);
+      fd.append('sort_order',  0);
+      fd.append('description', item.desc || '');
+      if (item.file) fd.append('image', item.file);
+      const r = await apiFetch('/api/products', { method:'POST', body: fd });
+      if (r.ok) { saved++; item.saved = true; }
+      else { failed++; }
+    } catch(e) { failed++; }
+    msgEl.textContent = `Saving ${saved+failed} / ${toSave.length}…`;
+  }
+
+  batchRenderThumbs();
+  [btn1,btn2].forEach(b => { if(b){b.disabled=false; b.innerHTML='💾 Save All Books';} });
+  if (failed === 0) {
+    msgEl.style.color = '#059669';
+    msgEl.textContent = `✅ All ${saved} books saved!`;
+    toast(`✅ ${saved} books added`, 'success');
+    setTimeout(() => showPage('products'), 1500);
+  } else {
+    msgEl.style.color = '#DC2626';
+    msgEl.textContent = `⚠️ ${saved} saved, ${failed} failed. Check and retry.`;
   }
 }
 
