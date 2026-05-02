@@ -1939,15 +1939,40 @@
     const msgEl  = document.getElementById('co-step3-msg');
     const btnsEl = document.getElementById('co-step3-btns');
 
-    btn.disabled = true;
-    btn.textContent = '⏳ Processing…';
-
     const name    = document.getElementById('co-name').value.trim();
     const phone   = getFullPhone();
     const email   = document.getElementById('co-email').value.trim();
     const addr    = getDeliveryAddr();
     const mpPhone = getFullMpesaPhone();
     const total   = cart.reduce((s,i)=>s+i.price*i.qty,0);
+
+    // ── WhatsApp: open immediately (must be synchronous click action) ──
+    if(selectedPayment==='whatsapp'){
+      const ref = 'WA-' + Date.now().toString(36).toUpperCase();
+      const waMsg = encodeURIComponent(
+        `*New Order – ${ref}*\n👤 ${name}\n📱 ${phone}\n📍 ${addr}\n\n` +
+        cart.map(i=>`• ${i.emoji||'📚'} ${i.name} ×${i.qty} = KES ${(i.price*i.qty).toLocaleString()}`).join('\n') +
+        `\n\n*TOTAL: KES ${total.toLocaleString()}*\n\n_Lipa Na M-Pesa: Paybill 247247, Account 340377_`
+      );
+      window.open(`https://wa.me/254718340377?text=${waMsg}`, '_blank');
+      clearCartAfterOrder();
+      closeCheckoutModal();
+      showToast('Opening WhatsApp…');
+      // Save order in background (fire and forget)
+      fetch('/api/orders', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          customer_name: name, customer_phone: phone, customer_email: email||null,
+          delivery_address: addr, payment_method: 'whatsapp',
+          items: cart.map(i=>({ name:i.name, price:i.price, qty:i.qty, emoji:i.emoji })),
+          total, mpesa_phone: null
+        })
+      }).catch(()=>{});
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = '⏳ Processing…';
 
     const orderData = {
       customer_name:    name,
@@ -1992,7 +2017,6 @@
             showStkFallback(data, total, name, phone, addr);
           }
         } else if(selectedPayment==='visa'){
-          // Redirect to Pesapal checkout
           const ppRes  = await fetch('/api/payments/pesapal/init', {
             method:'POST', headers:{'Content-Type':'application/json'},
             body: JSON.stringify({ orderId: data.orderId, orderRef: data.orderRef, amount: total, email, phone, name })
@@ -2006,20 +2030,18 @@
           } else {
             showVisaFallback(data, total, name, phone, addr);
           }
-        } else {
-          // WhatsApp order
-          whatsappOrder(data, total, name, phone, addr);
         }
       } else {
-        // Backend error — fallback to WhatsApp
-        whatsappFallback(total, name, phone, addr);
+        msgEl.style.display='block';
+        msgEl.innerHTML=`<div style="color:#DC2626;font-weight:700;">❌ Could not save order. Please try again.</div>`;
       }
     } catch(err){
-      // Server unreachable — fallback to WhatsApp
-      whatsappFallback(total, name, phone, addr);
+      msgEl.style.display='block';
+      msgEl.innerHTML=`<div style="color:#DC2626;font-weight:700;">❌ Connection error. Please try again.</div>`;
     }
 
     btn.disabled = false;
+    btn.textContent = selectedPayment==='mpesa' ? '📱 Pay with M-Pesa' : '💳 Pay with Card';
   }
 
   function whatsappOrder(data, total, name, phone, addr){
