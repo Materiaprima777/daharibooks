@@ -117,10 +117,12 @@
       display:flex;align-items:center;justify-content:center;
     }
     .hamburger-btn{
-      display:none;background:none;border:none;cursor:pointer;
-      padding:8px;border-radius:6px;flex-direction:column;gap:4px;
+      display:none;background:linear-gradient(135deg,#F59E0B,#D97706);border:none;cursor:pointer;
+      padding:10px 12px;border-radius:8px;flex-direction:column;gap:5px;
+      box-shadow:0 1px 3px rgba(0,0,0,0.15);flex-shrink:0;
     }
-    .hamburger-btn span{display:block;width:20px;height:2px;background:var(--txt-mid);border-radius:2px;transition:all 0.3s;}
+    .hamburger-btn:active{background:linear-gradient(135deg,#D97706,#B45309);}
+    .hamburger-btn span{display:block;width:22px;height:2.5px;background:#fff;border-radius:2px;transition:all 0.3s;}
     .hamburger-btn.open span:nth-child(1){transform:translateY(6px) rotate(45deg);}
     .hamburger-btn.open span:nth-child(2){opacity:0;}
     .hamburger-btn.open span:nth-child(3){transform:translateY(-6px) rotate(-45deg);}
