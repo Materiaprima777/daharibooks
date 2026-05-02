@@ -97,15 +97,18 @@
     }
     .sidebar.collapsed .nl,.sidebar.collapsed .nav-badge{display:none;}
     .sidebar-footer{
-      padding:10px 6px;border-top:1px solid rgba(255,255,255,0.08);
+      padding:12px 10px;border-top:1px solid rgba(255,255,255,0.12);
     }
     .logout-btn{
       display:flex;align-items:center;gap:10px;width:100%;
-      padding:10px 10px;background:none;color:rgba(255,255,255,0.45);
-      font-size:0.82rem;font-weight:700;border:none;border-radius:8px;
+      padding:11px 14px;
+      background:rgba(220,38,38,0.18);
+      color:#FCA5A5;
+      font-size:0.85rem;font-weight:800;border:1.5px solid rgba(220,38,38,0.35);
+      border-radius:8px;cursor:pointer;
       transition:all 0.15s;white-space:nowrap;overflow:hidden;
     }
-    .logout-btn:hover{background:rgba(220,38,38,0.2);color:#FCA5A5;}
+    .logout-btn:hover{background:rgba(220,38,38,0.45);color:#fff;border-color:#DC2626;}
     .sidebar.collapsed .logout-btn span{display:none;}
 
     /* ─ MAIN ─ */
@@ -442,7 +445,7 @@
     </nav>
     <div class="sidebar-footer">
       <button class="logout-btn" onclick="doLogout()">
-        <span style="font-size:1rem;">🚪</span><span>Sign Out</span>
+        <span style="font-size:1.1rem;">🚪</span><span>Log Out</span>
       </button>
     </div>
   </div>
