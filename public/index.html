@@ -1187,9 +1187,25 @@
       <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Email (optional — for receipt)</label>
       <input id="co-email" type="email" placeholder="jane@email.com" style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:11px 14px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"/>
     </div>
-    <div style="margin-bottom:16px;">
-      <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Delivery Address / Town *</label>
-      <textarea id="co-addr" placeholder="e.g. Nairobi, Westlands — or any town in Kenya" rows="2" style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:11px 14px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;resize:none;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"></textarea>
+    <!-- Delivery Location Section -->
+    <div style="background:#FFFBEB;border:2px solid #FCD34D;border-radius:10px;padding:14px;margin-bottom:16px;">
+      <div style="font-size:0.78rem;font-weight:900;color:#92400E;margin-bottom:10px;text-transform:uppercase;letter-spacing:0.05em;">📍 Delivery Location</div>
+
+      <div style="margin-bottom:10px;">
+        <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Town / City *</label>
+        <input id="co-town" type="text" placeholder="e.g. Nairobi, Mombasa, Kisumu, Athi River..." style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:10px 13px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"/>
+      </div>
+
+      <div style="margin-bottom:10px;">
+        <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Estate / Area / Street *</label>
+        <input id="co-estate" type="text" placeholder="e.g. Westlands, Kitengela, Ngong Road, Bamburi..." style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:10px 13px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"/>
+      </div>
+
+      <div style="margin-bottom:6px;">
+        <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Building / Landmark / Extra Directions</label>
+        <textarea id="co-landmark" placeholder="e.g. Near Total Petrol Station, Blue Gate, 2nd Floor..." rows="2" style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:10px 13px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;resize:none;box-sizing:border-box;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"></textarea>
+      </div>
+      <div style="font-size:0.7rem;color:#92400E;">🚚 We deliver across Kenya — delivery charges apply based on location</div>
     </div>
 
     <!-- Order summary mini -->
@@ -1701,14 +1717,26 @@
 
   function coGoStep1(){ coShowStep(1); }
 
+  function getDeliveryAddr(){
+    const town     = (document.getElementById('co-town')?.value||'').trim();
+    const estate   = (document.getElementById('co-estate')?.value||'').trim();
+    const landmark = (document.getElementById('co-landmark')?.value||'').trim();
+    let addr = '';
+    if(town)     addr += town;
+    if(estate)   addr += (addr ? ', ' : '') + estate;
+    if(landmark) addr += (addr ? ' — ' : '') + landmark;
+    return addr;
+  }
   function coGoStep2(){
     const name  = document.getElementById('co-name').value.trim();
     const phone = document.getElementById('co-phone').value.trim();
-    const addr  = document.getElementById('co-addr').value.trim();
+    const town  = document.getElementById('co-town').value.trim();
+    const estate= document.getElementById('co-estate').value.trim();
     const errEl = document.getElementById('co-step1-err');
-    if(!name)  { errEl.textContent='Please enter your full name.';  errEl.style.display='block'; return; }
-    if(!phone) { errEl.textContent='Please enter your phone number.'; errEl.style.display='block'; return; }
-    if(!addr)  { errEl.textContent='Please enter your delivery address.'; errEl.style.display='block'; return; }
+    if(!name)   { errEl.textContent='Please enter your full name.';  errEl.style.display='block'; return; }
+    if(!phone)  { errEl.textContent='Please enter your phone number.'; errEl.style.display='block'; return; }
+    if(!town)   { errEl.textContent='Please enter your town / city.'; errEl.style.display='block'; return; }
+    if(!estate) { errEl.textContent='Please enter your estate / area.'; errEl.style.display='block'; return; }
     errEl.style.display='none';
     coShowStep(2);
   }
@@ -1751,7 +1779,7 @@
     // Build review
     const name  = document.getElementById('co-name').value.trim();
     const phone = document.getElementById('co-phone').value.trim();
-    const addr  = document.getElementById('co-addr').value.trim();
+    const addr  = getDeliveryAddr();
     const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
     const payLabels = { mpesa:'📱 M-Pesa STK Push', visa:'💳 Visa / Mastercard (Pesapal)', whatsapp:'💬 WhatsApp + Pay on Delivery' };
 
@@ -1791,7 +1819,7 @@
     const name    = document.getElementById('co-name').value.trim();
     const phone   = document.getElementById('co-phone').value.trim();
     const email   = document.getElementById('co-email').value.trim();
-    const addr    = document.getElementById('co-addr').value.trim();
+    const addr    = getDeliveryAddr();
     const mpPhone = document.getElementById('mpesa-phone').value.trim();
     const total   = cart.reduce((s,i)=>s+i.price*i.qty,0);
 
