@@ -1,30 +1,43 @@
 'use strict';
-const db     = require('../config/db');
-const multer = require('multer');
-const path   = require('path');
-const fs     = require('fs');
+const db      = require('../config/db');
+const multer  = require('multer');
+const { v2: cloudinary } = require('cloudinary');
+const { Readable } = require('stream');
 
-// ── MULTER UPLOAD ─────────────────────────────────────────────
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    const dir = path.join(__dirname, '../../uploads');
-    if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-    cb(null, dir);
-  },
-  filename: (req, file, cb) => {
-    const ext = path.extname(file.originalname).toLowerCase();
-    cb(null, `book-${Date.now()}${ext}`);
-  }
+// ── CLOUDINARY CONFIG ─────────────────────────────────────────
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key:    process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
+
+// ── MULTER — memory storage (no disk) ────────────────────────
 const upload = multer({
-  storage,
-  limits: { fileSize: 5 * 1024 * 1024 },
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 8 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (/image\/(jpeg|jpg|png|gif|webp)/.test(file.mimetype)) cb(null, true);
     else cb(new Error('Images only'));
   }
 });
 exports.upload = upload;
+
+// ── UPLOAD BUFFER TO CLOUDINARY ───────────────────────────────
+async function uploadToCloudinary(buffer, filename) {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      { folder: 'daharibooks', public_id: `book-${Date.now()}`, resource_type: 'image' },
+      (err, result) => {
+        if (err) return reject(err);
+        resolve(result.secure_url);
+      }
+    );
+    const readable = new Readable();
+    readable.push(buffer);
+    readable.push(null);
+    readable.pipe(stream);
+  });
+}
 
 // ── GET ALL PRODUCTS (public) ─────────────────────────────────
 async function getProducts(req, res) {
@@ -75,9 +88,15 @@ async function createProduct(req, res) {
     const { name, description = '', price, old_price = null, emoji = '📚', badge = '', categories, stock = 99, sort_order = 0 } = req.body;
     if (!name || !price || !categories) return res.status(400).json({ error: 'name, price and categories required.' });
 
-    // image: uploaded file takes priority, else image_url field
     let image_url = req.body.image_url || null;
-    if (req.file) image_url = `/uploads/${req.file.filename}`;
+    if (req.file) {
+      try {
+        image_url = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+      } catch (uploadErr) {
+        console.error('Cloudinary upload error:', uploadErr);
+        return res.status(500).json({ error: 'Image upload failed. Check Cloudinary credentials.' });
+      }
+    }
 
     const slug = name.toLowerCase().replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-') + '-' + Date.now();
     const [result] = await db.query(
@@ -104,17 +123,26 @@ async function updateProduct(req, res) {
         values.push(req.body[key]);
       }
     }
+
     if (req.file) {
-      fields.push('image_url = ?');
-      values.push(`/uploads/${req.file.filename}`);
+      try {
+        const cloudUrl = await uploadToCloudinary(req.file.buffer, req.file.originalname);
+        fields.push('image_url = ?');
+        values.push(cloudUrl);
+      } catch (uploadErr) {
+        console.error('Cloudinary upload error:', uploadErr);
+        return res.status(500).json({ error: 'Image upload failed. Check Cloudinary credentials.' });
+      }
     }
+
     if (!fields.length) return res.status(400).json({ error: 'Nothing to update.' });
 
     values.push(req.params.id);
     await db.query(`UPDATE products SET ${fields.join(', ')} WHERE id = ?`, values);
     res.json({ message: 'Product updated.' });
   } catch (err) {
-    res.status(500).json({ error: 'Failed.' });
+    console.error('updateProduct:', err);
+    res.status(500).json({ error: 'Failed to update product.' });
   }
 }
 
