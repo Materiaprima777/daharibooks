@@ -429,6 +429,9 @@
       <div class="nav-link" id="nl-add-product" onclick="showPage('add-product')">
         <span class="ni">➕</span><span class="nl">Add Product</span>
       </div>
+      <div class="nav-link" id="nl-categories" onclick="showPage('categories')">
+        <span class="ni">🗂️</span><span class="nl">Categories</span>
+      </div>
       <div class="nav-link" id="nl-offers" onclick="showPage('offers')">
         <span class="ni">🏷️</span><span class="nl">Offers</span>
       </div>
@@ -727,6 +730,47 @@
       </div><!-- /grid -->
     </div><!-- /add-product page -->
 
+    <!-- ── CATEGORIES ── -->
+    <div id="page-categories" style="display:none;">
+      <div class="page-hd">
+        <div class="page-title">🗂️ Categories</div>
+      </div>
+
+      <!-- Add new category -->
+      <div class="card" style="margin-bottom:18px;">
+        <div class="card-hd"><h3>Add New Category</h3></div>
+        <div style="padding:16px 18px;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end;">
+            <div style="flex:0 0 80px;">
+              <label style="font-size:0.74rem;font-weight:800;color:var(--txt2);display:block;margin-bottom:5px;">Emoji</label>
+              <input id="newCatEmoji" type="text" maxlength="4" placeholder="📚" style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:1.2rem;text-align:center;outline:none;" onfocus="this.style.borderColor='var(--amber)'" onblur="this.style.borderColor='var(--border)'"/>
+            </div>
+            <div style="flex:1;min-width:160px;">
+              <label style="font-size:0.74rem;font-weight:800;color:var(--txt2);display:block;margin-bottom:5px;">Category Name *</label>
+              <input id="newCatLabel" type="text" placeholder="e.g. Science Books" style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:0.9rem;outline:none;box-sizing:border-box;" onfocus="this.style.borderColor='var(--amber)'" onblur="this.style.borderColor='var(--border)'"/>
+            </div>
+            <div style="flex:1;min-width:160px;">
+              <label style="font-size:0.74rem;font-weight:800;color:var(--txt2);display:block;margin-bottom:5px;">Slug (auto-filled)</label>
+              <input id="newCatSlug" type="text" placeholder="e.g. science-books" style="width:100%;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-size:0.9rem;outline:none;box-sizing:border-box;background:#FAFAFA;" onfocus="this.style.borderColor='var(--amber)'" onblur="this.style.borderColor='var(--border)'"/>
+            </div>
+            <button class="btn btn-primary" style="flex-shrink:0;" onclick="addCategory()">+ Add Category</button>
+          </div>
+          <div id="catAddError" style="color:var(--red);font-size:0.78rem;margin-top:8px;display:none;"></div>
+        </div>
+      </div>
+
+      <!-- Category list -->
+      <div class="card">
+        <div class="card-hd" style="display:flex;align-items:center;justify-content:space-between;">
+          <h3>All Categories</h3>
+          <span style="font-size:0.78rem;color:var(--txt2);" id="catCountLabel"></span>
+        </div>
+        <div style="padding:16px 18px;">
+          <div id="catList" style="display:flex;flex-direction:column;gap:8px;"></div>
+        </div>
+      </div>
+    </div>
+
     <!-- ── OFFERS ── -->
     <div id="page-offers" style="display:none;">
       <div class="page-hd">
@@ -899,6 +943,7 @@ function showPage(page) {
   if (page === 'orders')      loadOrders();
   if (page === 'products')    loadProducts();
   if (page === 'offers')      loadOffers();
+  if (page === 'categories')  loadCategoriesPage();
   if (page === 'add-product') resetProductForm();
   window.scrollTo(0, 0);
 }
@@ -1154,7 +1199,7 @@ function closeOrderModal() {
 }
 
 // ── CATEGORIES ────────────────────────────────────────────────
-const ALL_CATS = [
+const DEFAULT_CATS = [
   {slug:'board-books',    label:'🍼 Board Books'},
   {slug:'age-4-9',        label:'🎠 Ages 4–9'},
   {slug:'age-8-12',       label:'🎒 Ages 8–12'},
@@ -1172,6 +1217,111 @@ const ALL_CATS = [
   {slug:'kiswahili',      label:'🌍 Kiswahili'},
   {slug:'fathers-day',    label:'👨 Father\'s Day'},
 ];
+
+function loadAllCats() {
+  try {
+    const saved = localStorage.getItem('daharibooks_cats');
+    return saved ? JSON.parse(saved) : DEFAULT_CATS;
+  } catch { return DEFAULT_CATS; }
+}
+function saveAllCats(cats) {
+  localStorage.setItem('daharibooks_cats', JSON.stringify(cats));
+}
+
+let ALL_CATS = loadAllCats();
+
+// ── CATEGORY MANAGEMENT ──────────────────────────────────────
+function loadCategoriesPage() {
+  ALL_CATS = loadAllCats();
+  renderCatList();
+}
+
+function renderCatList() {
+  const list = document.getElementById('catList');
+  const label = document.getElementById('catCountLabel');
+  if (!list) return;
+  label.textContent = `${ALL_CATS.length} categories`;
+  if (ALL_CATS.length === 0) {
+    list.innerHTML = `<div style="color:var(--txt2);font-size:0.85rem;padding:10px 0;">No categories yet. Add one above.</div>`;
+    return;
+  }
+  list.innerHTML = ALL_CATS.map((c, i) => `
+    <div style="display:flex;align-items:center;gap:10px;background:#FAFAFA;border:1.5px solid var(--border);border-radius:8px;padding:10px 14px;">
+      <span style="font-size:1.3rem;flex-shrink:0;">${c.label.split(' ')[0]}</span>
+      <div style="flex:1;min-width:0;">
+        <input value="${c.label.replace(/^\S+\s*/,'')}" onchange="renameCat(${i}, this.value)"
+          style="border:none;background:transparent;font-size:0.9rem;font-weight:700;color:var(--txt);width:100%;outline:none;font-family:'Nunito',sans-serif;"
+          onfocus="this.style.borderBottom='1.5px solid var(--amber)'"
+          onblur="this.style.borderBottom='none'"/>
+        <div style="font-size:0.72rem;color:var(--txt2);margin-top:1px;">slug: <code>${c.slug}</code></div>
+      </div>
+      <button onclick="deleteCategory(${i})" style="background:#FEE2E2;color:#991B1B;border:none;border-radius:6px;padding:6px 12px;font-size:0.78rem;font-weight:800;cursor:pointer;">Delete</button>
+    </div>
+  `).join('');
+}
+
+function slugify(str) {
+  return str.toLowerCase().trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+}
+
+// Auto-fill slug as user types name
+document.addEventListener('DOMContentLoaded', () => {
+  const labelInput = document.getElementById('newCatLabel');
+  const slugInput  = document.getElementById('newCatSlug');
+  if (labelInput && slugInput) {
+    labelInput.addEventListener('input', () => {
+      slugInput.value = slugify(labelInput.value);
+    });
+  }
+});
+
+function addCategory() {
+  const emoji = (document.getElementById('newCatEmoji').value.trim() || '📁');
+  const name  = document.getElementById('newCatLabel').value.trim();
+  let slug    = document.getElementById('newCatSlug').value.trim() || slugify(name);
+  const errEl = document.getElementById('catAddError');
+
+  if (!name) { errEl.textContent = 'Please enter a category name.'; errEl.style.display='block'; return; }
+  if (!slug) { errEl.textContent = 'Please enter a slug.'; errEl.style.display='block'; return; }
+  slug = slugify(slug);
+  if (ALL_CATS.find(c => c.slug === slug)) {
+    errEl.textContent = `Slug "${slug}" already exists.`; errEl.style.display='block'; return;
+  }
+  errEl.style.display = 'none';
+
+  ALL_CATS.push({ slug, label: `${emoji} ${name}` });
+  saveAllCats(ALL_CATS);
+  renderCatList();
+  renderCatChips();
+
+  // Clear inputs
+  document.getElementById('newCatEmoji').value = '';
+  document.getElementById('newCatLabel').value = '';
+  document.getElementById('newCatSlug').value  = '';
+  toast('✅ Category added: ' + name, 'success');
+}
+
+function renameCat(index, newName) {
+  if (!newName.trim()) return;
+  const emoji = ALL_CATS[index].label.split(' ')[0];
+  ALL_CATS[index].label = `${emoji} ${newName.trim()}`;
+  saveAllCats(ALL_CATS);
+  renderCatChips();
+  toast('✅ Category renamed', 'success');
+}
+
+function deleteCategory(index) {
+  const cat = ALL_CATS[index];
+  if (!confirm(`Delete category "${cat.label}"?\n\nProducts using this category will not be deleted — just unfiltered.`)) return;
+  ALL_CATS.splice(index, 1);
+  saveAllCats(ALL_CATS);
+  renderCatList();
+  renderCatChips();
+  toast('🗑️ Category deleted', 'success');
+}
 
 function renderCatChips(selectedCats = []) {
   const container = document.getElementById('catChips');
