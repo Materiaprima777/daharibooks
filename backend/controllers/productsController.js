@@ -58,7 +58,7 @@ async function getProducts(req, res) {
 
     const w = where.length ? 'WHERE ' + where.join(' AND ') : '';
     const [products] = await db.query(
-      `SELECT p.id, p.name, p.slug, p.price, p.old_price, p.emoji, p.image_url, p.badge, p.categories, p.stock
+      `SELECT p.id, p.name, p.slug, p.description, p.price, p.old_price, p.emoji, p.image_url, p.badge, p.categories, p.stock
        FROM products p ${w}
        ORDER BY p.sort_order ASC, p.id DESC
        LIMIT ? OFFSET ?`,
