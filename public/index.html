@@ -41,10 +41,12 @@
     .topbar a{color:#FEF3C7;text-decoration:underline;}
 
     /* ── HEADER ── */
+    .site-header-wrap{
+      position:sticky;top:0;z-index:200;
+    }
     header{
       background:var(--white);
       border-bottom:1px solid var(--border);
-      position:sticky;top:0;z-index:200;
       box-shadow:0 1px 4px rgba(0,0,0,0.07);
     }
     .header-main{
@@ -391,9 +393,11 @@
     .prod-cat{font-size:0.62rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--txt-light);margin-bottom:3px;font-weight:700;}
     .prod-name{font-family:'Nunito',sans-serif;font-size:0.86rem;font-weight:800;color:var(--txt);line-height:1.3;margin-bottom:4px;}
     .prod-desc-snip{font-size:0.72rem;color:var(--txt-mid);line-height:1.45;margin-bottom:8px;
-      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
       cursor:pointer;}
     .prod-desc-snip:hover{color:var(--red);}
+    @media(max-width:600px){
+      .prod-desc-snip{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;}
+    }
     .read-more{font-size:0.68rem;color:var(--red);cursor:pointer;font-weight:700;margin-bottom:8px;display:inline-block;}
     .prod-footer{display:flex;align-items:center;justify-content:space-between;gap:6px;}
 
@@ -683,6 +687,8 @@
 </head>
 <body>
 
+<!-- STICKY HEADER WRAP -->
+<div class="site-header-wrap">
 <!-- TOP BAR -->
 <div class="topbar">
   🌍 No. 1 Bookstore for Kids in East Africa · We Deliver Where You Are &nbsp;|&nbsp; <a href="tel:+254718340377">📞 +254 718 340377</a>
@@ -784,6 +790,7 @@
     </div>
   </nav>
 </header>
+</div><!-- /site-header-wrap -->
 
 <!-- MOBILE OVERLAY -->
 <div class="mob-overlay" id="mobOverlay" onclick="closeMobileNav()"></div>
