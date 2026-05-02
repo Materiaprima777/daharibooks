@@ -333,11 +333,10 @@
     .products-wrap{max-width:1200px;margin:0 auto;padding:0 20px 32px;}
     .products-grid{
       display:grid;
-      grid-template-columns:repeat(4,1fr);
+      grid-template-columns:repeat(3,1fr);
       gap:12px;
     }
-    @media(max-width:900px){.products-grid{grid-template-columns:repeat(3,1fr);}}
-    @media(max-width:600px){.products-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:480px){.products-grid{grid-template-columns:repeat(2,1fr);}}
 
     /* FILTER ROW */
     .filter-row{
@@ -622,7 +621,7 @@
       .mobile-nav{display:block;}
       .slide-visual{display:none;}
       .slide-content{flex-direction:column;padding:20px 16px;}
-      .products-grid{grid-template-columns:repeat(2,1fr);}
+      .products-grid{grid-template-columns:repeat(3,1fr);}
       .cat-grid{grid-template-columns:repeat(2,1fr);}
       .how-step{flex:0 0 140px;}
       .footer-grid{grid-template-columns:1fr 1fr;}
@@ -1384,9 +1383,7 @@
   /* ── PAGINATION ── */
   // Responsive page size: 12 on desktop (≥900px), 8 on tablet, 6 on mobile
   function getPageSize(){
-    if(window.innerWidth >= 900) return 12;
-    if(window.innerWidth >= 600) return 8;
-    return 6;
+    return 12;
   }
   let currentPage = 1;
   let currentCat = 'all';
