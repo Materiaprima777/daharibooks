@@ -934,6 +934,26 @@ function showLogin() {
 function showApp() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appShell').style.display = 'block';
+  // Auto-renew token every 20 days (silent re-login not possible without password,
+  // so just warn user 3 days before expiry)
+  scheduleTokenWarning();
+}
+
+function scheduleTokenWarning() {
+  try {
+    const token = getToken();
+    if (!token) return;
+    // Decode JWT payload (no verification needed client-side)
+    const payload = JSON.parse(atob(token.split('.')[1]));
+    const expiresAt = payload.exp * 1000; // ms
+    const warnAt = expiresAt - (3 * 24 * 60 * 60 * 1000); // 3 days before
+    const msUntilWarn = warnAt - Date.now();
+    if (msUntilWarn > 0) {
+      setTimeout(() => {
+        toast('⚠️ Your session expires in 3 days. Log out and back in to renew.', 'error');
+      }, msUntilWarn);
+    }
+  } catch(e) {}
 }
 
 // ── LOGIN ─────────────────────────────────────────────────────
