@@ -1232,7 +1232,23 @@
     </div>
     <div style="margin-bottom:12px;">
       <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Phone Number * (for delivery &amp; M-Pesa)</label>
-      <input id="co-phone" type="tel" placeholder="e.g. 0718340377" style="width:100%;border:1.5px solid #FDE68A;border-radius:8px;padding:11px 14px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"/>
+      <div style="display:flex;gap:6px;align-items:stretch;">
+        <select id="co-phone-code" style="border:1.5px solid #FDE68A;border-radius:8px;padding:10px 8px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;background:#fff;outline:none;cursor:pointer;flex-shrink:0;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'">
+          <option value="+254">🇰🇪 +254</option>
+          <option value="+255">🇹🇿 +255</option>
+          <option value="+256">🇺🇬 +256</option>
+          <option value="+250">🇷🇼 +250</option>
+          <option value="+257">🇧🇮 +257</option>
+          <option value="+253">🇩🇯 +253</option>
+          <option value="+291">🇪🇷 +291</option>
+          <option value="+251">🇪🇹 +251</option>
+          <option value="+252">🇸🇴 +252</option>
+          <option value="+211">🇸🇸 +211</option>
+          <option value="+249">🇸🇩 +249</option>
+        </select>
+        <input id="co-phone" type="tel" placeholder="718 340 377" style="flex:1;border:1.5px solid #FDE68A;border-radius:8px;padding:11px 14px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;outline:none;" onfocus="this.style.borderColor='#D97706'" onblur="this.style.borderColor='#FDE68A'"/>
+      </div>
+      <div style="font-size:0.68rem;color:#92400E;margin-top:4px;">Enter number without leading zero — e.g. 718 340 377</div>
     </div>
     <div style="margin-bottom:12px;">
       <label style="font-size:0.74rem;font-weight:800;color:#78350F;display:block;margin-bottom:4px;">Email (optional — for receipt)</label>
@@ -1286,8 +1302,23 @@
 
     <!-- M-Pesa phone input (shown when selected) -->
     <div id="mpesa-input" style="display:none;background:#F0FFF4;border:1.5px solid #4CAF50;border-radius:8px;padding:14px;margin-bottom:12px;">
-      <label style="font-size:0.74rem;font-weight:800;color:#1B5E20;display:block;margin-bottom:6px;">📱 M-Pesa Phone Number (Safaricom)</label>
-      <input id="mpesa-phone" type="tel" placeholder="e.g. 0718340377" style="width:100%;border:1.5px solid #A5D6A7;border-radius:7px;padding:10px 13px;font-size:0.9rem;font-family:'Nunito Sans',sans-serif;outline:none;"/>
+      <label style="font-size:0.74rem;font-weight:800;color:#1B5E20;display:block;margin-bottom:6px;">📱 M-Pesa Phone Number (Safaricom Kenya)</label>
+      <div style="display:flex;gap:6px;">
+        <select id="mpesa-phone-code" style="border:1.5px solid #A5D6A7;border-radius:7px;padding:9px 8px;font-size:0.88rem;font-family:'Nunito Sans',sans-serif;background:#fff;outline:none;cursor:pointer;flex-shrink:0;">
+          <option value="+254">🇰🇪 +254</option>
+          <option value="+255">🇹🇿 +255</option>
+          <option value="+256">🇺🇬 +256</option>
+          <option value="+250">🇷🇼 +250</option>
+          <option value="+257">🇧🇮 +257</option>
+          <option value="+253">🇩🇯 +253</option>
+          <option value="+291">🇪🇷 +291</option>
+          <option value="+251">🇪🇹 +251</option>
+          <option value="+252">🇸🇴 +252</option>
+          <option value="+211">🇸🇸 +211</option>
+          <option value="+249">🇸🇩 +249</option>
+        </select>
+        <input id="mpesa-phone" type="tel" placeholder="718 340 377" style="flex:1;border:1.5px solid #A5D6A7;border-radius:7px;padding:10px 13px;font-size:0.9rem;font-family:'Nunito Sans',sans-serif;outline:none;"/>
+      </div>
       <div style="font-size:0.7rem;color:#388E3C;margin-top:6px;">💡 You will receive an M-Pesa STK push on this number. Enter your PIN to pay.</div>
     </div>
 
@@ -1788,6 +1819,19 @@
     if(landmark) addr += (addr ? ' — ' : '') + landmark;
     return addr;
   }
+  function getFullPhone() {
+    const code = document.getElementById('co-phone-code').value;
+    let num = document.getElementById('co-phone').value.trim().replace(/\s+/g,'');
+    if(num.startsWith('0')) num = num.slice(1); // strip leading zero
+    return code + num;
+  }
+  function getFullMpesaPhone() {
+    const code = document.getElementById('mpesa-phone-code').value;
+    let num = document.getElementById('mpesa-phone').value.trim().replace(/\s+/g,'');
+    if(num.startsWith('0')) num = num.slice(1);
+    return code + num;
+  }
+
   function coGoStep2(){
     const name  = document.getElementById('co-name').value.trim();
     const phone = document.getElementById('co-phone').value.trim();
@@ -1822,9 +1866,11 @@
     const mpesaInput = document.getElementById('mpesa-input');
     mpesaInput.style.display = method==='mpesa' ? 'block' : 'none';
     if(method==='mpesa'){
-      // Pre-fill with order phone
-      const orderPhone = document.getElementById('co-phone').value.trim();
-      if(orderPhone) document.getElementById('mpesa-phone').value = orderPhone;
+      // Pre-fill with order phone (same code + number)
+      const orderCode = document.getElementById('co-phone-code').value;
+      const orderNum  = document.getElementById('co-phone').value.trim();
+      document.getElementById('mpesa-phone-code').value = orderCode;
+      if(orderNum) document.getElementById('mpesa-phone').value = orderNum;
     }
   }
 
@@ -1839,7 +1885,7 @@
 
     // Build review
     const name  = document.getElementById('co-name').value.trim();
-    const phone = document.getElementById('co-phone').value.trim();
+    const phone = getFullPhone();
     const addr  = getDeliveryAddr();
     const total = cart.reduce((s,i)=>s+i.price*i.qty,0);
     const payLabels = { mpesa:'📱 M-Pesa STK Push', visa:'💳 Visa / Mastercard (Pesapal)', whatsapp:'💬 WhatsApp + Pay on Delivery' };
@@ -1878,10 +1924,10 @@
     btn.textContent = '⏳ Processing…';
 
     const name    = document.getElementById('co-name').value.trim();
-    const phone   = document.getElementById('co-phone').value.trim();
+    const phone   = getFullPhone();
     const email   = document.getElementById('co-email').value.trim();
     const addr    = getDeliveryAddr();
-    const mpPhone = document.getElementById('mpesa-phone').value.trim();
+    const mpPhone = getFullMpesaPhone();
     const total   = cart.reduce((s,i)=>s+i.price*i.qty,0);
 
     const orderData = {
