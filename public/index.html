@@ -42,8 +42,11 @@
 
     /* ── HEADER ── */
     .site-header-wrap{
-      position:sticky;top:0;z-index:200;
+      position:fixed;top:0;left:0;right:0;z-index:200;
     }
+    /* push page content below the fixed header */
+    body{ padding-top:var(--header-h, 90px); }
+    @media(max-width:768px){ body{ padding-top:var(--header-h, 80px); } }
     header{
       background:var(--white);
       border-bottom:1px solid var(--border);
@@ -1382,6 +1385,14 @@
 <div class="toast" id="toast">✅ Added!</div>
 
 <script>
+  /* ── FIX HEADER HEIGHT ── */
+  function setHeaderPad(){
+    const h = document.querySelector('.site-header-wrap');
+    if(h) document.documentElement.style.setProperty('--header-h', h.offsetHeight+'px');
+  }
+  window.addEventListener('load', setHeaderPad);
+  window.addEventListener('resize', setHeaderPad);
+
   /* ── HERO SLIDER ── */
   let slide=0,slideTimer;
   const totalSlides=document.querySelectorAll('.slide-wrapper').length;
