@@ -181,6 +181,27 @@
     .badge-paid{background:#D1FAE5;color:#065F46;}
     .badge-pending{background:#FEF3C7;color:#92400E;}
     .badge-failed{background:#FEE2E2;color:#991B1B;}
+    /* Order attention states */
+    tr.row-unattended{background:#FFF7ED!important;border-left:3px solid #F59E0B;}
+    tr.row-unattended td:first-child{border-left:4px solid #EF4444;}
+    tr.row-attended{background:#F0FDF4!important;}
+    tr.row-completed{background:#F9FAFB!important;opacity:0.75;}
+    .attend-btn{background:#EF4444;color:#fff;border:none;border-radius:6px;padding:4px 10px;font-size:0.74rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;}
+    .attend-btn:hover{background:#DC2626;}
+    .attend-btn.done{background:#059669;}
+    .attend-btn.done:hover{background:#047857;}
+    /* Order tabs */
+    .order-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap;}
+    .otab{padding:7px 16px;border-radius:20px;border:2px solid var(--border);background:#fff;
+      font-size:0.8rem;font-weight:800;cursor:pointer;font-family:'Nunito',sans-serif;color:var(--txt2);transition:all 0.15s;}
+    .otab:hover{border-color:#F59E0B;color:#B45309;}
+    .otab.active{background:#F59E0B;border-color:#F59E0B;color:#fff;}
+    .otab .cnt{background:rgba(0,0,0,0.15);border-radius:10px;padding:1px 7px;margin-left:5px;font-size:0.72rem;}
+    .otab.active .cnt{background:rgba(255,255,255,0.3);}
+    /* Unattended alert banner */
+    .unattended-banner{background:#FEF3C7;border:1.5px solid #FCD34D;border-radius:10px;padding:10px 16px;
+      margin-bottom:14px;display:flex;align-items:center;gap:10px;font-size:0.84rem;font-weight:700;color:#92400E;}
+    .unattended-banner.hidden{display:none!important;}
     .badge-sale{background:#FEE2E2;color:#991B1B;}
     .badge-hot{background:#FEF3C7;color:#B45309;}
 
@@ -496,6 +517,20 @@
         <div class="page-title">📦 Orders</div>
         <button class="btn btn-outline btn-sm" onclick="loadOrders()">🔄 Refresh</button>
       </div>
+
+      <!-- Unattended alert banner -->
+      <div class="unattended-banner hidden" id="unattendedBanner">
+        🔴 <span id="unattendedCount">0</span> new unattended orders need your attention!
+      </div>
+
+      <!-- Tabs -->
+      <div class="order-tabs">
+        <button class="otab active" id="otab-all"       onclick="setOrderTab('all')">All Orders <span class="cnt" id="cnt-all">0</span></button>
+        <button class="otab"        id="otab-unattended" onclick="setOrderTab('unattended')">🔴 Unattended <span class="cnt" id="cnt-unattended">0</span></button>
+        <button class="otab"        id="otab-attended"  onclick="setOrderTab('attended')">🟡 In Progress <span class="cnt" id="cnt-attended">0</span></button>
+        <button class="otab"        id="otab-completed" onclick="setOrderTab('completed')">✅ Completed <span class="cnt" id="cnt-completed">0</span></button>
+      </div>
+
       <div class="toolbar">
         <input type="text" id="orderSearch" placeholder="Search name, ref, phone…" oninput="filterOrders()"/>
         <select id="orderStatusFilter" onchange="loadOrders()">
@@ -907,6 +942,24 @@ async function loadDashboard() {
 }
 
 // ── ORDERS ────────────────────────────────────────────────────
+let currentOrderTab = 'all';
+
+function setOrderTab(tab) {
+  currentOrderTab = tab;
+  document.querySelectorAll('.otab').forEach(b => b.classList.remove('active'));
+  document.getElementById('otab-' + tab).classList.add('active');
+  filterOrders();
+}
+
+function getAttentionState(o) {
+  // completed = delivered or cancelled
+  if (o.order_status === 'delivered' || o.order_status === 'cancelled') return 'completed';
+  // unattended = new orders not yet touched
+  if (o.order_status === 'new') return 'unattended';
+  // attended = confirmed, packed, dispatched
+  return 'attended';
+}
+
 async function loadOrders() {
   try {
     const status = document.getElementById('orderStatusFilter').value;
@@ -917,24 +970,71 @@ async function loadOrders() {
     const r = await apiFetch(url);
     const d = await r.json();
     allOrdersData = d.orders || [];
-    renderOrders(allOrdersData);
+
+    // Update tab counts
+    const unattended = allOrdersData.filter(o => getAttentionState(o) === 'unattended');
+    const attended   = allOrdersData.filter(o => getAttentionState(o) === 'attended');
+    const completed  = allOrdersData.filter(o => getAttentionState(o) === 'completed');
+    document.getElementById('cnt-all').textContent        = allOrdersData.length;
+    document.getElementById('cnt-unattended').textContent = unattended.length;
+    document.getElementById('cnt-attended').textContent   = attended.length;
+    document.getElementById('cnt-completed').textContent  = completed.length;
+
+    // Unattended banner
+    const banner = document.getElementById('unattendedBanner');
+    if (unattended.length > 0) {
+      document.getElementById('unattendedCount').textContent = unattended.length;
+      banner.classList.remove('hidden');
+    } else {
+      banner.classList.add('hidden');
+    }
+
+    // Sidebar badge
+    const badge = document.getElementById('newOrdersBadge');
+    if (unattended.length > 0) {
+      badge.textContent = unattended.length;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+
+    filterOrders();
   } catch(e) { console.error(e); }
 }
 
 function filterOrders() {
   const q = document.getElementById('orderSearch').value.toLowerCase();
-  if (!q) { renderOrders(allOrdersData); return; }
-  renderOrders(allOrdersData.filter(o =>
-    o.order_ref.toLowerCase().includes(q) ||
-    o.customer_name.toLowerCase().includes(q) ||
-    o.customer_phone.includes(q)
-  ));
+  let data = allOrdersData;
+
+  // Tab filter
+  if (currentOrderTab !== 'all') {
+    data = data.filter(o => getAttentionState(o) === currentOrderTab);
+  }
+
+  // Search filter
+  if (q) {
+    data = data.filter(o =>
+      o.order_ref.toLowerCase().includes(q) ||
+      o.customer_name.toLowerCase().includes(q) ||
+      o.customer_phone.includes(q)
+    );
+  }
+  renderOrders(data);
 }
 
 function renderOrders(orders) {
   const tbody = document.getElementById('ordersTbody');
-  tbody.innerHTML = orders.map(o => `
-    <tr>
+  tbody.innerHTML = orders.map(o => {
+    const state = getAttentionState(o);
+    const rowClass = state === 'unattended' ? 'row-unattended' :
+                     state === 'completed'  ? 'row-completed'  : 'row-attended';
+    const stateLabel = state === 'unattended'
+      ? `<button class="attend-btn" onclick="markAttended(${o.id},this)">⚡ Attend</button>`
+      : state === 'completed'
+        ? `<span class="badge badge-delivered">✅ Done</span>`
+        : `<span class="badge badge-confirmed">🟡 In Progress</span>`;
+    return `
+    <tr class="${rowClass}">
       <td><strong style="font-size:0.82rem;">${o.order_ref}</strong></td>
       <td>${o.customer_name}</td>
       <td><a href="tel:${o.customer_phone}" style="color:var(--blue);">${o.customer_phone}</a></td>
@@ -949,14 +1049,30 @@ function renderOrders(orders) {
         </select>
       </td>
       <td style="color:var(--txt2);font-size:0.78rem;">${fmtDate(o.created_at)}</td>
-      <td>
-        <button class="btn btn-outline btn-sm" onclick="viewOrder(${o.id})">View</button>
+      <td style="white-space:nowrap;">
+        ${stateLabel}
+        <button class="btn btn-outline btn-sm" style="margin-left:4px;" onclick="viewOrder(${o.id})">View</button>
         <a href="https://wa.me/${o.customer_phone.replace(/[^0-9]/g,'')}?text=${encodeURIComponent(`Hi ${o.customer_name}, your Dahari Books order *${o.order_ref}* update: `)}"
            target="_blank"
            class="btn btn-success btn-sm" style="text-decoration:none;margin-left:4px;">💬</a>
       </td>
-    </tr>`).join('') ||
-    `<tr><td colspan="8" class="empty"><span class="ei">📭</span>No orders found</td></tr>`;
+    </tr>`;
+  }).join('') ||
+  `<tr><td colspan="8" class="empty"><span class="ei">📭</span>No orders found</td></tr>`;
+}
+
+async function markAttended(id, btn) {
+  // Mark as confirmed = attended
+  try {
+    const r = await apiFetch(`/api/orders/admin/${id}`, {
+      method:'PATCH', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({ order_status: 'confirmed' })
+    });
+    if (r.ok) {
+      toast('✅ Order marked as attended', 'success');
+      loadOrders();
+    } else toast('❌ Failed', 'error');
+  } catch { toast('❌ Failed', 'error'); }
 }
 
 async function updateOrderStatus(id, status) {
@@ -965,7 +1081,7 @@ async function updateOrderStatus(id, status) {
       method:'PATCH', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({ order_status: status })
     });
-    if (r.ok) toast('✅ Status updated to: ' + status, 'success');
+    if (r.ok) { toast('✅ Status updated to: ' + status, 'success'); loadOrders(); }
     else toast('❌ Update failed', 'error');
   } catch { toast('❌ Update failed', 'error'); }
 }
