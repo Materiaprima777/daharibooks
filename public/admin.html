@@ -871,11 +871,20 @@ function getToken() { return localStorage.getItem('dahari_admin_token'); }
 function setToken(t) { localStorage.setItem('dahari_admin_token', t); }
 function clearToken() { localStorage.removeItem('dahari_admin_token'); }
 
-function apiFetch(url, opts = {}) {
+async function apiFetch(url, opts = {}) {
   const t = getToken();
   opts.headers = Object.assign({}, opts.headers || {});
   if (t) opts.headers['Authorization'] = 'Bearer ' + t;
-  return fetch(url, opts);
+  const res = await fetch(url, opts);
+  if (res.status === 401) {
+    // Session expired — show login
+    clearToken();
+    document.getElementById('appWrap').style.display = 'none';
+    document.getElementById('loginWrap').style.display = 'flex';
+    toast('⚠️ Session expired. Please log in again.', 'error');
+    throw new Error('Unauthorised');
+  }
+  return res;
 }
 
 function toast(msg, type = 'default') {

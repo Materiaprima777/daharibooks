@@ -12,7 +12,7 @@ async function createOrder(req, res) {
   const conn = await db.getConnection();
   try {
     await conn.beginTransaction();
-    const { customer_name, customer_phone, customer_email = null, delivery_address, items, notes = null } = req.body;
+    const { customer_name, customer_phone, customer_email = null, delivery_address, items, notes = null, payment_method = null } = req.body;
     if (!customer_name || !customer_phone || !delivery_address) return res.status(400).json({ error: 'Name, phone and address required.' });
     if (!Array.isArray(items) || !items.length) return res.status(400).json({ error: 'No items in order.' });
 
@@ -21,8 +21,8 @@ async function createOrder(req, res) {
     const ip       = req.headers['x-forwarded-for'] || req.socket.remoteAddress || null;
 
     const [r] = await conn.query(
-      'INSERT INTO orders (order_ref, customer_name, customer_phone, customer_email, delivery_address, subtotal, total, notes, ip_address) VALUES (?,?,?,?,?,?,?,?,?)',
-      [orderRef, customer_name.trim(), customer_phone.trim(), customer_email, delivery_address.trim(), total, total, notes, ip]
+      'INSERT INTO orders (order_ref, customer_name, customer_phone, customer_email, delivery_address, subtotal, total, payment_method, notes, ip_address) VALUES (?,?,?,?,?,?,?,?,?,?)',
+      [orderRef, customer_name.trim(), customer_phone.trim(), customer_email, delivery_address.trim(), total, total, payment_method || 'unknown', notes, ip]
     );
     const orderId = r.insertId;
 
@@ -67,11 +67,12 @@ async function trackOrder(req, res) {
 // ── ADMIN: GET ORDERS ─────────────────────────────────────────
 async function adminGetOrders(req, res) {
   try {
-    const { status, page = 1, limit = 50 } = req.query;
+    const { status, pay_status, page = 1, limit = 50 } = req.query;
     const offset = (parseInt(page)-1) * parseInt(limit);
     const where  = [];
     const params = [];
-    if (status) { where.push('order_status = ?'); params.push(status); }
+    if (status)     { where.push('order_status = ?');   params.push(status); }
+    if (pay_status) { where.push('payment_status = ?'); params.push(pay_status); }
     const w = where.length ? 'WHERE ' + where.join(' AND ') : '';
     const [orders] = await db.query(
       `SELECT id, order_ref, customer_name, customer_phone, delivery_address, total, payment_method, payment_status, order_status, created_at FROM orders ${w} ORDER BY created_at DESC LIMIT ? OFFSET ?`,
