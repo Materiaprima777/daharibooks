@@ -9,16 +9,17 @@ router.get('/mpesa/debug', (req, res) => {
   const key = process.env.MPESA_CONSUMER_KEY || '';
   const sec = process.env.MPESA_CONSUMER_SECRET || '';
   res.json({
-    env: process.env.MPESA_ENV,
-    shortcode: process.env.MPESA_SHORTCODE,
+    env: process.env.MPESA_ENV || 'NOT SET',
+    shortcode: process.env.MPESA_SHORTCODE || 'NOT SET',
     key_len: key.length,
     key_prefix: key.slice(0, 8),
     key_suffix: key.slice(-4),
     sec_len: sec.length,
     sec_prefix: sec.slice(0, 8),
     sec_suffix: sec.slice(-4),
-    callback: process.env.MPESA_CALLBACK_URL,
+    callback: process.env.MPESA_CALLBACK_URL || 'NOT SET',
     passkey_set: !!process.env.MPESA_PASSKEY,
+    passkey_len: (process.env.MPESA_PASSKEY||'').length,
   });
 });
 
