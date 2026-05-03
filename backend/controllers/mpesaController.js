@@ -21,8 +21,8 @@ async function initiateStk(req, res) {
     if (!phone || !amount) return res.status(400).json({ error: 'phone and amount required.' });
 
     const token     = await getToken();
-    const shortcode = process.env.MPESA_SHORTCODE || '';
-    const passkey   = process.env.MPESA_PASSKEY   || '';
+    const shortcode = process.env.MPESA_SHORTCODE || '174379';
+    const passkey   = process.env.MPESA_PASSKEY   || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
     const timestamp = new Date().toISOString().replace(/[-T:.Z]/g,'').slice(0,14);
     const password  = Buffer.from(shortcode + passkey + timestamp).toString('base64');
     const sanitized = phone.replace(/\D/g,'').replace(/^0/,'254').replace(/^254254/,'254');
@@ -78,8 +78,8 @@ async function queryStk(req, res) {
   try {
     const { checkoutRequestId } = req.body;
     const token     = await getToken();
-    const shortcode = process.env.MPESA_SHORTCODE || '';
-    const passkey   = process.env.MPESA_PASSKEY   || '';
+    const shortcode = process.env.MPESA_SHORTCODE || '174379';
+    const passkey   = process.env.MPESA_PASSKEY   || 'bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919';
     const timestamp = new Date().toISOString().replace(/[-T:.Z]/g,'').slice(0,14);
     const password  = Buffer.from(shortcode + passkey + timestamp).toString('base64');
     const { data }  = await axios.post(`${base()}/mpesa/stkpushquery/v1/query`, {
